@@ -15,6 +15,7 @@ import com.nexcode.examsystem.model.dtos.QuestionDto;
 import com.nexcode.examsystem.model.entities.Answer;
 import com.nexcode.examsystem.model.entities.Exam;
 import com.nexcode.examsystem.model.entities.Question;
+import com.nexcode.examsystem.model.entities.User;
 import com.nexcode.examsystem.model.exception.AppException;
 import com.nexcode.examsystem.model.exception.BadRequestException;
 import com.nexcode.examsystem.model.requests.AnswerRequest;
@@ -25,7 +26,9 @@ import com.nexcode.examsystem.repository.CourseRepository;
 import com.nexcode.examsystem.repository.ExamRepository;
 import com.nexcode.examsystem.repository.LevelRepository;
 import com.nexcode.examsystem.repository.QuestionRepository;
+import com.nexcode.examsystem.repository.UserRepository;
 import com.nexcode.examsystem.service.ExamService;
+import com.nexcode.examsystem.service.UserExamSerrvice;
 
 import lombok.RequiredArgsConstructor;
 
@@ -40,7 +43,7 @@ public class ExamServiceImpl implements ExamService {
 	private final LevelRepository levelRepository;
 	private final CourseRepository categoryRepository;
 	private final QuestionRepository questionRepository;
-	 //private final UserRepository userRepository;
+	private final UserRepository userRepository;
 
 	@Override
 	public ExamDto findExamById(Long id) {
@@ -159,7 +162,9 @@ public class ExamServiceImpl implements ExamService {
 		return true;
 	}
 	@Override
-	public List<QuestionDto> getRandomQuestionsForExam(ExamDto dto) {
+	public List<QuestionDto> getRandomQuestionsForExam(String email,ExamDto dto) 
+	{
+		User currentUser=userRepository.findByEmail(email).orElseThrow(()->new BadRequestException("email not found"));
 		int no = dto.getNoOfQuestion();
 		List<QuestionDto> allQuestions = dto.getQuestions();
 		Collections.shuffle(allQuestions);
@@ -167,6 +172,4 @@ public class ExamServiceImpl implements ExamService {
 		List<QuestionDto> questionList = allQuestions.subList(0, numberOfQuestionsToTake);
 		return questionList;
 	}
-	
-
 }

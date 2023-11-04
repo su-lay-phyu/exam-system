@@ -13,19 +13,27 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.nexcode.examsystem.mapper.CourseMapper;
+import com.nexcode.examsystem.mapper.QuestionMapper;
 import com.nexcode.examsystem.mapper.UserMapper;
 import com.nexcode.examsystem.model.dtos.CourseDto;
+import com.nexcode.examsystem.model.dtos.ExamDto;
+import com.nexcode.examsystem.model.dtos.QuestionDto;
 import com.nexcode.examsystem.model.dtos.UserDto;
 import com.nexcode.examsystem.model.exception.AppException;
+import com.nexcode.examsystem.model.exception.BadRequestException;
 import com.nexcode.examsystem.model.requests.ChangePasswordRequest;
 import com.nexcode.examsystem.model.requests.EmailRequest;
 import com.nexcode.examsystem.model.requests.NewPasswordRequest;
+import com.nexcode.examsystem.model.requests.UserAnswerRequest;
 import com.nexcode.examsystem.model.requests.UserRequest;
 import com.nexcode.examsystem.model.requests.VerifyOtpRequest;
 import com.nexcode.examsystem.model.responses.ApiResponse;
 import com.nexcode.examsystem.model.responses.CourseResponse;
+import com.nexcode.examsystem.model.responses.QuestionResponse;
 import com.nexcode.examsystem.security.CurrentUser;
 import com.nexcode.examsystem.security.UserPrincipal;
+import com.nexcode.examsystem.service.ExamService;
+import com.nexcode.examsystem.service.UserExamSerrvice;
 import com.nexcode.examsystem.service.UserService;
 
 import lombok.Getter;
@@ -39,23 +47,27 @@ import lombok.Setter;
 public class UserController {
 	
 	private final UserService userService;
+	private final ExamService examService;
+	private final UserExamSerrvice userExamSerrvice;
 	
 	private final UserMapper userMapper;
 	private final CourseMapper courseMapper;
+	private final QuestionMapper questionMapper;
 	
 	@GetMapping
 	public ResponseEntity<?> getAllUsers() {
 		List<UserDto>dtos=userService.getAllUser();
 	    return new ResponseEntity<>(userMapper.toResponseList(dtos), HttpStatus.OK);
 	}
-	@PostMapping("/courses")
-	public ResponseEntity<?>getCoursesById(@CurrentUser UserPrincipal currentUser)
+	@GetMapping("/courses")
+	public ResponseEntity<?>getCoursesByUser(@CurrentUser UserPrincipal currentUser)
 	{
 		String email=currentUser.getEmail();
 		List<CourseDto>dtos=userService.getAllCategoryByUser(email);
 		List<CourseResponse>responses=courseMapper.toResponseList(dtos);
 		return new ResponseEntity<>(responses,HttpStatus.OK);
 	}
+	
 	@PostMapping("/student-signup")
 	public ResponseEntity<?> createUser(@RequestBody UserRequest request) {
 		String email = request.getEmail();
@@ -80,19 +92,19 @@ public class UserController {
 			}
 		}
 	}
+	
 	@PutMapping("/{id}")
 	public ApiResponse updateStudentData(@PathVariable Long id,@RequestBody UserRequest request)
 	{
 		boolean isUpdated=userService.updateStudent(id, request);
 		return new ApiResponse(isUpdated, "Successfully changed user.");
 	}
-	//open route
-	@PostMapping("/forget-password")
+	
+	@PostMapping("/forgot-password")
 	public ApiResponse processForgetPassword(@RequestBody EmailRequest request) {
 		UserDto foundedUser = userService.findByEmailAddress(request.getEmail());
 		return new ApiResponse(userService.generateOneTimePassword(foundedUser), "Successfully password reset.");
 	}
-	//must know user
 	@PutMapping("/change-password")
 	public ApiResponse processForgetPassword(@CurrentUser UserPrincipal currentUser,
 			@RequestBody ChangePasswordRequest request) {
@@ -106,7 +118,6 @@ public class UserController {
 		return new ApiResponse(userService.changePassword(email, requestOldPassword, requestNewPassword), "Successfully changed password.");
 
 	}
-	//open route
 	@PostMapping("/verified-otp")
 	public ApiResponse verifyOtp(@RequestBody VerifyOtpRequest request) {
 		String email = request.getEmail();
@@ -120,5 +131,28 @@ public class UserController {
 		String password = request.getNewpassword();
 		return new ApiResponse(userService.setNewResetPassword(email, password), "Successfully updated New Password");
 	}
-
+	@GetMapping("/exam/{id}/start")
+    public List<QuestionResponse> startExam(@CurrentUser UserPrincipal currentUser,@PathVariable Long id) 
+    {
+		String email=currentUser.getEmail();
+		ExamDto foundedExam=examService.findExamById(id);
+		if(foundedExam==null)
+		{
+			throw new BadRequestException("Exam not found");
+		}
+		List<QuestionDto>dtos=examService.getRandomQuestionsForExam(email,foundedExam);
+		boolean createdUserExam=userExamSerrvice.createUserExam(currentUser.getId(),foundedExam.getId());
+		System.out.println("this is about to created user exam "+createdUserExam);
+		return questionMapper.toResponseList(dtos);
+	}
+	@PostMapping("/exam/{id}/submit")
+	public ResponseEntity<?> submitExam(@CurrentUser UserPrincipal currentUser,@PathVariable Long id,@RequestBody List<UserAnswerRequest>userAnswers)
+	{
+		Long currentId=currentUser.getId();
+		if(userExamSerrvice.findUserExamByUserAndExam(currentId, id,userAnswers)) 
+		{
+			return new ResponseEntity<>(new ApiResponse(true,"Submitted successfully"),HttpStatus.OK);
+		}
+		return new ResponseEntity<>(new ApiResponse(false,"Something is wrong at service layer"),HttpStatus.INTERNAL_SERVER_ERROR);
+	}
 }

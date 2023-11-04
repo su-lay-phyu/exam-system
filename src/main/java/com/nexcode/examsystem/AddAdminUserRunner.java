@@ -47,14 +47,14 @@ public class AddAdminUserRunner implements CommandLineRunner {
                 levelRepository.save(level);
             }
         }
-        Optional<User> existingAdminOptional = userRepository.findByEmail("sulayphyu.java.it@gmail.com");
+        Optional<User> existingAdminOptional = userRepository.findByEmail("eduzone2023.mm@gmail.com");
     	 if (existingAdminOptional.isEmpty()) 
     	 {
         	 User adminUser = new User();
-             adminUser.setUsername("Su Lay Phyu");
-             adminUser.setEmail("sulayphyu.java.it@gmail.com");
-             adminUser.setPassword(encoder.encode("123"));
-             adminUser.setPhone("+95978714878");
+             adminUser.setUsername("Admin");
+             adminUser.setEmail("eduzone2023.mm@gmail.com");
+             adminUser.setPassword(encoder.encode("admin123"));
+             adminUser.setPhone("+95971452639");
              adminUser.setActive(true);
              adminUser.setDisable(false);
              adminUser.setIsPasswordChanged(false);

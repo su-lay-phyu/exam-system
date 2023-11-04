@@ -46,6 +46,8 @@ public class CourseController {
 		List<CourseDto>dtos=courseService.getAllCourses();
 		return courseMapper.toResponseList(dtos);
 	}
+	
+	
 	//pls check again with front end
 	@GetMapping("/users")
 	public ResponseEntity<?> getUsersByCourseName(@RequestParam("id") Long id) {
@@ -58,6 +60,9 @@ public class CourseController {
 	    List<ExamDto> dtos = courseService.getAllExamByCourseId(id);
 	    return new ResponseEntity<>(examMapper.toResponseList(dtos), HttpStatus.OK);
 	}
+	
+	
+	
 	@PostMapping
 	public ResponseEntity<?>createNewCourse(@RequestBody CourseRequest request)
 	{

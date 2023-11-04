@@ -45,6 +45,7 @@ public class UserExam {
 	@ManyToOne(cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH}, fetch = FetchType.LAZY)
 	@JoinColumn(name = "exam_id")
 	private Exam exam;
-	@OneToMany(mappedBy = "userExam", cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH}, fetch = FetchType.LAZY)
+	@OneToMany(fetch = FetchType.LAZY) 
+    @JoinColumn(name = "user_exam_id")
     private List<UserAnswer> userAnswers;
 }

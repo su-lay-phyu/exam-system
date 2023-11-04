@@ -149,7 +149,7 @@ public class UserServiceImpl implements UserService {
 			userRepository.save(foundedUser);
 			return true;
 		}
-		throw new BadRequestException("User doesn't exist!");
+		throw new BadRequestException("The password are incorrect.");
 	}
 
 	@Override
@@ -190,7 +190,7 @@ public class UserServiceImpl implements UserService {
 	        content.append("</li>")
 	                .append("</ul><br>")
 	                .append("Thank you for being a part of our educational platform<br><br>")
-	                .append("Best regards,<br>Nextversity");
+	                .append("Best regards,<br>Eduzone Center");
 	        String emailContent=content.toString();
 	        emailSender.sendEmail(to, subject, emailContent);
 	        return true;

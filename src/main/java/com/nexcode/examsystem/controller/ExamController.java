@@ -24,10 +24,8 @@ import com.nexcode.examsystem.model.responses.ApiResponse;
 import com.nexcode.examsystem.model.responses.ExamAllResponse;
 import com.nexcode.examsystem.model.responses.ExamOnlyResponse;
 import com.nexcode.examsystem.model.responses.QuestionAnswerResponse;
-import com.nexcode.examsystem.model.responses.QuestionResponse;
-import com.nexcode.examsystem.security.CurrentUser;
-import com.nexcode.examsystem.security.UserPrincipal;
 import com.nexcode.examsystem.service.ExamService;
+import com.nexcode.examsystem.service.UserExamSerrvice;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -40,11 +38,11 @@ import lombok.Setter;
 public class ExamController {
 	
 	private final ExamService examService;
+	private final UserExamSerrvice userExamSerrvice;
 	
 	private final ExamMapper examMapper;
 	private final QuestionMapper questionMapper;
-	
-	@GetMapping()
+	@GetMapping
 	public List<ExamOnlyResponse> getAllExamOnly()
 	{
 		List<ExamDto>dtos=examService.getAllExamDetails();
@@ -102,15 +100,5 @@ public class ExamController {
 		boolean isPublished =examService.setExamPublished(id,request);
 		return new ResponseEntity<>(new ApiResponse(isPublished,"Set published successfully"),HttpStatus.OK);
 	}
-	@GetMapping("/start/{id}")
-    public List<QuestionResponse> startExam(@CurrentUser UserPrincipal currentUser,@PathVariable Long id) 
-    {
-		ExamDto foundedExam=examService.findExamById(id);
-		if(foundedExam==null)
-		{
-			throw new BadRequestException("Exam not found");
-		}
-		List<QuestionDto>dtos=examService.getRandomQuestionsForExam(foundedExam);
-		return questionMapper.toResponseList(dtos);
-	}
+	
 }

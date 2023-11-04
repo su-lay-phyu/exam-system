@@ -24,7 +24,7 @@ public class EmailComponent{
 		
 		MimeMessage message = javaMailSender.createMimeMessage(); 
 		MimeMessageHelper helper = new MimeMessageHelper(message);
-		helper.setFrom("sulayphyu.java.it@gmail.com");
+		helper.setFrom("eduzone2023.mm@gmail.com");
 		helper.setTo(to);
 		helper.setSubject(subject);
 		helper.setText(content, true);

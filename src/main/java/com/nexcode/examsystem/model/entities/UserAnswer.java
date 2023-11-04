@@ -23,16 +23,15 @@ public class UserAnswer {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
     private Long id;
-
-    @ManyToOne
-    @JoinColumn(name = "user_exam_id")
-    private UserExam userExam;
-
+	
     @ManyToOne
     @JoinColumn(name = "question_id")
     private Question question;
 
     @Column(name = "selected_answer")
     private String selectedAnswer;
+    
+    @Column(name="is_selected_answer_correct")
+    private Boolean isSelectedAnswerCorrect;
 
 }

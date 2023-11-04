@@ -9,6 +9,7 @@ import lombok.Setter;
 @Setter
 @RequiredArgsConstructor
 public class QuestionAnswerResponse {
+	private Long id;
 	private String question;
 	private List<CorrectAnswerResponse> answers;
 }

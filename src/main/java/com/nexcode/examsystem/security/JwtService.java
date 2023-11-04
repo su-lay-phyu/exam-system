@@ -28,13 +28,10 @@ public class JwtService {
 		String token = getToken(request);
 		try {
 			if (token != null) {
-
-				// get authorized username
 				Claims claims = jwtParser.parseClaimsJws(token).getBody();
 				return claims;
 			}
 			return null;
-			// save to SecurityContext
 		} catch (ExpiredJwtException ex) {
 
 			request.setAttribute("expired", ex.getMessage());

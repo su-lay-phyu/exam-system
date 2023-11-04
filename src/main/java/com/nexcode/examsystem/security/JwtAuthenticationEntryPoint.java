@@ -17,13 +17,14 @@ import lombok.extern.slf4j.Slf4j;
 public class JwtAuthenticationEntryPoint implements AuthenticationEntryPoint {
 
 	@Override
-	public void commence(HttpServletRequest request, HttpServletResponse response, AuthenticationException e)
-			throws IOException, ServletException {
-
-		log.error("Unauthorized error. Message - {}", e.getMessage());
-
-		response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Error -> Unauthorized->" + e.getMessage());
-
-	}
+    public void commence(HttpServletRequest request,
+                         HttpServletResponse response,
+                         AuthenticationException e) 
+                            throws IOException, ServletException {
+    	
+        log.error("Unauthorized error. Message - {}", e.getMessage());
+        // in here i need to know what is something wrong ?? like that so can i added some customize 
+        response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Error -> Unauthorized");
+    }
 
 }

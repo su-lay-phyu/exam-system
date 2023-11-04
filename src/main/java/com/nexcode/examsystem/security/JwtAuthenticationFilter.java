@@ -22,30 +22,28 @@ import org.springframework.web.filter.OncePerRequestFilter;
 import io.jsonwebtoken.Claims;
 
 @Component
-public class JwtAuthenticationFilter extends OncePerRequestFilter{
+public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
-	@Autowired
-	private JwtService jwtService;
-	@Override
-	protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
-			throws ServletException, IOException {
-		Claims claims=jwtService.resolveClaims(request);
-		if(claims!=null)
-		{
-			Long cid=Long.parseLong(claims.getId());
-			String email=claims.getSubject();
-			String username=claims.get("username",String.class);
-			String roles=claims.get("roles",String.class);
-			
-			List<String>stringArr=Arrays.asList(roles.split(","));
-			List<GrantedAuthority>authorities=stringArr.stream().map(r->new SimpleGrantedAuthority(r)).collect(Collectors.toList());
-			UserPrincipal userPrincipal=new UserPrincipal(cid,username,email,null,authorities);
-			Authentication authentication=new UsernamePasswordAuthenticationToken(userPrincipal,"",authorities);
-			SecurityContextHolder.getContext().setAuthentication(authentication);
-		}
-		filterChain.doFilter(request, response);
-	}
+    @Autowired
+    private JwtService jwtService;
 
+    @Override
+    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
+            throws ServletException, IOException {
+        Claims claims = jwtService.resolveClaims(request);
+        if (claims != null) {
+            Long cid = Long.parseLong(claims.getId());
+            String email = claims.getSubject();
+            String username = claims.get("username", String.class);
+            String roles = claims.get("roles", String.class);
+
+            List<String> stringArr = Arrays.asList(roles.split(","));
+            List<GrantedAuthority> authorities = stringArr.stream().map(r -> new SimpleGrantedAuthority(r))
+                    .collect(Collectors.toList());
+            UserPrincipal userPrincipal = new UserPrincipal(cid, username, email, null, authorities);
+            Authentication authentication = new UsernamePasswordAuthenticationToken(userPrincipal, "", authorities);
+            SecurityContextHolder.getContext().setAuthentication(authentication);
+        }
+        filterChain.doFilter(request, response);
+    }
 }
-
-

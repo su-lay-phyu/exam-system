@@ -40,6 +40,7 @@ public class QuestionMapperImpl implements QuestionMapper{
 	@Override
 	public QuestionResponse toResponse(QuestionDto dto) {
 		QuestionResponse response=new QuestionResponse();
+		response.setId(dto.getId());
 		response.setQuestion(dto.getQuestion());
 		response.setAnswers(answerMapper.toResponseList(dto.getAnswerDtos()));
 		return response;
@@ -53,6 +54,7 @@ public class QuestionMapperImpl implements QuestionMapper{
 	@Override
 	public QuestionAnswerResponse toQuestionResponse(QuestionDto dto) {
 		QuestionAnswerResponse response=new QuestionAnswerResponse();
+		response.setId(dto.getId());
 		response.setQuestion(dto.getQuestion());
 		response.setAnswers(answerMapper.toAnswerResponseList(dto.getAnswerDtos()));
 		return response;

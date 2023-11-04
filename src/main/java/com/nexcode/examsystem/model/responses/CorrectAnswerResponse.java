@@ -6,7 +6,6 @@ import lombok.Setter;
 @Getter
 @Setter
 public class CorrectAnswerResponse {
-	
 	private String answer;
 	private boolean correctAnswer;
 }
