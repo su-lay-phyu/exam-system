@@ -28,7 +28,7 @@ import com.nexcode.examsystem.repository.LevelRepository;
 import com.nexcode.examsystem.repository.QuestionRepository;
 import com.nexcode.examsystem.repository.UserRepository;
 import com.nexcode.examsystem.service.ExamService;
-import com.nexcode.examsystem.service.UserExamSerrvice;
+import com.nexcode.examsystem.service.UserExamService;
 
 import lombok.RequiredArgsConstructor;
 

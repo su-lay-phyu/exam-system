@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.nexcode.examsystem.mapper.AnswerMapper;
 import com.nexcode.examsystem.mapper.CourseMapper;
 import com.nexcode.examsystem.mapper.QuestionMapper;
 import com.nexcode.examsystem.mapper.UserMapper;
@@ -19,6 +20,7 @@ import com.nexcode.examsystem.model.dtos.CourseDto;
 import com.nexcode.examsystem.model.dtos.ExamDto;
 import com.nexcode.examsystem.model.dtos.QuestionDto;
 import com.nexcode.examsystem.model.dtos.UserDto;
+import com.nexcode.examsystem.model.dtos.UserExamHistoryDto;
 import com.nexcode.examsystem.model.exception.AppException;
 import com.nexcode.examsystem.model.exception.BadRequestException;
 import com.nexcode.examsystem.model.requests.ChangePasswordRequest;
@@ -30,10 +32,11 @@ import com.nexcode.examsystem.model.requests.VerifyOtpRequest;
 import com.nexcode.examsystem.model.responses.ApiResponse;
 import com.nexcode.examsystem.model.responses.CourseResponse;
 import com.nexcode.examsystem.model.responses.QuestionResponse;
+import com.nexcode.examsystem.model.responses.UserExamResponse;
 import com.nexcode.examsystem.security.CurrentUser;
 import com.nexcode.examsystem.security.UserPrincipal;
 import com.nexcode.examsystem.service.ExamService;
-import com.nexcode.examsystem.service.UserExamSerrvice;
+import com.nexcode.examsystem.service.UserExamService;
 import com.nexcode.examsystem.service.UserService;
 
 import lombok.Getter;
@@ -48,11 +51,12 @@ public class UserController {
 	
 	private final UserService userService;
 	private final ExamService examService;
-	private final UserExamSerrvice userExamSerrvice;
+	private final UserExamService userExamService;
 	
 	private final UserMapper userMapper;
 	private final CourseMapper courseMapper;
 	private final QuestionMapper questionMapper;
+	private final AnswerMapper answerMapper;
 	
 	@GetMapping
 	public ResponseEntity<?> getAllUsers() {
@@ -110,11 +114,7 @@ public class UserController {
 			@RequestBody ChangePasswordRequest request) {
 		String requestOldPassword = request.getOldPassword();
 		String requestNewPassword = request.getNewPassword();
-		String useranme = currentUser.getUsername();
 		String email=currentUser.getEmail();
-		System.out.println("Username is "+useranme);
-		System.out.println("old "+requestOldPassword);
-		System.out.println("new "+requestNewPassword);
 		return new ApiResponse(userService.changePassword(email, requestOldPassword, requestNewPassword), "Successfully changed password.");
 
 	}
@@ -141,7 +141,7 @@ public class UserController {
 			throw new BadRequestException("Exam not found");
 		}
 		List<QuestionDto>dtos=examService.getRandomQuestionsForExam(email,foundedExam);
-		boolean createdUserExam=userExamSerrvice.createUserExam(currentUser.getId(),foundedExam.getId());
+		boolean createdUserExam=userExamService.createUserExam(currentUser.getId(),foundedExam.getId());
 		System.out.println("this is about to created user exam "+createdUserExam);
 		return questionMapper.toResponseList(dtos);
 	}
@@ -149,10 +149,24 @@ public class UserController {
 	public ResponseEntity<?> submitExam(@CurrentUser UserPrincipal currentUser,@PathVariable Long id,@RequestBody List<UserAnswerRequest>userAnswers)
 	{
 		Long currentId=currentUser.getId();
-		if(userExamSerrvice.findUserExamByUserAndExam(currentId, id,userAnswers)) 
+		Long userExamId=userExamService.findUserExamByUserAndExam(currentId, id,userAnswers);
+		if(userExamId!=null) 
 		{
-			return new ResponseEntity<>(new ApiResponse(true,"Submitted successfully"),HttpStatus.OK);
+			return new ResponseEntity<>(new UserExamResponse(userExamId),HttpStatus.OK);
 		}
 		return new ResponseEntity<>(new ApiResponse(false,"Something is wrong at service layer"),HttpStatus.INTERNAL_SERVER_ERROR);
 	}
+	@GetMapping("/exam/{id}/history")
+	public UserExamHistoryDto getExamHistoryForUser(@CurrentUser UserPrincipal currentUser,@PathVariable Long id)
+	{
+		Long currentId=currentUser.getId();
+		return userExamService.getExamHistoryByUser(currentId, id);
+	}
+//	@GetMapping("/exam/{id}/history")
+//	public List<UserExamHistoryDto> getExamHistoryForUser(@CurrentUser UserPrincipal currentUser,@PathVariable Long id)
+//	{
+//		Long currentId=currentUser.getId();
+//		return userExamService.getExamHistoryByUser(currentId, id);
+//	}
+
 }

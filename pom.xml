@@ -10,7 +10,7 @@
 		<relativePath /> <!-- lookup parent from repository -->
 	</parent>
 	<groupId>com.nexcode</groupId>
-	<artifactId>online-exam-system</artifactId>
+	<artifactId>exam-system</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<description>Demo project for Exam System</description>
 	<properties>
@@ -77,5 +77,5 @@
 		</plugins>
 	</build>
 
-	<name>online-exam-system</name>
+	<name>exam-system</name>
 </project>

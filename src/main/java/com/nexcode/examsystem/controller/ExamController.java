@@ -25,7 +25,7 @@ import com.nexcode.examsystem.model.responses.ExamAllResponse;
 import com.nexcode.examsystem.model.responses.ExamOnlyResponse;
 import com.nexcode.examsystem.model.responses.QuestionAnswerResponse;
 import com.nexcode.examsystem.service.ExamService;
-import com.nexcode.examsystem.service.UserExamSerrvice;
+import com.nexcode.examsystem.service.UserExamService;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -38,7 +38,7 @@ import lombok.Setter;
 public class ExamController {
 	
 	private final ExamService examService;
-	private final UserExamSerrvice userExamSerrvice;
+	private final UserExamService userExamService;
 	
 	private final ExamMapper examMapper;
 	private final QuestionMapper questionMapper;
