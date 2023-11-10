@@ -13,4 +13,5 @@ public class UserAnswerDto {
 	private QuestionDto question;
 	private String selectedAnswer;
 	private boolean isSelectedAnswerCorrect;
+	private UserExamDto userExamDto;
 }

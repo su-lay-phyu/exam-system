@@ -251,6 +251,13 @@ public class UserServiceImpl implements UserService {
 		userRepository.save(foundedUser);
 		return true;
 	}
+	@Override
+	public CourseDto findUserCourseById(String email, Long id) {
+		User foundedUser = userRepository.findByEmail(email)
+				.orElseThrow(() -> new BadRequestException("User Not Found : email->" + email));
+		Course course=courseRepository.findUserCourseById(foundedUser.getId(),id);
+		return courseMapper.toDto(course);
+	}
 
 
 }

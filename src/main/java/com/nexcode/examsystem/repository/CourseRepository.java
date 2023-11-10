@@ -16,7 +16,7 @@ public interface CourseRepository extends JpaRepository<Course,Long>{
 
 	public Optional<Course>findById(Long id);
 	
-//	@Query("SELECT c FROM Course c WHERE c.isActive = true")
+	@Query("SELECT c FROM Course c WHERE c.isActive = true")
 	public List<Course>findAll();
 	
 	@Query("SELECT u FROM User u JOIN u.courses c WHERE c.id = :courseId")
@@ -26,4 +26,7 @@ public interface CourseRepository extends JpaRepository<Course,Long>{
 
 	@Query("SELECT e FROM Exam e WHERE e.course.id = :courseId")
 	List<Exam> getAllExamsByCourseId(@Param("courseId") Long courseId);
+	
+	@Query("SELECT c FROM Course c JOIN c.users u WHERE u.id = :userId AND c.id = :courseId")
+	public Course findUserCourseById(@Param("userId") Long userId, @Param("courseId") Long courseId);
 }

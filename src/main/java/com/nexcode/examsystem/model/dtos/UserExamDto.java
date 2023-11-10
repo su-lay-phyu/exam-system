@@ -19,5 +19,4 @@ public class UserExamDto {
     private UserDto user;
     private ExamDto exam;
     private List<UserAnswerDto> userAnswers;
-
 }

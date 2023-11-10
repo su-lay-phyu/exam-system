@@ -17,6 +17,8 @@ import javax.persistence.Table;
 
 import org.hibernate.annotations.ColumnDefault;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
@@ -45,7 +47,8 @@ public class UserExam {
 	@ManyToOne(cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH}, fetch = FetchType.LAZY)
 	@JoinColumn(name = "exam_id")
 	private Exam exam;
-	@OneToMany(fetch = FetchType.LAZY) 
-    @JoinColumn(name = "user_exam_id")
-    private List<UserAnswer> userAnswers;
+	
+	@JsonManagedReference 
+	@OneToMany(mappedBy = "userExam") 
+	private List<UserAnswer> userAnswers;
 }

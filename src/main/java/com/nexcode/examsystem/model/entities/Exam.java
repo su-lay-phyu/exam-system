@@ -15,14 +15,16 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.RequiredArgsConstructor;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Entity
 @Getter
 @Setter
-@RequiredArgsConstructor
+@AllArgsConstructor
+@NoArgsConstructor
 @Table(name="exams")
 public class Exam {
 	
@@ -55,11 +57,10 @@ public class Exam {
     @JoinColumn(name = "level_id") 
     private Level level;
 	
-	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
 	@JoinColumn(name = "exam_id")
 	private List<Question> questions;
 
     @Column(name = "is_active", columnDefinition = "boolean default false")
     private boolean isActive;
-
 }

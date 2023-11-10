@@ -11,7 +11,6 @@ public class ExamOnlyResponse {
 	private String description;
 	private Integer examDurationMinute;
 	private String publishedDate;
-	private Boolean isPublished;
 	private Integer examTotalMark;
 	private Integer noOfQuestion;
 	private CourseResponse category;

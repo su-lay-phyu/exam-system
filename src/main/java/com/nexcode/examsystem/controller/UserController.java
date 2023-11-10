@@ -10,17 +10,19 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.nexcode.examsystem.mapper.AnswerMapper;
 import com.nexcode.examsystem.mapper.CourseMapper;
 import com.nexcode.examsystem.mapper.QuestionMapper;
+import com.nexcode.examsystem.mapper.UserExamMapper;
 import com.nexcode.examsystem.mapper.UserMapper;
 import com.nexcode.examsystem.model.dtos.CourseDto;
 import com.nexcode.examsystem.model.dtos.ExamDto;
 import com.nexcode.examsystem.model.dtos.QuestionDto;
 import com.nexcode.examsystem.model.dtos.UserDto;
-import com.nexcode.examsystem.model.dtos.UserExamHistoryDto;
+import com.nexcode.examsystem.model.dtos.UserExamDto;
 import com.nexcode.examsystem.model.exception.AppException;
 import com.nexcode.examsystem.model.exception.BadRequestException;
 import com.nexcode.examsystem.model.requests.ChangePasswordRequest;
@@ -57,6 +59,7 @@ public class UserController {
 	private final CourseMapper courseMapper;
 	private final QuestionMapper questionMapper;
 	private final AnswerMapper answerMapper;
+	private final UserExamMapper userExamMapper;
 	
 	@GetMapping
 	public ResponseEntity<?> getAllUsers() {
@@ -71,7 +74,17 @@ public class UserController {
 		List<CourseResponse>responses=courseMapper.toResponseList(dtos);
 		return new ResponseEntity<>(responses,HttpStatus.OK);
 	}
-	
+	@GetMapping("/course")
+	public ResponseEntity<?>getCourseByCourseId(@CurrentUser UserPrincipal currentUser,@RequestParam("id") Long id)
+	{
+		String email=currentUser.getEmail();
+		CourseDto foundedCourse=userService.findUserCourseById(email, id);
+		if(foundedCourse!=null)
+		{
+			return new ResponseEntity<>(courseMapper.toResponse(foundedCourse),HttpStatus.FOUND);
+		}
+		return new ResponseEntity<>(new ApiResponse(false,"Something is wrong at service layer"),HttpStatus.INTERNAL_SERVER_ERROR);
+	}
 	@PostMapping("/student-signup")
 	public ResponseEntity<?> createUser(@RequestBody UserRequest request) {
 		String email = request.getEmail();
@@ -149,24 +162,23 @@ public class UserController {
 	public ResponseEntity<?> submitExam(@CurrentUser UserPrincipal currentUser,@PathVariable Long id,@RequestBody List<UserAnswerRequest>userAnswers)
 	{
 		Long currentId=currentUser.getId();
-		Long userExamId=userExamService.findUserExamByUserAndExam(currentId, id,userAnswers);
-		if(userExamId!=null) 
+		UserExamDto dto=userExamService.findUserExamByUserAndExam(currentId, id,userAnswers);
+		UserExamResponse response=userExamMapper.toResponse(dto);
+		if(response!=null) 
 		{
-			return new ResponseEntity<>(new UserExamResponse(userExamId),HttpStatus.OK);
+			return new ResponseEntity<>(response,HttpStatus.OK);
 		}
 		return new ResponseEntity<>(new ApiResponse(false,"Something is wrong at service layer"),HttpStatus.INTERNAL_SERVER_ERROR);
 	}
-	@GetMapping("/exam/{id}/history")
-	public UserExamHistoryDto getExamHistoryForUser(@CurrentUser UserPrincipal currentUser,@PathVariable Long id)
+	@GetMapping("/user-exam/{id}/history")
+	public ResponseEntity<?> getExamHistoryForUser(@CurrentUser UserPrincipal currentUser,@PathVariable Long id)
 	{
-		Long currentId=currentUser.getId();
-		return userExamService.getExamHistoryByUser(currentId, id);
+		UserExamDto dto=userExamService.getExamHistory(id);
+		UserExamResponse response=userExamMapper.toResponse(dto);
+		if(response!=null) 
+		{
+			return new ResponseEntity<>(response,HttpStatus.OK);
+		}
+		return new ResponseEntity<>(new ApiResponse(false,"Something is wrong at service layer"),HttpStatus.INTERNAL_SERVER_ERROR);
 	}
-//	@GetMapping("/exam/{id}/history")
-//	public List<UserExamHistoryDto> getExamHistoryForUser(@CurrentUser UserPrincipal currentUser,@PathVariable Long id)
-//	{
-//		Long currentId=currentUser.getId();
-//		return userExamService.getExamHistoryByUser(currentId, id);
-//	}
-
 }

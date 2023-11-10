@@ -97,7 +97,6 @@ public class ExamMapperImpl implements ExamMapper {
 		response.setPublishedDate(dto.getPublishedDate());
 		response.setExamTotalMark(dto.getExamTotalMark());
 		response.setExamDurationMinute(dto.getExamDurationMinute());
-		response.setIsPublished(dto.getIsPublished());
 		response.setNoOfQuestion(dto.getNoOfQuestion());
 		response.setCategory(courseMapper.toResponse(dto.getCourse()));
 		response.setLevel(levelMapper.toResponse(dto.getLevel()));
