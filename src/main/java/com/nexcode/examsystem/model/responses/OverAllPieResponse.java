@@ -7,9 +7,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @RequiredArgsConstructor
-public class CourseResponse {
-	
-	private Long id;
-	private String name;
-	private String description;
+public class OverAllPieResponse {
+	private String courseName;
+	private Integer totalNoOfStudent;
 }

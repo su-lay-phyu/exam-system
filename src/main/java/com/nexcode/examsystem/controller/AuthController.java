@@ -11,11 +11,8 @@ import com.nexcode.examsystem.model.requests.LoginRequest;
 import com.nexcode.examsystem.model.responses.JwtResponse;
 import com.nexcode.examsystem.service.AuthService;
 
-import lombok.Getter;
 import lombok.RequiredArgsConstructor;
-import lombok.Setter;
-@Getter
-@Setter
+
 @RequiredArgsConstructor
 @RestController
 @RequestMapping("/api/auth")

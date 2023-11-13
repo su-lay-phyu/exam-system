@@ -54,6 +54,12 @@ public class CourseServiceImpl implements CourseService{
 		return examMapper.toDtoList(examDtos);
 	}
 	@Override
+	public List<ExamDto>getSignUpExamByCourseId(Long id)
+	{
+		List<Exam>exams=courseRepository.getSignUpExamsByCourseId(id);
+		return examMapper.toDtoList(exams);
+	}
+	@Override
 	public CourseDto updateCourse(Long id,CourseDto dto) {
 		
 		Course foundedCourse=courseRepository.findById(id).orElseThrow(()->new BadRequestException("course can't found."));

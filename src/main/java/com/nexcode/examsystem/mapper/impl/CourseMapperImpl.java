@@ -10,6 +10,7 @@ import com.nexcode.examsystem.model.dtos.CourseDto;
 import com.nexcode.examsystem.model.entities.Course;
 import com.nexcode.examsystem.model.requests.CourseRequest;
 import com.nexcode.examsystem.model.responses.CourseResponse;
+import com.nexcode.examsystem.model.responses.StudentCourseResponse;
 
 
 @Component
@@ -62,6 +63,21 @@ public class CourseMapperImpl implements CourseMapper{
 	@Override
 	public List<CourseResponse> toResponseList(List<CourseDto> dtos) {
 		return dtos.stream().map(c->toResponse(c)).collect(Collectors.toList());
+	}
+
+	@Override
+	public StudentCourseResponse toStudentCourseResponse(CourseDto dto) {
+		StudentCourseResponse response=new StudentCourseResponse();
+		response.setId(dto.getId());
+		response.setName(dto.getName());
+		response.setDescription(dto.getDescription());
+		response.setPercentage(dto.getPercentage());
+		return response;
+	}
+
+	@Override
+	public List<StudentCourseResponse> toStudentCourseResponseList(List<CourseDto> dtos) {
+		return dtos.stream().map(c->toStudentCourseResponse(c)).collect(Collectors.toList());
 	}
 
 }

@@ -17,13 +17,9 @@ import com.nexcode.examsystem.repository.UserRepository;
 import com.nexcode.examsystem.security.JwtService;
 import com.nexcode.examsystem.service.AuthService;
 
-import lombok.Getter;
 import lombok.RequiredArgsConstructor;
-import lombok.Setter;
 
 @Service
-@Getter
-@Setter
 @RequiredArgsConstructor
 public class AuthServiceImpl implements AuthService {
 

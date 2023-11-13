@@ -13,12 +13,13 @@ import com.nexcode.examsystem.model.exception.BadRequestException;
 import com.nexcode.examsystem.repository.RoleRepository;
 import com.nexcode.examsystem.service.RoleService;
 
+import lombok.RequiredArgsConstructor;
+
 @Service
+@RequiredArgsConstructor
 public class RoleServiceImpl implements RoleService{
 	
-	
-	@Autowired
-	private RoleRepository roleRepository;
+	private final RoleRepository roleRepository;
 	
 	@Autowired
 	private RoleMapper roleMapper;

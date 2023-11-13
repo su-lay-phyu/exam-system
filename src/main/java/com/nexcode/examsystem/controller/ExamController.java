@@ -27,12 +27,8 @@ import com.nexcode.examsystem.model.responses.QuestionAnswerResponse;
 import com.nexcode.examsystem.service.ExamService;
 import com.nexcode.examsystem.service.UserExamService;
 
-import lombok.Getter;
 import lombok.RequiredArgsConstructor;
-import lombok.Setter;
 @RestController
-@Getter
-@Setter
 @RequiredArgsConstructor
 @RequestMapping("/api/exam")
 public class ExamController {

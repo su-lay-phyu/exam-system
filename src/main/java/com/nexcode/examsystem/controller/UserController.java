@@ -13,8 +13,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.nexcode.examsystem.mapper.AnswerMapper;
 import com.nexcode.examsystem.mapper.CourseMapper;
+import com.nexcode.examsystem.mapper.ExamMapper;
 import com.nexcode.examsystem.mapper.QuestionMapper;
 import com.nexcode.examsystem.mapper.UserExamMapper;
 import com.nexcode.examsystem.mapper.UserMapper;
@@ -24,7 +24,7 @@ import com.nexcode.examsystem.model.dtos.QuestionDto;
 import com.nexcode.examsystem.model.dtos.UserDto;
 import com.nexcode.examsystem.model.dtos.UserExamDto;
 import com.nexcode.examsystem.model.exception.AppException;
-import com.nexcode.examsystem.model.exception.BadRequestException;
+import com.nexcode.examsystem.model.projections.UserExamHistoryProjection;
 import com.nexcode.examsystem.model.requests.ChangePasswordRequest;
 import com.nexcode.examsystem.model.requests.EmailRequest;
 import com.nexcode.examsystem.model.requests.NewPasswordRequest;
@@ -32,25 +32,24 @@ import com.nexcode.examsystem.model.requests.UserAnswerRequest;
 import com.nexcode.examsystem.model.requests.UserRequest;
 import com.nexcode.examsystem.model.requests.VerifyOtpRequest;
 import com.nexcode.examsystem.model.responses.ApiResponse;
-import com.nexcode.examsystem.model.responses.CourseResponse;
+import com.nexcode.examsystem.model.responses.ExamOnlyResponse;
 import com.nexcode.examsystem.model.responses.QuestionResponse;
+import com.nexcode.examsystem.model.responses.StudentCourseResponse;
 import com.nexcode.examsystem.model.responses.UserExamResponse;
 import com.nexcode.examsystem.security.CurrentUser;
 import com.nexcode.examsystem.security.UserPrincipal;
+import com.nexcode.examsystem.service.CourseService;
 import com.nexcode.examsystem.service.ExamService;
 import com.nexcode.examsystem.service.UserExamService;
 import com.nexcode.examsystem.service.UserService;
 
-import lombok.Getter;
 import lombok.RequiredArgsConstructor;
-import lombok.Setter;
 @RestController
 @RequestMapping("/api/user")
-@Getter
-@Setter
 @RequiredArgsConstructor
 public class UserController {
 	
+	private final CourseService courseService;
 	private final UserService userService;
 	private final ExamService examService;
 	private final UserExamService userExamService;
@@ -58,8 +57,8 @@ public class UserController {
 	private final UserMapper userMapper;
 	private final CourseMapper courseMapper;
 	private final QuestionMapper questionMapper;
-	private final AnswerMapper answerMapper;
 	private final UserExamMapper userExamMapper;
+	private final ExamMapper examMapper;
 	
 	@GetMapping
 	public ResponseEntity<?> getAllUsers() {
@@ -71,7 +70,7 @@ public class UserController {
 	{
 		String email=currentUser.getEmail();
 		List<CourseDto>dtos=userService.getAllCategoryByUser(email);
-		List<CourseResponse>responses=courseMapper.toResponseList(dtos);
+		List<StudentCourseResponse>responses=courseMapper.toStudentCourseResponseList(dtos);
 		return new ResponseEntity<>(responses,HttpStatus.OK);
 	}
 	@GetMapping("/course")
@@ -144,36 +143,58 @@ public class UserController {
 		String password = request.getNewpassword();
 		return new ApiResponse(userService.setNewResetPassword(email, password), "Successfully updated New Password");
 	}
+	//student dashboards
+	
+	@GetMapping("/course/{id}/exams")
+	public List<ExamOnlyResponse>getSignUpExams(@PathVariable Long id)
+	{
+		List<ExamDto>dtos=courseService.getAllExamByCourseId(id);
+		return examMapper.toExamOnlyResponseList(dtos);
+		
+	}
 	@GetMapping("/exam/{id}/start")
     public List<QuestionResponse> startExam(@CurrentUser UserPrincipal currentUser,@PathVariable Long id) 
     {
+		List<QuestionDto>dtos=null;
 		String email=currentUser.getEmail();
 		ExamDto foundedExam=examService.findExamById(id);
-		if(foundedExam==null)
+		UserDto foundedUserDto=userService.findByEmailAddress(email);
+		if(foundedUserDto!=null)
 		{
-			throw new BadRequestException("Exam not found");
+			dtos=examService.getRandomQuestionsForExam(foundedExam);
+			//create user exam for that user 
+			userExamService.createUserExam(currentUser.getId(),foundedExam.getId());
 		}
-		List<QuestionDto>dtos=examService.getRandomQuestionsForExam(email,foundedExam);
-		boolean createdUserExam=userExamService.createUserExam(currentUser.getId(),foundedExam.getId());
-		System.out.println("this is about to created user exam "+createdUserExam);
 		return questionMapper.toResponseList(dtos);
 	}
 	@PostMapping("/exam/{id}/submit")
 	public ResponseEntity<?> submitExam(@CurrentUser UserPrincipal currentUser,@PathVariable Long id,@RequestBody List<UserAnswerRequest>userAnswers)
 	{
-		Long currentId=currentUser.getId();
-		UserExamDto dto=userExamService.findUserExamByUserAndExam(currentId, id,userAnswers);
+		Long userId=currentUser.getId();
+		ExamDto foundedExam=examService.findExamById(id);
+		UserExamDto dto=userExamService.findUserExamByUserAndExam(userId,id,userAnswers);
 		UserExamResponse response=userExamMapper.toResponse(dto);
 		if(response!=null) 
 		{
 			return new ResponseEntity<>(response,HttpStatus.OK);
 		}
 		return new ResponseEntity<>(new ApiResponse(false,"Something is wrong at service layer"),HttpStatus.INTERNAL_SERVER_ERROR);
+		
 	}
-	@GetMapping("/user-exam/{id}/history")
+	@GetMapping("/exam/history")
+	public ResponseEntity<?> getExamHistoryForUser(@CurrentUser UserPrincipal currentUser)
+	{
+		List<UserExamHistoryProjection>list=userExamService.getAllExamHistoryByUserId(currentUser.getEmail());
+		if(list!=null) 
+		{
+			return new ResponseEntity<>(list,HttpStatus.OK);
+		}
+		return new ResponseEntity<>(new ApiResponse(false,"Something is wrong at service layer"),HttpStatus.INTERNAL_SERVER_ERROR);
+	}
+	@GetMapping("/exam/history/{id}")
 	public ResponseEntity<?> getExamHistoryForUser(@CurrentUser UserPrincipal currentUser,@PathVariable Long id)
 	{
-		UserExamDto dto=userExamService.getExamHistory(id);
+		UserExamDto dto=userExamService.getEachExamAllHistory(currentUser.getEmail(), id);
 		UserExamResponse response=userExamMapper.toResponse(dto);
 		if(response!=null) 
 		{

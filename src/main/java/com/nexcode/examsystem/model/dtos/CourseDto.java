@@ -16,4 +16,5 @@ public class CourseDto {
 	private String name;
 	private String description;
 	private List<UserDto>userDtos;
+	private Long percentage;
 }

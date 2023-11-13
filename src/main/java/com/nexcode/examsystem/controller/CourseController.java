@@ -5,6 +5,7 @@ import java.util.List;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -23,13 +24,9 @@ import com.nexcode.examsystem.model.responses.ApiResponse;
 import com.nexcode.examsystem.model.responses.CourseResponse;
 import com.nexcode.examsystem.service.CourseService;
 
-import lombok.Getter;
 import lombok.RequiredArgsConstructor;
-import lombok.Setter;
 
 @RestController
-@Getter
-@Setter
 @RequiredArgsConstructor
 @RequestMapping("/api/course")
 public class CourseController {
@@ -50,7 +47,7 @@ public class CourseController {
 	
 	//pls check again with front end
 	@GetMapping("/users")
-	public ResponseEntity<?> getUsersByCourseName(@RequestParam("id") Long id) {
+	public ResponseEntity<?> getUsersByCourseId(@RequestParam("id") Long id) {
 	    List<UserDto> dtos = courseService.getAllUserByCourseId(id);
 	    return new ResponseEntity<>(userMapper.toResponseList(dtos), HttpStatus.OK);
 	}
@@ -60,8 +57,6 @@ public class CourseController {
 	    List<ExamDto> dtos = courseService.getAllExamByCourseId(id);
 	    return new ResponseEntity<>(examMapper.toResponseList(dtos), HttpStatus.OK);
 	}
-	
-	
 	
 	@PostMapping
 	public ResponseEntity<?>createNewCourse(@RequestBody CourseRequest request)
@@ -81,7 +76,7 @@ public class CourseController {
 	}
 	
 	@PutMapping("/{id}")
-	public ResponseEntity<?>updateCourse(@RequestParam Long id,@RequestBody CourseRequest request)
+	public ResponseEntity<?>updateCourse(@PathVariable Long id,@RequestBody CourseRequest request)
 	{
 		CourseDto dto=courseMapper.toDto(request);
 		CourseDto updatedDto=courseService.updateCourse(id, dto);
@@ -91,5 +86,9 @@ public class CourseController {
 		}
 		return new ResponseEntity<>(new ApiResponse(false, "Course updated failed!"), HttpStatus.BAD_REQUEST);
 	}
-
+//	@PutMapping("/{id}")
+//	public ResponseEntity<?>deleteCourse(@PathVariable Long id)
+//	{
+//		
+//	}
 }

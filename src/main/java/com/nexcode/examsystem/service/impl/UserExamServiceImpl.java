@@ -1,6 +1,7 @@
 package com.nexcode.examsystem.service.impl;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import org.springframework.stereotype.Service;
@@ -14,6 +15,8 @@ import com.nexcode.examsystem.model.entities.User;
 import com.nexcode.examsystem.model.entities.UserAnswer;
 import com.nexcode.examsystem.model.entities.UserExam;
 import com.nexcode.examsystem.model.exception.BadRequestException;
+import com.nexcode.examsystem.model.exception.NotFoundException;
+import com.nexcode.examsystem.model.projections.UserExamHistoryProjection;
 import com.nexcode.examsystem.model.requests.UserAnswerRequest;
 import com.nexcode.examsystem.repository.ExamRepository;
 import com.nexcode.examsystem.repository.QuestionRepository;
@@ -22,13 +25,9 @@ import com.nexcode.examsystem.repository.UserExamRepository;
 import com.nexcode.examsystem.repository.UserRepository;
 import com.nexcode.examsystem.service.UserExamService;
 
-import lombok.Getter;
 import lombok.RequiredArgsConstructor;
-import lombok.Setter;
 
 @Service
-@Getter
-@Setter
 @RequiredArgsConstructor
 public class UserExamServiceImpl implements UserExamService {
 
@@ -40,7 +39,7 @@ public class UserExamServiceImpl implements UserExamService {
 	private final QuestionRepository questionRepository;
 
 	@Override
-	public boolean createUserExam(Long userId, Long examId) {
+	public void createUserExam(Long userId, Long examId) {
 		User foundedUser = userRepository.findById(userId).orElseThrow(() -> new BadRequestException("user not found"));
 		Exam foundedExam = examRepository.findById(examId).orElseThrow(() -> new BadRequestException("Exam not found"));
 		UserExam userExam = new UserExam();
@@ -49,15 +48,14 @@ public class UserExamServiceImpl implements UserExamService {
 		userExam.setObtainedResult(0);
 		userExam.setIsActive(true);
 		userExamRepository.save(userExam);
-		return true;
 	}
 
 	@Override
-	public UserExamDto findUserExamByUserAndExam(Long userId, Long examId, List<UserAnswerRequest> userAnswers) {
-
-		User foundedUser = userRepository.findById(userId).orElseThrow(() -> new BadRequestException("user not found"));
+	public UserExamDto findUserExamByUserAndExam(Long userId,Long examId, List<UserAnswerRequest> userAnswers) 
+	{
 		Exam foundedExam = examRepository.findById(examId).orElseThrow(() -> new BadRequestException("Exam not found"));
 		UserExam foundedUserExam = userExamRepository.findByUserExam(userId, examId);
+		foundedUserExam.setSubmittedTime(new Date());
 		int markForEachQuestion = foundedExam.getExamTotalMark() / foundedExam.getNoOfQuestion();
 		int obtainedMarks = calculateObtainedMarks(markForEachQuestion, userAnswers, foundedUserExam);
 
@@ -108,12 +106,16 @@ public class UserExamServiceImpl implements UserExamService {
 		}
 		return null;
 	}
+	@Override
+	public List<UserExamHistoryProjection> getAllExamHistoryByUserId(String email) {
+		User foundedUser=userRepository.findByEmail(email).orElseThrow(()->new NotFoundException("User not found"));
+		return userExamRepository.findAllExamHistoryByUserId(foundedUser.getId());
+	}
 
 	@Override
-	public UserExamDto getExamHistory(Long userExamId) {
-		UserExam userExam= userExamRepository.findUserExam(userExamId);
-		UserExamDto dto=userExamMapper.toDto(userExam);
-		return dto;
+	public UserExamDto getEachExamAllHistory(String email, Long examId) {
+		User foundedUser=userRepository.findByEmail(email).orElseThrow(()->new NotFoundException("User not found"));
+		return userExamMapper.toDto(userExamRepository.findByUserExam(foundedUser.getId(),examId));
 	}
 
 }

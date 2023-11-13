@@ -5,6 +5,7 @@ import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 
 import com.nexcode.examsystem.model.entities.Course;
 import com.nexcode.examsystem.model.entities.User;
@@ -21,6 +22,8 @@ public interface UserRepository extends JpaRepository<User, Long>{
 	@Query("SELECT DISTINCT u FROM User u JOIN FETCH u.courses c JOIN u.roles r WHERE r.name = 'user'")
 	List<User> findAllUserWithCategories();
 	
-    @Query("SELECT u.courses FROM User u WHERE u.email = ?1")
-	List<Course>findAllCourseWithUserEmail(String email);
+    @Query("SELECT u.courses FROM User u WHERE u.id=:userId")
+	List<Course>findAllCourseWithUserEmail(@Param("userId")Long userId);
+    
+    
 }

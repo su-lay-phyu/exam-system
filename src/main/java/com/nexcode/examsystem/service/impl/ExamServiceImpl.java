@@ -15,9 +15,9 @@ import com.nexcode.examsystem.model.dtos.QuestionDto;
 import com.nexcode.examsystem.model.entities.Answer;
 import com.nexcode.examsystem.model.entities.Exam;
 import com.nexcode.examsystem.model.entities.Question;
-import com.nexcode.examsystem.model.entities.User;
 import com.nexcode.examsystem.model.exception.AppException;
 import com.nexcode.examsystem.model.exception.BadRequestException;
+import com.nexcode.examsystem.model.exception.NotFoundException;
 import com.nexcode.examsystem.model.requests.AnswerRequest;
 import com.nexcode.examsystem.model.requests.ExamPublishedRequest;
 import com.nexcode.examsystem.model.requests.ExamRequest;
@@ -26,9 +26,7 @@ import com.nexcode.examsystem.repository.CourseRepository;
 import com.nexcode.examsystem.repository.ExamRepository;
 import com.nexcode.examsystem.repository.LevelRepository;
 import com.nexcode.examsystem.repository.QuestionRepository;
-import com.nexcode.examsystem.repository.UserRepository;
 import com.nexcode.examsystem.service.ExamService;
-import com.nexcode.examsystem.service.UserExamService;
 
 import lombok.RequiredArgsConstructor;
 
@@ -37,28 +35,34 @@ import lombok.RequiredArgsConstructor;
 public class ExamServiceImpl implements ExamService {
 
 	private final ExamMapper examMapper;
-	 private final QuestionMapper questionMapper;
-
+	private final QuestionMapper questionMapper;
 	private final ExamRepository examRepository;
 	private final LevelRepository levelRepository;
 	private final CourseRepository categoryRepository;
 	private final QuestionRepository questionRepository;
-	private final UserRepository userRepository;
+
+	// find exam with id
+	public Exam findExam(Long id) {
+		return examRepository.findById(id).orElseThrow(() -> new NotFoundException("Exam not found"));
+	}
 
 	@Override
 	public ExamDto findExamById(Long id) {
-
-		return examMapper.toDto(examRepository.findById(id).orElse(null));
+		Exam foundedExam = findExam(id);
+		return examMapper.toDto(foundedExam);
 	}
+
 	@Override
 	public List<ExamDto> getAllExamDetails() {
 		return examMapper.toDtoList(examRepository.findAll());
 	}
+
 	@Override
 	public List<QuestionDto> getAllQuestionById(Long id) {
-		Exam foundedExam=examRepository.findById(id).orElseThrow(()->new BadRequestException("Exam not found"));
+		Exam foundedExam = findExam(id);
 		return questionMapper.toDtoList(foundedExam.getQuestions());
 	}
+
 	@Override
 	@Transactional(rollbackFor = Exception.class)
 	public boolean createExamWithQuestions(ExamRequest request) {
@@ -85,7 +89,6 @@ public class ExamServiceImpl implements ExamService {
 		exam.setLevel(levelRepository.findById(request.getLevelId()).orElse(null));
 		exam.setNoOfQuestion(request.getNoOfQuestion());
 		exam.setQuestions(questions);
-
 		Exam savedExam = examRepository.save(exam);
 		return savedExam;
 	}
@@ -112,7 +115,7 @@ public class ExamServiceImpl implements ExamService {
 	@Override
 	@Transactional(rollbackFor = Exception.class)
 	public boolean updateExam(Long id, ExamRequest request) {
-		Exam foundedExam = examRepository.findById(id).orElseThrow(() -> new BadRequestException("Exam not Found"));
+		Exam foundedExam = findExam(id);
 		foundedExam.setName(request.getName());
 		foundedExam.setDescription(request.getDescription());
 		foundedExam.setExamdurationMinutes(request.getExamDurationMinute());
@@ -137,34 +140,30 @@ public class ExamServiceImpl implements ExamService {
 	@Override
 	@Transactional(rollbackFor = Exception.class)
 	public boolean setExamPublished(Long id, ExamPublishedRequest request) {
-		boolean ispublished = request.isPublished();
-		Exam foundedExam = examRepository.findById(id).orElse(null);
-		if(ispublished &&checkForEnoughQuestion(foundedExam))
-		{
-			foundedExam.setIsPublished(ispublished);
-			Date currentDate = new Date();
-			foundedExam.setExamPublishDate(currentDate);
-			foundedExam.setActive(ispublished);
-			examRepository.save(foundedExam);
-			return true;
+		boolean isPublished = request.isPublished();
+		Exam foundedExam = findExam(id);
+		if (isPublished) {
+			if (!checkForEnoughQuestion(foundedExam))
+				return false;
 		}
+		foundedExam.setIsPublished(isPublished);
+		foundedExam.setExamPublishDate(isPublished ? new Date() : null);
+		foundedExam.setActive(isPublished);
+		examRepository.save(foundedExam);
 		return true;
-
 	}
-	public boolean checkForEnoughQuestion(Exam exam)
-	{
+
+	public boolean checkForEnoughQuestion(Exam exam) {
 		int requiredQuestionCount = exam.getNoOfQuestion();
 		int actualQuestionCount = examRepository.countQuestionsForExam(exam.getId());
-		if (actualQuestionCount < requiredQuestionCount) 
-		{
+		if (actualQuestionCount < requiredQuestionCount) {
 			throw new BadRequestException("Not enough questions to publish the exam.");
 		}
 		return true;
 	}
+
 	@Override
-	public List<QuestionDto> getRandomQuestionsForExam(String email,ExamDto dto) 
-	{
-		User currentUser=userRepository.findByEmail(email).orElseThrow(()->new BadRequestException("email not found"));
+	public List<QuestionDto> getRandomQuestionsForExam(ExamDto dto) {
 		int no = dto.getNoOfQuestion();
 		List<QuestionDto> allQuestions = dto.getQuestions();
 		Collections.shuffle(allQuestions);

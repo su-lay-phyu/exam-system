@@ -13,7 +13,7 @@ public interface ExamService {
 	public List<ExamDto>getAllExamDetails();
 	public boolean createExamWithQuestions(ExamRequest request);
 	public boolean updateExam(Long id,ExamRequest request);
-	public List<QuestionDto>getRandomQuestionsForExam(String email,ExamDto dto);
+	public List<QuestionDto>getRandomQuestionsForExam(ExamDto dto);
 	public ExamDto findExamById(Long id);
 	public boolean setExamPublished(Long id, ExamPublishedRequest request);
 	public List<QuestionDto> getAllQuestionById(Long id);

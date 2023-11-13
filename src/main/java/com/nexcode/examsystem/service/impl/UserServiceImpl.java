@@ -9,7 +9,6 @@ import java.util.stream.Collectors;
 import javax.mail.MessagingException;
 import javax.transaction.Transactional;
 
-import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -25,21 +24,18 @@ import com.nexcode.examsystem.model.entities.Role;
 import com.nexcode.examsystem.model.entities.User;
 import com.nexcode.examsystem.model.exception.AppException;
 import com.nexcode.examsystem.model.exception.BadRequestException;
+import com.nexcode.examsystem.model.exception.NotFoundException;
 import com.nexcode.examsystem.model.requests.UserRequest;
 import com.nexcode.examsystem.repository.CourseRepository;
+import com.nexcode.examsystem.repository.ExamRepository;
 import com.nexcode.examsystem.repository.RoleRepository;
 import com.nexcode.examsystem.repository.UserRepository;
-import com.nexcode.examsystem.security.JwtService;
 import com.nexcode.examsystem.service.UserService;
 
-import lombok.Getter;
 import lombok.RequiredArgsConstructor;
-import lombok.Setter;
 import net.bytebuddy.utility.RandomString;
 
 @Service
-@Getter
-@Setter
 @RequiredArgsConstructor
 public class UserServiceImpl implements UserService {
 
@@ -52,7 +48,7 @@ public class UserServiceImpl implements UserService {
 	private final UserRepository userRepository;
 	private final RoleRepository roleRepository;
 	private final CourseRepository courseRepository;
-	
+	private final ExamRepository examRepository;
 	
 
 	private final PasswordEncoder passwordEncoder;
@@ -61,19 +57,28 @@ public class UserServiceImpl implements UserService {
 
 	private final OtpGenerator otpGenerator;
 
-	private final AuthenticationManager authenticationManager;
-
-	private final JwtService jwtService;
-
 	
 	@Override
 	public List<UserDto> getAllUser() {
 		return userMapper.toDtoList(userRepository.findAllUserWithCategories());
 	}
 	@Override
-	public List<CourseDto> getAllCategoryByUser(String email) {
-		
-		return courseMapper.toDtoList(userRepository.findAllCourseWithUserEmail(email));
+	public List<CourseDto> getAllCategoryByUser(String email) 
+	{
+		User foundedUser=userRepository.findByEmail(email).orElseThrow(()->new NotFoundException("User not found"));
+		List<Course>courses=userRepository.findAllCourseWithUserEmail(foundedUser.getId());
+		List<CourseDto>dtos=new ArrayList<>();
+		for(Course c:courses)
+		{
+			CourseDto dto=new CourseDto();
+			dto.setId(c.getId());
+			dto.setName(c.getName());
+			dto.setDescription(c.getDescription());
+			Long percentage=examRepository.getPercentage(c.getId());
+			dto.setPercentage(percentage);
+			dtos.add(dto);
+		}
+		return dtos;
 	}
 	@Override
 	@Transactional(rollbackOn = Exception.class)
@@ -117,7 +122,8 @@ public class UserServiceImpl implements UserService {
 			return true;
 	}
 	@Override
-	public UserDto findByEmailAddress(String email) {
+	public UserDto findByEmailAddress(String email) 
+	{
 		return userMapper.toDto(userRepository.findByEmail(email).orElse(null));
 	}
 	@Override
