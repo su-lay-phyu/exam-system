@@ -8,8 +8,10 @@ import org.springframework.stereotype.Service;
 import com.nexcode.examsystem.model.entities.Course;
 import com.nexcode.examsystem.model.entities.Exam;
 import com.nexcode.examsystem.model.entities.Level;
+import com.nexcode.examsystem.model.entities.UserExam;
 import com.nexcode.examsystem.model.responses.CourseExamListReportResponse;
 import com.nexcode.examsystem.model.responses.CourseExamReportPieResponse;
+import com.nexcode.examsystem.model.responses.ExamStudentReportResponse;
 import com.nexcode.examsystem.model.responses.OverAllReportResponse;
 import com.nexcode.examsystem.repository.CourseRepository;
 import com.nexcode.examsystem.repository.ExamRepository;
@@ -87,6 +89,23 @@ public class ReportServiceImpl implements ReportService{
 		    }
 
 		    return results;
+	}
+	@Override
+	public List<ExamStudentReportResponse> getExamStudent(Long examId) {
+		List<UserExam>userExams=userExamRepository.findAllUserByExamId(examId);
+		List<ExamStudentReportResponse>list=new ArrayList<>();
+		for(UserExam ue:userExams)
+		{
+			ExamStudentReportResponse response=new ExamStudentReportResponse();
+			response.setId(ue.getUser().getId());
+			response.setRollNo(ue.getUser().getRollNo());
+			response.setUserName(ue.getUser().getUsername());
+			response.setEmail(ue.getUser().getEmail());
+			response.setObtainedMark(ue.getObtainedResult());
+			response.setPassFail(ue.getIsPassFail());
+			list.add(response);
+		}
+		return list;
 	}
 	
 

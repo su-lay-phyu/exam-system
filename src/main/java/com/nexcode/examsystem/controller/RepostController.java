@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.nexcode.examsystem.model.responses.CourseExamListReportResponse;
 import com.nexcode.examsystem.model.responses.CourseExamReportPieResponse;
+import com.nexcode.examsystem.model.responses.ExamStudentReportResponse;
 import com.nexcode.examsystem.model.responses.OverAllReportResponse;
 import com.nexcode.examsystem.service.ReportService;
 
@@ -35,5 +36,10 @@ public class RepostController {
 	public List<CourseExamReportPieResponse>getExamLevelPie(@PathVariable Long id)
 	{
 		return reportService.getExamByLevel(id);
+	}
+	@GetMapping("/exam/{examId}")
+	public List<ExamStudentReportResponse>getDetailReportEachExam(@PathVariable Long examId)
+	{
+		return reportService.getExamStudent(examId);
 	}
 }
