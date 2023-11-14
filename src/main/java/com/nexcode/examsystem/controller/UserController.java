@@ -148,7 +148,7 @@ public class UserController {
 	@GetMapping("/course/{id}/exams")
 	public List<ExamOnlyResponse>getSignUpExams(@PathVariable Long id)
 	{
-		List<ExamDto>dtos=courseService.getAllExamByCourseId(id);
+		List<ExamDto>dtos=courseService.getAllPublishedExams(id);
 		return examMapper.toExamOnlyResponseList(dtos);
 		
 	}

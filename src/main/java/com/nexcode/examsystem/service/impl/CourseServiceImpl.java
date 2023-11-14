@@ -54,9 +54,9 @@ public class CourseServiceImpl implements CourseService{
 		return examMapper.toDtoList(examDtos);
 	}
 	@Override
-	public List<ExamDto>getSignUpExamByCourseId(Long id)
+	public List<ExamDto>getAllPublishedExams(Long id)
 	{
-		List<Exam>exams=courseRepository.getSignUpExamsByCourseId(id);
+		List<Exam>exams=courseRepository.getAllPublishedExams(id);
 		return examMapper.toDtoList(exams);
 	}
 	@Override

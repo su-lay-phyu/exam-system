@@ -14,4 +14,11 @@ public interface ExamRepository extends JpaRepository<Exam, Long> {
 	@Query("SELECT  COUNT(DISTINCT ue.id) * 100.0 / (COUNT(DISTINCT e.id))" + "FROM Exam e " + "JOIN e.course c "
 			+ "LEFT JOIN UserExam ue ON e.id = ue.exam.id " + "WHERE c.id = :courseId")
 	Long getPercentage(@Param("courseId") Long courseId);
+	
+	@Query("SELECT COUNT(*) FROM UserExam ue JOIN Exam e ON ue.exam.id=:examId")
+	Integer getNoOfCompletedCount(@Param("examId")Long examId);
+	
+	@Query("SELECT COUNT(e) FROM Exam e WHERE e.level.id=:levelId AND e.course.id=:courseId")
+    Integer getCountByLevelAndCourse(@Param("levelId") Long levelId, @Param("courseId") Long courseId);
+
 }

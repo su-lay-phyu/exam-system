@@ -28,12 +28,12 @@ public interface CourseRepository extends JpaRepository<Course,Long>{
 	List<Exam> getAllExamsByCourseId(@Param("courseId") Long courseId);
 	
 	@Query("SELECT e FROM Exam e WHERE e.course.id = :courseId AND e.isPublished = true")
-	List<Exam> getSignUpExamsByCourseId(@Param("courseId") Long courseId);
+	List<Exam> getAllPublishedExams(@Param("courseId") Long courseId);
 	
 	@Query("SELECT c FROM Course c JOIN c.users u WHERE u.id = :userId AND c.id = :courseId")
 	public Course findUserCourseById(@Param("userId") Long userId, @Param("courseId") Long courseId);
 	
 	@Query("SELECT COUNT(*) FROM Course c JOIN c.users u WHERE c.id = :courseId")
 	public Integer getTotalNoOfStudent(@Param("courseId") Long courseId);
-
+	
 }
