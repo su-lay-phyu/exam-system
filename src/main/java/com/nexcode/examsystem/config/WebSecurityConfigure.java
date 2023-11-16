@@ -49,7 +49,7 @@ public class WebSecurityConfigure {
 		http.authorizeHttpRequests(
 				authorize -> authorize.antMatchers(HttpMethod.POST,
 			            "/api/auth/login",
-			            "/api/user/forget-password",
+			            "/api/user/forgot-password",
 			            "/api/user/verified-otp",
 			            "/api/user/set-new-password")
 			            .permitAll()

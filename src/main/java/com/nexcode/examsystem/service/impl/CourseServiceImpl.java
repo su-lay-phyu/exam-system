@@ -14,7 +14,9 @@ import com.nexcode.examsystem.model.entities.Course;
 import com.nexcode.examsystem.model.entities.Exam;
 import com.nexcode.examsystem.model.entities.User;
 import com.nexcode.examsystem.model.exception.BadRequestException;
+import com.nexcode.examsystem.model.exception.NotFoundException;
 import com.nexcode.examsystem.repository.CourseRepository;
+import com.nexcode.examsystem.repository.UserExamRepository;
 import com.nexcode.examsystem.service.CourseService;
 
 import lombok.RequiredArgsConstructor;
@@ -23,10 +25,12 @@ import lombok.RequiredArgsConstructor;
 public class CourseServiceImpl implements CourseService{
 	
 	private final CourseRepository courseRepository;
+	private final UserExamRepository userExamRepository;
 	
 	private final UserMapper userMapper;
 	private final CourseMapper courseMapper;
 	private final ExamMapper examMapper;
+
 	
 	@Override
 	public List<CourseDto> getAllCourses() {
@@ -72,6 +76,19 @@ public class CourseServiceImpl implements CourseService{
 	@Override
 	public CourseDto findByName(String name) {
 		return courseMapper.toDto(courseRepository.findByName(name).orElse(null));
+	}
+
+	@Override
+	public boolean deleteCourse(Long id) {
+		Course foundedCourse=courseRepository.findById(id).orElseThrow(()->new NotFoundException("course not found"));
+		List<Exam>exams=userExamRepository.getAllTakenExams();
+		for(Exam e :exams)
+		{
+			if(e.getCourse().getName().equalsIgnoreCase(foundedCourse.getName()))
+				throw new BadRequestException("Course cannot be delected because of there is student who taken that course's exam");
+		}
+		courseRepository.deleteById(id);
+		return true;
 	}
 
 	

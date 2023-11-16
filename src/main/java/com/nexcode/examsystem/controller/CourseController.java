@@ -86,9 +86,9 @@ public class CourseController {
 		}
 		return new ResponseEntity<>(new ApiResponse(false, "Course updated failed!"), HttpStatus.BAD_REQUEST);
 	}
-//	@PutMapping("/{id}")
-//	public ResponseEntity<?>deleteCourse(@PathVariable Long id)
-//	{
-//		
-//	}
+	@PutMapping("/{id}")
+	public ResponseEntity<?>deleteCourse(@PathVariable Long id)
+	{
+		boolean isDelected=courseService.deleteCourse(id);
+	}
 }

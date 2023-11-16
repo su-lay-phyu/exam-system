@@ -7,10 +7,12 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.nexcode.examsystem.model.projections.UserReportProjection;
 import com.nexcode.examsystem.model.responses.CourseExamListReportResponse;
 import com.nexcode.examsystem.model.responses.CourseExamReportPieResponse;
 import com.nexcode.examsystem.model.responses.ExamStudentReportResponse;
 import com.nexcode.examsystem.model.responses.OverAllReportResponse;
+import com.nexcode.examsystem.model.responses.StudentPassFailCountResponse;
 import com.nexcode.examsystem.service.ReportService;
 
 import lombok.RequiredArgsConstructor;
@@ -18,28 +20,43 @@ import lombok.RequiredArgsConstructor;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/report")
-public class RepostController {
+public class ReportController {
 	
 	
 	private final ReportService reportService;
+	//overall report
 	@GetMapping
 	public List<OverAllReportResponse>getOverAllReport()
 	{
 		return reportService.getOverAllReports();
+	}
+	
+	//course report 
+	@GetMapping("/course/{id}/pie")
+	public List<CourseExamReportPieResponse>getExamLevelPie(@PathVariable Long id)
+	{
+		return reportService.getExamByLevel(id);
 	}
 	@GetMapping("/course/{id}")
 	public List<CourseExamListReportResponse>getExamListByCourseId(@PathVariable Long id)
 	{
 		return reportService.getAllCourseExamListReport(id);
 	}
-	@GetMapping("/course/{id}/pie")
-	public List<CourseExamReportPieResponse>getExamLevelPie(@PathVariable Long id)
+	//exam report
+	@GetMapping("/exam/{id}/pie")
+	public StudentPassFailCountResponse getDetailPieReportEachExam(@PathVariable Long id)
 	{
-		return reportService.getExamByLevel(id);
+		return reportService.getCountPassFail(id);
 	}
-	@GetMapping("/exam/{examId}")
-	public List<ExamStudentReportResponse>getDetailReportEachExam(@PathVariable Long examId)
+	@GetMapping("/exam/{id}")
+	public List<ExamStudentReportResponse>getDetailReportEachExam(@PathVariable Long id)
 	{
-		return reportService.getExamStudent(examId);
+		return reportService.getExamStudent(id);
+	}
+	//student report
+	@GetMapping("/student/{id}")
+	public List<UserReportProjection>getStudentReport(@PathVariable Long id)
+	{
+		return reportService.getStudentReport(id);
 	}
 }

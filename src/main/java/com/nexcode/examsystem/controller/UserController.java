@@ -73,6 +73,9 @@ public class UserController {
 		List<StudentCourseResponse>responses=courseMapper.toStudentCourseResponseList(dtos);
 		return new ResponseEntity<>(responses,HttpStatus.OK);
 	}
+	
+	
+	//that even need it 
 	@GetMapping("/course")
 	public ResponseEntity<?>getCourseByCourseId(@CurrentUser UserPrincipal currentUser,@RequestParam("id") Long id)
 	{
@@ -84,6 +87,8 @@ public class UserController {
 		}
 		return new ResponseEntity<>(new ApiResponse(false,"Something is wrong at service layer"),HttpStatus.INTERNAL_SERVER_ERROR);
 	}
+	
+	
 	@PostMapping("/student-signup")
 	public ResponseEntity<?> createUser(@RequestBody UserRequest request) {
 		String email = request.getEmail();
@@ -110,16 +115,20 @@ public class UserController {
 	}
 	
 	@PutMapping("/{id}")
-	public ApiResponse updateStudentData(@PathVariable Long id,@RequestBody UserRequest request)
+	public ApiResponse updateStudent(@PathVariable Long id,@RequestBody UserRequest request)
 	{
 		boolean isUpdated=userService.updateStudent(id, request);
-		return new ApiResponse(isUpdated, "Successfully changed user.");
+		return new ApiResponse(isUpdated, "Successfully user updated");
 	}
 	
 	@PostMapping("/forgot-password")
-	public ApiResponse processForgetPassword(@RequestBody EmailRequest request) {
+	public ResponseEntity<?> processForgetPassword(@RequestBody EmailRequest request) {
 		UserDto foundedUser = userService.findByEmailAddress(request.getEmail());
-		return new ApiResponse(userService.generateOneTimePassword(foundedUser), "Successfully password reset.");
+		if(foundedUser==null)
+		{
+			return new ResponseEntity<>(new ApiResponse(false,"user is null"),HttpStatus.NOT_FOUND);
+		}
+		return new ResponseEntity<>(new ApiResponse(userService.generateOneTimePassword(foundedUser), "Successfully password reset."),HttpStatus.OK);
 	}
 	@PutMapping("/change-password")
 	public ApiResponse processForgetPassword(@CurrentUser UserPrincipal currentUser,

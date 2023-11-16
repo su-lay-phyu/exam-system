@@ -15,4 +15,5 @@ public interface CourseService {
 	public List<ExamDto>getAllPublishedExams(Long id);
 	public CourseDto addCourse(CourseDto dto);
 	public CourseDto updateCourse(Long id,CourseDto dto);
+	public boolean deleteCourse(Long id);
 }

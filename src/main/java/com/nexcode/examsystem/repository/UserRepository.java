@@ -9,6 +9,7 @@ import org.springframework.data.repository.query.Param;
 
 import com.nexcode.examsystem.model.entities.Course;
 import com.nexcode.examsystem.model.entities.User;
+import com.nexcode.examsystem.model.projections.UserReportProjection;
 
 
 public interface UserRepository extends JpaRepository<User, Long>{
@@ -25,5 +26,14 @@ public interface UserRepository extends JpaRepository<User, Long>{
     @Query("SELECT u.courses FROM User u WHERE u.id=:userId")
 	List<Course>findAllCourseWithUserEmail(@Param("userId")Long userId);
     
+//    @Query(value = "SELECT ue.exam.course.name, ue.exam.name, ue.exam.level.name, ue.obtainedResult, ue.isPassFail FROM UserExam ue WHERE ue.user.id = :userId")
+//    List<UserReportProjection> findUserTakenExams(@Param("userId") Long userId);
     
+//    @Query("SELECT ue.exam.name as examName, ue.exam.course.name,ue.exam.level.name, ue.obtainedResult, ue.isPassFail FROM UserExam ue LEFT JOIN ue.exam LEFT JOIN ue.exam.course LEFT JOIN ue.exam.level WHERE ue.user.id = :userId")
+//    List<UserReportProjection> findUserTakenExams(@Param("userId") Long userId);
+
+    @Query("SELECT ue.exam.name as examName, ue.exam.course.name as courseName, ue.exam.level.name as levelName, ue.obtainedResult as obtainedResult, ue.isPassFail as isPassFail FROM UserExam ue LEFT JOIN ue.exam LEFT JOIN ue.exam.course LEFT JOIN ue.exam.level WHERE ue.user.id = :userId")
+    List<UserReportProjection> findUserTakenExams(@Param("userId") Long userId);
+
+
 }

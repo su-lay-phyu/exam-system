@@ -208,7 +208,7 @@ public class UserServiceImpl implements UserService {
 	@Override
 	public boolean updateStudent(Long id, UserRequest request) {
 	    try {
-	        User foundedUser = userRepository.findById(id).orElseThrow(() -> new BadRequestException("User not found"));
+	        User foundedUser = userRepository.findById(id).orElseThrow(() -> new NotFoundException("User not found"));
 	        String oldEmail = foundedUser.getEmail();
 	        String password = RandomString.make(8);
 			String encodedPassword = passwordEncoder.encode(password);	
@@ -218,7 +218,7 @@ public class UserServiceImpl implements UserService {
 	        foundedUser.setPassword(encodedPassword);		
 	        List<Long> ids = request.getCourses();
 	        List<Course> courses = ids.stream()
-	                .map(c -> courseRepository.findById(c).orElseThrow(() -> new BadRequestException("Course not found")))
+	                .map(c -> courseRepository.findById(c).orElseThrow(() -> new NotFoundException("Course not found")))
 	                .collect(Collectors.toList());
 	        foundedUser.setCourses(courses);
 	        
