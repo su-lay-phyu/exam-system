@@ -17,6 +17,7 @@ import com.nexcode.examsystem.mapper.CourseMapper;
 import com.nexcode.examsystem.mapper.UserMapper;
 import com.nexcode.examsystem.model.dtos.CourseDto;
 import com.nexcode.examsystem.model.dtos.UserDto;
+import com.nexcode.examsystem.model.exception.NotFoundException;
 import com.nexcode.examsystem.model.requests.CourseRequest;
 import com.nexcode.examsystem.model.responses.ApiResponse;
 import com.nexcode.examsystem.model.responses.CourseResponse;
@@ -46,14 +47,15 @@ public class CourseController {
 	    List<UserDto> dtos = courseService.getAllUserByCourseId(courseId);
 	    return new ResponseEntity<>(userMapper.toResponseList(dtos), HttpStatus.OK);
 	}
+	//search by course name
 	@GetMapping("/search")
-	public ResponseEntity<?> getCourseById(@RequestParam("courseName") String courseName) {
+	public ResponseEntity<?> getCourseByName(@RequestParam("courseName") String courseName) {
 	    CourseDto foundedCourse = courseService.findByName(courseName);
-	    if(foundedCourse!=null)
+	    if(foundedCourse==null)
 	    {
-	    	return new ResponseEntity<>(courseMapper.toResponse(foundedCourse), HttpStatus.OK);
+	    	throw new NotFoundException("Course Not Found");
 	    }
-	    return new ResponseEntity<>(new ApiResponse(false,"Course is Null"),HttpStatus.BAD_REQUEST);
+	    return new ResponseEntity<>(courseMapper.toResponse(foundedCourse), HttpStatus.OK);
 	}
 	@PostMapping
 	public ResponseEntity<?>createNewCourse(@RequestBody CourseRequest request)
@@ -63,11 +65,8 @@ public class CourseController {
 		    return new ResponseEntity<>(new ApiResponse(false, "Course already exists"), HttpStatus.CONFLICT);
 		} else {
 		    CourseDto dto = courseMapper.toDto(request);
-		    CourseDto createdCourse = courseService.addCourse(dto);
-		    if (createdCourse != null) {
-		        return new ResponseEntity<>(new ApiResponse(true, "Course is added successfully"), HttpStatus.CREATED);
-		    }
-		    return new ResponseEntity<>(new ApiResponse(false, "Course addition failed!"), HttpStatus.BAD_REQUEST);
+		    boolean isAdded=courseService.addCourse(dto);
+	    	return new ResponseEntity<>(new ApiResponse(isAdded, "Course is added successfully"), HttpStatus.CREATED);
 		}
 
 	}

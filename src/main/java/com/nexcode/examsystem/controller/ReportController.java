@@ -21,8 +21,6 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 @RequestMapping("/api/report")
 public class ReportController {
-	
-	
 	private final ReportService reportService;
 	//overall report
 	@GetMapping
@@ -30,7 +28,6 @@ public class ReportController {
 	{
 		return reportService.getOverAllReports();
 	}
-	
 	//course report 
 	@GetMapping("/course/{id}/pie")
 	public List<CourseExamReportPieResponse>getExamLevelPie(@PathVariable Long id)

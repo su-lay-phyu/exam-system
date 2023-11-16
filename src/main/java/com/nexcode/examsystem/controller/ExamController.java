@@ -17,7 +17,6 @@ import com.nexcode.examsystem.mapper.QuestionMapper;
 import com.nexcode.examsystem.model.dtos.ExamDto;
 import com.nexcode.examsystem.model.dtos.QuestionDto;
 import com.nexcode.examsystem.model.exception.AppException;
-import com.nexcode.examsystem.model.exception.BadRequestException;
 import com.nexcode.examsystem.model.requests.ExamPublishedRequest;
 import com.nexcode.examsystem.model.requests.ExamRequest;
 import com.nexcode.examsystem.model.responses.ApiResponse;
@@ -41,6 +40,7 @@ public class ExamController {
 		List<ExamDto>dtos=examService.getAllExam();
 		return examMapper.toResponseList(dtos);
 	}
+	//this one will called at Admin side
 	@GetMapping("/{id}")
 	public List<QuestionAnswerResponse> getAllQuestionsWithAnswerById(@PathVariable Long id)
 	{
@@ -58,17 +58,12 @@ public class ExamController {
 	            return new ResponseEntity<>(new ApiResponse(false, "Failed to add exam and questions"), HttpStatus.BAD_REQUEST);
 	        }
 	    } catch (Exception e) {
-	        return new ResponseEntity<>(new ApiResponse(false, "An error occurred while processing the request"), HttpStatus.INTERNAL_SERVER_ERROR);
+	    	throw new AppException("An error occurred while processing the update exam");
 	    }
 	}
 	@PutMapping("/{id}")
 	public ResponseEntity<?>updateExam(@PathVariable Long id,@RequestBody ExamRequest request)
 	{
-		ExamDto foundedExam=examService.findExamById(id);
-		if(foundedExam==null)
-		{
-			throw new BadRequestException("Exam not found");
-		}
 		boolean updated=examService.updateExam(id, request);
 		if(updated)
 		{
@@ -79,11 +74,6 @@ public class ExamController {
 	@PutMapping("/{id}/publish")
 	public ResponseEntity<?>publishExam(@PathVariable Long id,@RequestBody ExamPublishedRequest request)
 	{
-		ExamDto foundedExam=examService.findExamById(id);
-		if(foundedExam==null)
-		{
-			return new ResponseEntity<>(new ApiResponse(false,"Exam not found"),HttpStatus.NOT_FOUND);
-		}
 		boolean isPublished =examService.setExamPublished(id,request);
 		return new ResponseEntity<>(new ApiResponse(isPublished,"Set published successfully"),HttpStatus.OK);
 	}

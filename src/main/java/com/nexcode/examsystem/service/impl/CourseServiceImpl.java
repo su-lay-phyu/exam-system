@@ -38,14 +38,13 @@ public class CourseServiceImpl implements CourseService{
 	}
 
 	@Override
-	public CourseDto addCourse(CourseDto dto) {
-		
+	public boolean addCourse(CourseDto dto) {
 		Course course=new Course();
 		course.setName(dto.getName());
 		course.setDescription(dto.getDescription());
 		course.setActive(true);
-		Course savedCategory=courseRepository.save(course);
-		return courseMapper.toDto(savedCategory);
+		courseRepository.save(course);
+		return true;
 	}
 	@Override
 	public List<UserDto> getAllUserByCourseId(Long id) {
@@ -61,7 +60,7 @@ public class CourseServiceImpl implements CourseService{
 	@Override
 	public CourseDto updateCourse(Long id,CourseDto dto) {
 		
-		Course foundedCourse=courseRepository.findById(id).orElseThrow(()->new BadRequestException("course can't found."));
+		Course foundedCourse=courseRepository.findById(id).orElseThrow(()->new BadRequestException("Course not found."));
 		foundedCourse.setName(dto.getName());
 		foundedCourse.setDescription(dto.getDescription());
 		courseRepository.save(foundedCourse);
@@ -69,7 +68,7 @@ public class CourseServiceImpl implements CourseService{
 	}
 	@Override
 	public CourseDto findByName(String name) {
-		return courseMapper.toDto(courseRepository.findByName(name).orElseThrow(null));
+		return courseMapper.toDto(courseRepository.findByName(name).orElse(null));
 	}
 
 	@Override
