@@ -17,6 +17,7 @@ import com.nexcode.examsystem.mapper.CourseMapper;
 import com.nexcode.examsystem.mapper.UserMapper;
 import com.nexcode.examsystem.model.dtos.CourseDto;
 import com.nexcode.examsystem.model.dtos.UserDto;
+import com.nexcode.examsystem.model.exception.AppException;
 import com.nexcode.examsystem.model.exception.NotFoundException;
 import com.nexcode.examsystem.model.requests.CourseRequest;
 import com.nexcode.examsystem.model.responses.ApiResponse;
@@ -66,26 +67,41 @@ public class CourseController {
 		} else {
 		    CourseDto dto = courseMapper.toDto(request);
 		    boolean isAdded=courseService.addCourse(dto);
-	    	return new ResponseEntity<>(new ApiResponse(isAdded, "Course is added successfully"), HttpStatus.CREATED);
+		    if(isAdded)
+		    {
+		    	return new ResponseEntity<>(new ApiResponse(isAdded, "Course is added successfully"), HttpStatus.CREATED);
+		    }
 		}
+		throw new AppException("An error occurred while processing the adding course");
 
 	}
 	
 	@PutMapping("/{id}")
 	public ResponseEntity<?>updateCourse(@PathVariable Long id,@RequestBody CourseRequest request)
 	{
-		CourseDto dto=courseMapper.toDto(request);
-		CourseDto updatedDto=courseService.updateCourse(id, dto);
-		if(updatedDto!=null)
+		CourseDto existingCourse=courseService.findByName(request.getName());
+		if (existingCourse != null) {
+		    return new ResponseEntity<>(new ApiResponse(false, "Course already exists"), HttpStatus.CONFLICT);
+		} 
+		else
 		{
-			return new ResponseEntity<>(new ApiResponse(true, "Course is successfully updated"), HttpStatus.OK);
+			CourseDto dto=courseMapper.toDto(request);
+			CourseDto updatedDto=courseService.updateCourse(id, dto);
+			if(updatedDto!=null)
+			{
+				return new ResponseEntity<>(new ApiResponse(true, "Course is successfully updated"), HttpStatus.OK);
+			}
 		}
-		return new ResponseEntity<>(new ApiResponse(false, "Course updated failed!"), HttpStatus.BAD_REQUEST);
+		throw new AppException("An error occurred while processing the update course");
 	}
 	@PutMapping("/{id}/delete")
 	public ResponseEntity<?>deleteCourse(@PathVariable Long id)
 	{
 		boolean isDelected=courseService.deleteCourse(id);
-		return new ResponseEntity<>(isDelected,HttpStatus.OK);
+		if(isDelected)
+		{
+			return new ResponseEntity<>(isDelected,HttpStatus.OK);
+		}
+		throw new AppException("An error occurred while processing the delete course");
 	}
 }

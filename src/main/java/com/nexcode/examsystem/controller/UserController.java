@@ -23,6 +23,7 @@ import com.nexcode.examsystem.model.dtos.ExamDto;
 import com.nexcode.examsystem.model.dtos.QuestionDto;
 import com.nexcode.examsystem.model.dtos.UserDto;
 import com.nexcode.examsystem.model.dtos.UserExamDto;
+import com.nexcode.examsystem.model.exception.AppException;
 import com.nexcode.examsystem.model.projections.UserExamHistoryProjection;
 import com.nexcode.examsystem.model.requests.ChangePasswordRequest;
 import com.nexcode.examsystem.model.requests.EmailRequest;
@@ -129,20 +130,25 @@ public class UserController {
 		String email = request.getEmail();
 		UserDto existingUser = userService.findUserByEmailAddress(email);
 		if (existingUser != null) {
-			return new ResponseEntity<>(new ApiResponse(false, "This email is already in use. Please use another one."),
-					HttpStatus.CONFLICT);
+			return new ResponseEntity<>(new ApiResponse(false, "This email is already in use. Please use another one."),HttpStatus.CONFLICT);
 		} else {
 			boolean isAdded = userService.signUpUser(request);
-			return new ResponseEntity<>(
-					new ApiResponse(isAdded, "Signup successful. An email has been sent for verification."),
-					HttpStatus.CREATED);
+			if(isAdded)
+			{
+				return new ResponseEntity<>(new ApiResponse(isAdded, "Signup successful. An email has been sent for verification."),HttpStatus.CREATED);
+			}
 		}
+		throw new AppException("An error occurred while processing the signing up student");
 	}
 
 	@PutMapping("/{id}")
-	public ApiResponse updateStudent(@PathVariable Long id, @RequestBody UserRequest request) {
+	public ResponseEntity<?> updateStudent(@PathVariable Long id, @RequestBody UserRequest request) {
 		boolean isUpdated = userService.updateStudent(id, request);
-		return new ApiResponse(isUpdated, "Successfully user updated");
+		if(isUpdated)
+		{
+			return new ResponseEntity<>(new ApiResponse(isUpdated, "Successfully user updated"),HttpStatus.OK);
+		}
+		throw new AppException("An error occurred while processing the update student");
 	}
 
 	// Student Dashboard

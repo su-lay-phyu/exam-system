@@ -50,16 +50,12 @@ public class ExamController {
 	@PostMapping
 	public ResponseEntity<?> createExamWithQuestions(@RequestBody ExamRequest request)
 	{
-		try {
-	        boolean created = examService.createExamWithQuestions(request);
-	        if (created) {
-	            return new ResponseEntity<>(new ApiResponse(true, "Exam and questions added successfully"), HttpStatus.CREATED);
-	        } else {
-	            return new ResponseEntity<>(new ApiResponse(false, "Failed to add exam and questions"), HttpStatus.BAD_REQUEST);
-	        }
-	    } catch (Exception e) {
-	    	throw new AppException("An error occurred while processing the update exam");
-	    }
+		boolean isAdded = examService.createExamWithQuestions(request);
+		if(isAdded)
+		{
+			return new ResponseEntity<>(new ApiResponse(isAdded, "Exam and questions added successfully"), HttpStatus.CREATED);
+		}
+		throw new AppException("An error occurred while processing the update exam");
 	}
 	@PutMapping("/{id}")
 	public ResponseEntity<?>updateExam(@PathVariable Long id,@RequestBody ExamRequest request)
