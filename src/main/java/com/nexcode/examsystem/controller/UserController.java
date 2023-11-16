@@ -32,7 +32,7 @@ import com.nexcode.examsystem.model.requests.UserAnswerRequest;
 import com.nexcode.examsystem.model.requests.UserRequest;
 import com.nexcode.examsystem.model.requests.VerifyOtpRequest;
 import com.nexcode.examsystem.model.responses.ApiResponse;
-import com.nexcode.examsystem.model.responses.ExamOnlyResponse;
+import com.nexcode.examsystem.model.responses.ExamResponse;
 import com.nexcode.examsystem.model.responses.QuestionResponse;
 import com.nexcode.examsystem.model.responses.StudentCourseResponse;
 import com.nexcode.examsystem.model.responses.UserExamResponse;
@@ -87,20 +87,13 @@ public class UserController {
 		return new ResponseEntity<>(new ApiResponse(false,"Something is wrong at service layer"),HttpStatus.INTERNAL_SERVER_ERROR);
 	}
 	
-	//search 
 	@GetMapping("/search")
-	public ResponseEntity<?>getStudentByRollNo(@RequestParam("rollNo")String rollNo)
+	public ResponseEntity<?>getStudentByEmail(@RequestParam("input")String input)
 	{
-		UserDto foundedUser=userService.findUserByRollNo(rollNo);
-		return new ResponseEntity<>(foundedUser,HttpStatus.FOUND);
-	}
-	@GetMapping("/search")
-	public ResponseEntity<?>getStudentByEmail(@RequestParam("email")String email)
-	{
-		UserDto foundedUser=userService.findUserByEmailAddress(email);
+		UserDto foundedUser=userService.findUserByEmailOrRollNo(input);
 		if(foundedUser!=null)
 		{
-			return new ResponseEntity<>(foundedUser,HttpStatus.FOUND);
+			return new ResponseEntity<>(userMapper.toResponse(foundedUser),HttpStatus.FOUND);
 		}
 		return new ResponseEntity<>(foundedUser,HttpStatus.BAD_REQUEST);
 	}
@@ -142,7 +135,7 @@ public class UserController {
 		UserDto foundedUser = userService.findUserByEmailAddress(request.getEmail());
 		if(foundedUser==null)
 		{
-			return new ResponseEntity<>(new ApiResponse(false,"user is null"),HttpStatus.NOT_FOUND);
+			return new ResponseEntity<>(new ApiResponse(false,"user not found"),HttpStatus.NOT_FOUND);
 		}
 		return new ResponseEntity<>(new ApiResponse(userService.generateOneTimePassword(foundedUser), "Successfully password reset."),HttpStatus.OK);
 	}
@@ -168,12 +161,12 @@ public class UserController {
 		String password = request.getNewpassword();
 		return new ApiResponse(userService.setNewResetPassword(email, password), "Successfully updated New Password");
 	}
-	//student dashboards
+	//student course signup
 	@GetMapping("/course/{id}/exams")
-	public List<ExamOnlyResponse>getSignUpExams(@PathVariable Long id)
+	public List<ExamResponse>getSignUpExams(@PathVariable Long id)
 	{
 		List<ExamDto>dtos=courseService.getAllPublishedExams(id);
-		return examMapper.toExamOnlyResponseList(dtos);
+		return examMapper.toResponseList(dtos);
 		
 	}
 	@GetMapping("/exam/{id}/start")

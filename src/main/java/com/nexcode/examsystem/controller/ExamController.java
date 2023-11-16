@@ -21,8 +21,7 @@ import com.nexcode.examsystem.model.exception.BadRequestException;
 import com.nexcode.examsystem.model.requests.ExamPublishedRequest;
 import com.nexcode.examsystem.model.requests.ExamRequest;
 import com.nexcode.examsystem.model.responses.ApiResponse;
-import com.nexcode.examsystem.model.responses.ExamAllResponse;
-import com.nexcode.examsystem.model.responses.ExamOnlyResponse;
+import com.nexcode.examsystem.model.responses.ExamResponse;
 import com.nexcode.examsystem.model.responses.QuestionAnswerResponse;
 import com.nexcode.examsystem.service.ExamService;
 
@@ -37,15 +36,9 @@ public class ExamController {
 	private final ExamMapper examMapper;
 	private final QuestionMapper questionMapper;
 	@GetMapping
-	public List<ExamOnlyResponse> getAllExamOnly()
+	public List<ExamResponse> getAllExam()
 	{
-		List<ExamDto>dtos=examService.getAllExamDetails();
-		return examMapper.toExamOnlyResponseList(dtos);
-	}
-	@GetMapping("/details")
-	public List<ExamAllResponse> getAllExam()
-	{
-		List<ExamDto>dtos=examService.getAllExamDetails();
+		List<ExamDto>dtos=examService.getAllExam();
 		return examMapper.toResponseList(dtos);
 	}
 	@GetMapping("/{id}")

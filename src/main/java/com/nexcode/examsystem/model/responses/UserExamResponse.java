@@ -14,6 +14,6 @@ public class UserExamResponse {
 	private Long id;
 	private Integer obtainedResult;
 	private Boolean isPassFail;
-	private ExamOnlyResponse examResponse;
+	private ExamResponse examResponse;
 	private List<UserAnswerResponse>userAnswerResponse;
 }

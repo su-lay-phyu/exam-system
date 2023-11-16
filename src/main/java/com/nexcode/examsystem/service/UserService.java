@@ -10,7 +10,7 @@ public interface UserService {
 	public List<UserDto>getAllUser();
 	public List<CourseDto>getAllCourseByUserEmail(String email);
 	public UserDto findUserByEmailAddress(String email);
-	public UserDto findUserByRollNo(String rollNo);
+	public UserDto findUserByEmailOrRollNo(String input);
 	public boolean signUpUser(UserRequest request) ;
 	public boolean changePassword(String email, String requestOldPassword, String requestNewPassword);
 	public boolean validateOtp(String email, String otp);

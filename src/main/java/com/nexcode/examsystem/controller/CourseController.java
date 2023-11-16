@@ -51,7 +51,7 @@ public class CourseController {
 	    CourseDto foundedCourse = courseService.findByName(courseName);
 	    if(foundedCourse!=null)
 	    {
-	    	return new ResponseEntity<>(foundedCourse, HttpStatus.OK);
+	    	return new ResponseEntity<>(courseMapper.toResponse(foundedCourse), HttpStatus.OK);
 	    }
 	    return new ResponseEntity<>(new ApiResponse(false,"Course is Null"),HttpStatus.BAD_REQUEST);
 	}

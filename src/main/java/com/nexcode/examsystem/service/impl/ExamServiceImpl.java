@@ -53,7 +53,7 @@ public class ExamServiceImpl implements ExamService {
 	}
 
 	@Override
-	public List<ExamDto> getAllExamDetails() {
+	public List<ExamDto> getAllExam() {
 		return examMapper.toDtoList(examRepository.findAll());
 	}
 

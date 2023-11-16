@@ -4,7 +4,7 @@ import lombok.Getter;
 import lombok.Setter;
 @Getter
 @Setter
-public class ExamOnlyResponse {
+public class ExamResponse {
 	
 	private Long id;
 	private String name;
@@ -15,4 +15,5 @@ public class ExamOnlyResponse {
 	private Integer noOfQuestion;
 	private CourseResponse category;
 	private LevelResponse level;
+	//private List<QuestionResponse>questions;
 }

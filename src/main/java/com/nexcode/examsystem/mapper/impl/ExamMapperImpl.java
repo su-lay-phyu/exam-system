@@ -13,8 +13,7 @@ import com.nexcode.examsystem.mapper.LevelMapper;
 import com.nexcode.examsystem.mapper.QuestionMapper;
 import com.nexcode.examsystem.model.dtos.ExamDto;
 import com.nexcode.examsystem.model.entities.Exam;
-import com.nexcode.examsystem.model.responses.ExamAllResponse;
-import com.nexcode.examsystem.model.responses.ExamOnlyResponse;
+import com.nexcode.examsystem.model.responses.ExamResponse;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -68,8 +67,8 @@ public class ExamMapperImpl implements ExamMapper {
 	}
 
 	@Override
-	public ExamAllResponse toResponse(ExamDto dto) {
-		ExamAllResponse response = new ExamAllResponse();
+	public ExamResponse toResponse(ExamDto dto) {
+		ExamResponse response = new ExamResponse();
 		response.setId(dto.getId());
 		response.setName(dto.getName());
 		response.setDescription(dto.getDescription());
@@ -79,33 +78,14 @@ public class ExamMapperImpl implements ExamMapper {
 		response.setNoOfQuestion(dto.getNoOfQuestion());
 		response.setCategory(courseMapper.toResponse(dto.getCourse()));
 		response.setLevel(levelMapper.toResponse(dto.getLevel()));
-		response.setQuestions(questionMapper.toResponseList(dto.getQuestions()));
+		//may be we don't need it 
+		//response.setQuestions(questionMapper.toResponseList(dto.getQuestions()));
 		return response;
 	}
 
 	@Override
-	public List<ExamAllResponse> toResponseList(List<ExamDto> dtos) {
+	public List<ExamResponse> toResponseList(List<ExamDto> dtos) {
 		return dtos.stream().map(e -> toResponse(e)).collect(Collectors.toList());
-	}
-
-	@Override
-	public ExamOnlyResponse toExamOnlyResponse(ExamDto dto) {
-		ExamOnlyResponse response = new ExamOnlyResponse();
-		response.setId(dto.getId());
-		response.setName(dto.getName());
-		response.setDescription(dto.getDescription());
-		response.setPublishedDate(dto.getPublishedDate());
-		response.setExamTotalMark(dto.getExamTotalMark());
-		response.setExamDurationMinute(dto.getExamDurationMinute());
-		response.setNoOfQuestion(dto.getNoOfQuestion());
-		response.setCategory(courseMapper.toResponse(dto.getCourse()));
-		response.setLevel(levelMapper.toResponse(dto.getLevel()));
-		return response;
-	}
-
-	@Override
-	public List<ExamOnlyResponse> toExamOnlyResponseList(List<ExamDto> dtos) {
-		return dtos.stream().map(e->toExamOnlyResponse(e)).collect(Collectors.toList());
 	}
 
 }

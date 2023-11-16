@@ -265,8 +265,8 @@ public class UserServiceImpl implements UserService {
 		return courseMapper.toDto(course);
 	}
 	@Override
-	public UserDto findUserByRollNo(String rollNo) {
-		User foundedUser=userRepository.findbyRollNo(rollNo).orElseThrow(() -> new BadRequestException("Student Not Found : roll No->" + rollNo));
+	public UserDto findUserByEmailOrRollNo(String input) {
+		User foundedUser=userRepository.findbyInput(input).orElseThrow(() -> new NotFoundException("Student Not Found : Input->" + input));
 		return userMapper.toDto(foundedUser);
 	}
 

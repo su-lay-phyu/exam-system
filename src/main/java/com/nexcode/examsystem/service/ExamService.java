@@ -10,7 +10,7 @@ import com.nexcode.examsystem.model.requests.ExamRequest;
 public interface ExamService {
 	
 	
-	public List<ExamDto>getAllExamDetails();
+	public List<ExamDto>getAllExam();
 	public boolean createExamWithQuestions(ExamRequest request);
 	public boolean updateExam(Long id,ExamRequest request);
 	public List<QuestionDto>getRandomQuestionsForExam(ExamDto dto);
