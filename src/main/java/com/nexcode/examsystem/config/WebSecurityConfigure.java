@@ -55,6 +55,7 @@ public class WebSecurityConfigure {
 			            .permitAll()
 				.antMatchers(HttpMethod.POST,"/api/user/student-signup").hasRole("ADMIN")
 				.antMatchers(HttpMethod.POST, "/api/user/change-password").hasAnyRole("ADMIN", "USER")
+				.antMatchers("/error").permitAll()
 				.anyRequest().authenticated());
         http.addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class); 
 		return http.build();

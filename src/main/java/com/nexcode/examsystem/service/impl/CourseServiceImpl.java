@@ -87,7 +87,8 @@ public class CourseServiceImpl implements CourseService{
 			if(e.getCourse().getName().equalsIgnoreCase(foundedCourse.getName()))
 				throw new BadRequestException("Course cannot be delected because of there is student who taken that course's exam");
 		}
-		courseRepository.deleteById(id);
+		foundedCourse.setActive(false);
+		courseRepository.save(foundedCourse);
 		return true;
 	}
 
