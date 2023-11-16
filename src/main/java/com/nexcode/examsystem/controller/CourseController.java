@@ -4,7 +4,6 @@ import java.util.List;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -15,10 +14,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.nexcode.examsystem.mapper.CourseMapper;
-import com.nexcode.examsystem.mapper.ExamMapper;
 import com.nexcode.examsystem.mapper.UserMapper;
 import com.nexcode.examsystem.model.dtos.CourseDto;
-import com.nexcode.examsystem.model.dtos.ExamDto;
 import com.nexcode.examsystem.model.dtos.UserDto;
 import com.nexcode.examsystem.model.requests.CourseRequest;
 import com.nexcode.examsystem.model.responses.ApiResponse;
@@ -36,7 +33,6 @@ public class CourseController {
 	
 	private final CourseMapper courseMapper;
 	private final UserMapper userMapper;
-	private final ExamMapper examMapper;
 	
 	@GetMapping
 	public List<CourseResponse> getAllCourses()
@@ -44,26 +40,26 @@ public class CourseController {
 		List<CourseDto>dtos=courseService.getAllCourses();
 		return courseMapper.toResponseList(dtos);
 	}
-	
-	
-	//pls check again with front end
-	@GetMapping("/users")
-	public ResponseEntity<?> getUsersByCourseId(@RequestParam("id") Long id) {
-	    List<UserDto> dtos = courseService.getAllUserByCourseId(id);
+	// filter users by course Id
+	@GetMapping("/filter/users")
+	public ResponseEntity<?> getUsersByCourseId(@RequestParam("id") Long courseId) {
+	    List<UserDto> dtos = courseService.getAllUserByCourseId(courseId);
 	    return new ResponseEntity<>(userMapper.toResponseList(dtos), HttpStatus.OK);
 	}
-	//pls check again with front end
-	@GetMapping("/exams")
-	public ResponseEntity<?> getExamsByCourseName(@RequestParam("id") Long id) {
-	    List<ExamDto> dtos = courseService.getAllExamByCourseId(id);
-	    return new ResponseEntity<>(examMapper.toResponseList(dtos), HttpStatus.OK);
+	@GetMapping("/search")
+	public ResponseEntity<?> getCourseById(@RequestParam("courseName") String courseName) {
+	    CourseDto foundedCourse = courseService.findByName(courseName);
+	    if(foundedCourse!=null)
+	    {
+	    	return new ResponseEntity<>(foundedCourse, HttpStatus.OK);
+	    }
+	    return new ResponseEntity<>(new ApiResponse(false,"Course is Null"),HttpStatus.BAD_REQUEST);
 	}
-	
 	@PostMapping
 	public ResponseEntity<?>createNewCourse(@RequestBody CourseRequest request)
 	{
-		CourseDto existCourse=courseService.findByName(request.getName());
-		if (existCourse != null) {
+		CourseDto existingCourse=courseService.findByName(request.getName());
+		if (existingCourse != null) {
 		    return new ResponseEntity<>(new ApiResponse(false, "Course already exists"), HttpStatus.CONFLICT);
 		} else {
 		    CourseDto dto = courseMapper.toDto(request);

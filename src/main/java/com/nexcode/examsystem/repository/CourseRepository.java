@@ -23,9 +23,6 @@ public interface CourseRepository extends JpaRepository<Course,Long>{
 	public List<User> getAllUsersByCourseId(@Param("courseId") Long courseId);
 
 	public Optional<Course> findByName(String name); 
-
-	@Query("SELECT e FROM Exam e WHERE e.course.id = :courseId")
-	List<Exam> getAllExamsByCourseId(@Param("courseId") Long courseId);
 	
 	@Query("SELECT COUNT(*) FROM Exam e WHERE e.course.id = :courseId")
 	Integer getTotalExamsInCourse(@Param("courseId") Long courseId);

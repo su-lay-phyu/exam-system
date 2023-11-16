@@ -53,11 +53,6 @@ public class CourseServiceImpl implements CourseService{
 		return userMapper.toDtoList(users);
 	}
 	@Override
-	public List<ExamDto> getAllExamByCourseId(Long id) {
-		List<Exam>examDtos=courseRepository.getAllExamsByCourseId(id);
-		return examMapper.toDtoList(examDtos);
-	}
-	@Override
 	public List<ExamDto>getAllPublishedExams(Long id)
 	{
 		List<Exam>exams=courseRepository.getAllPublishedExams(id);
@@ -72,10 +67,9 @@ public class CourseServiceImpl implements CourseService{
 		courseRepository.save(foundedCourse);
 		return courseMapper.toDto(foundedCourse);
 	}
-
 	@Override
 	public CourseDto findByName(String name) {
-		return courseMapper.toDto(courseRepository.findByName(name).orElse(null));
+		return courseMapper.toDto(courseRepository.findByName(name).orElseThrow(null));
 	}
 
 	@Override

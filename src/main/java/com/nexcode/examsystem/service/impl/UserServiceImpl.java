@@ -63,7 +63,7 @@ public class UserServiceImpl implements UserService {
 		return userMapper.toDtoList(userRepository.findAllUserWithCategories());
 	}
 	@Override
-	public List<CourseDto> getAllCategoryByUser(String email) 
+	public List<CourseDto> getAllCourseByUserEmail(String email) 
 	{
 		User foundedUser=userRepository.findByEmail(email).orElseThrow(()->new NotFoundException("User not found"));
 		List<Course>courses=userRepository.findAllCourseWithUserEmail(foundedUser.getId());
@@ -122,7 +122,7 @@ public class UserServiceImpl implements UserService {
 			return true;
 	}
 	@Override
-	public UserDto findByEmailAddress(String email) 
+	public UserDto findUserByEmailAddress(String email) 
 	{
 		return userMapper.toDto(userRepository.findByEmail(email).orElse(null));
 	}
@@ -263,6 +263,11 @@ public class UserServiceImpl implements UserService {
 				.orElseThrow(() -> new BadRequestException("User Not Found : email->" + email));
 		Course course=courseRepository.findUserCourseById(foundedUser.getId(),id);
 		return courseMapper.toDto(course);
+	}
+	@Override
+	public UserDto findUserByRollNo(String rollNo) {
+		User foundedUser=userRepository.findbyRollNo(rollNo).orElseThrow(() -> new BadRequestException("Student Not Found : roll No->" + rollNo));
+		return userMapper.toDto(foundedUser);
 	}
 
 

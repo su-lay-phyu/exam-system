@@ -65,17 +65,16 @@ public class UserController {
 		List<UserDto>dtos=userService.getAllUser();
 	    return new ResponseEntity<>(userMapper.toResponseList(dtos), HttpStatus.OK);
 	}
+	//sign up course of current user
 	@GetMapping("/courses")
 	public ResponseEntity<?>getCoursesByUser(@CurrentUser UserPrincipal currentUser)
 	{
 		String email=currentUser.getEmail();
-		List<CourseDto>dtos=userService.getAllCategoryByUser(email);
+		List<CourseDto>dtos=userService.getAllCourseByUserEmail(email);
 		List<StudentCourseResponse>responses=courseMapper.toStudentCourseResponseList(dtos);
 		return new ResponseEntity<>(responses,HttpStatus.OK);
 	}
-	
-	
-	//that even need it 
+	//filter by course id  
 	@GetMapping("/course")
 	public ResponseEntity<?>getCourseByCourseId(@CurrentUser UserPrincipal currentUser,@RequestParam("id") Long id)
 	{
@@ -88,11 +87,28 @@ public class UserController {
 		return new ResponseEntity<>(new ApiResponse(false,"Something is wrong at service layer"),HttpStatus.INTERNAL_SERVER_ERROR);
 	}
 	
+	//search 
+	@GetMapping("/search")
+	public ResponseEntity<?>getStudentByRollNo(@RequestParam("rollNo")String rollNo)
+	{
+		UserDto foundedUser=userService.findUserByRollNo(rollNo);
+		return new ResponseEntity<>(foundedUser,HttpStatus.FOUND);
+	}
+	@GetMapping("/search")
+	public ResponseEntity<?>getStudentByEmail(@RequestParam("email")String email)
+	{
+		UserDto foundedUser=userService.findUserByEmailAddress(email);
+		if(foundedUser!=null)
+		{
+			return new ResponseEntity<>(foundedUser,HttpStatus.FOUND);
+		}
+		return new ResponseEntity<>(foundedUser,HttpStatus.BAD_REQUEST);
+	}
 	
 	@PostMapping("/student-signup")
 	public ResponseEntity<?> createUser(@RequestBody UserRequest request) {
 		String email = request.getEmail();
-		UserDto existingUser = userService.findByEmailAddress(email);
+		UserDto existingUser = userService.findUserByEmailAddress(email);
 		if (existingUser != null) {
 			return new ResponseEntity<>(new ApiResponse(false, "This email is already in use. Please use another one."), HttpStatus.CONFLICT);
 		} 
@@ -123,7 +139,7 @@ public class UserController {
 	
 	@PostMapping("/forgot-password")
 	public ResponseEntity<?> processForgetPassword(@RequestBody EmailRequest request) {
-		UserDto foundedUser = userService.findByEmailAddress(request.getEmail());
+		UserDto foundedUser = userService.findUserByEmailAddress(request.getEmail());
 		if(foundedUser==null)
 		{
 			return new ResponseEntity<>(new ApiResponse(false,"user is null"),HttpStatus.NOT_FOUND);
@@ -153,7 +169,6 @@ public class UserController {
 		return new ApiResponse(userService.setNewResetPassword(email, password), "Successfully updated New Password");
 	}
 	//student dashboards
-	
 	@GetMapping("/course/{id}/exams")
 	public List<ExamOnlyResponse>getSignUpExams(@PathVariable Long id)
 	{
@@ -167,7 +182,7 @@ public class UserController {
 		List<QuestionDto>dtos=null;
 		String email=currentUser.getEmail();
 		ExamDto foundedExam=examService.findExamById(id);
-		UserDto foundedUserDto=userService.findByEmailAddress(email);
+		UserDto foundedUserDto=userService.findUserByEmailAddress(email);
 		if(foundedUserDto!=null)
 		{
 			dtos=examService.getRandomQuestionsForExam(foundedExam);
@@ -180,7 +195,6 @@ public class UserController {
 	public ResponseEntity<?> submitExam(@CurrentUser UserPrincipal currentUser,@PathVariable Long id,@RequestBody List<UserAnswerRequest>userAnswers)
 	{
 		Long userId=currentUser.getId();
-		ExamDto foundedExam=examService.findExamById(id);
 		UserExamDto dto=userExamService.findUserExamByUserAndExam(userId,id,userAnswers);
 		UserExamResponse response=userExamMapper.toResponse(dto);
 		if(response!=null) 
