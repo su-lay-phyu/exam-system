@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 import com.nexcode.examsystem.model.entities.Course;
 import com.nexcode.examsystem.model.entities.Exam;
 import com.nexcode.examsystem.model.entities.Level;
+import com.nexcode.examsystem.model.entities.User;
 import com.nexcode.examsystem.model.entities.UserExam;
 import com.nexcode.examsystem.model.projections.UserReportProjection;
 import com.nexcode.examsystem.model.responses.CourseExamListReportResponse;
@@ -37,23 +38,32 @@ public class ReportServiceImpl implements ReportService{
 	{
 		return courseRepository.findAll();
 	}
-	@Override
-	public List<OverAllReportResponse> getOverAllReports() {
-		List<Course>courses=getAllCourses();
-		List<OverAllReportResponse>list=new ArrayList<>();
-		for (Course c : courses) {
-	        Integer totalNoOfStudent = courseRepository.getTotalNoOfStudent(c.getId());
-	        Integer completeStudents = userExamRepository.getCompletedStudentCount(c.getId());
+		@Override
+		public List<OverAllReportResponse> getOverAllReports() {
+		    List<Course> courses = getAllCourses();
+		    List<OverAllReportResponse> list = new ArrayList<>();
+		    for (Course course : courses) {
+		        Integer totalNoOfStudents = courseRepository.getTotalNoOfStudent(course.getId());
+		        Integer totalExamsInCourse = courseRepository.getTotalExamsInCourse(course.getId());
+		        
+		        int completedStudents = 0;
+		        for (User student : course.getUsers()) {
+		            Integer distinctTakenExams = userExamRepository.getDistinctTakenExamCount(student.getId(), course.getId());
+		            if (distinctTakenExams.equals(totalExamsInCourse)) {
+		                completedStudents++;
+		            }
+		        }
 
-	        OverAllReportResponse response = new OverAllReportResponse();
-	        response.setCourseName(c.getName());
-	        response.setTotalNoOfStudents(totalNoOfStudent);
-	        response.setCompleteStudents(completeStudents);
-	        Integer NoOfInProgressStudents=totalNoOfStudent-completeStudents;
-	        response.setInProgressStudents(NoOfInProgressStudents);
-	        list.add(response);
-	    }
-		return list;
+		        int inProgressStudents = totalNoOfStudents - completedStudents;
+
+		        OverAllReportResponse response = new OverAllReportResponse();
+		        response.setCourseName(course.getName());
+		        response.setTotalNoOfStudents(totalNoOfStudents);
+		        response.setCompleteStudents(completedStudents);
+		        response.setInProgressStudents(inProgressStudents);
+		        list.add(response);
+		    }
+		    return list;
 	}
 	@Override
 	public List<CourseExamListReportResponse> getAllCourseExamListReport(Long id) {
