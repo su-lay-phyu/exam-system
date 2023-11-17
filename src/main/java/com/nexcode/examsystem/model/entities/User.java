@@ -77,11 +77,8 @@ public class User {
 	    inverseJoinColumns = @JoinColumn(name = "course_id")
 	)
 	private List<Course>courses;
-
+	
 	@Column(name = "is_active")
 	@ColumnDefault("true") 
-	private boolean active;
-	
-	@Column(name="is_disble",columnDefinition = "boolean default false")
-	private boolean isDisable;
+	private boolean isActive;
 }

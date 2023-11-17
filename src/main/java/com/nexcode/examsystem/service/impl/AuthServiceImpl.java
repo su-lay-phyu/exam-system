@@ -38,17 +38,12 @@ public class AuthServiceImpl implements AuthService {
 		User foundedUser = userRepository.findByEmail(loginRequest.getEmail())
 				.orElseThrow(()->new BadRequestException("user not found"));
 		boolean isFirstTime=foundedUser.getIsPasswordChanged();
-		foundedUser.setActive(true);
 		userRepository.save(foundedUser);
 		if (authentication.getAuthorities().contains(new SimpleGrantedAuthority("ROLE_ADMIN")) || authentication.getAuthorities().contains(new SimpleGrantedAuthority("ROLE_USER"))) {
 			
 			String jwt = jwtService.generateToken(authentication);
 			return new JwtResponse(jwt, expiredAt.toInstant().toString(),isFirstTime);
 		}
-		else
-		{
-			throw new UnauthorizedException("Email or Password Is wrong!");
-		}
-		
+		throw new UnauthorizedException("Email or Password is wrong!");	
 	}
 }

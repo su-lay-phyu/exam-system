@@ -43,7 +43,7 @@ public class CourseController {
 		return courseMapper.toResponseList(dtos);
 	}
 	// filter users by course Id
-	@GetMapping("/filter/users")
+	@GetMapping("/users/filter")
 	public ResponseEntity<?> getUsersByCourseId(@RequestParam("id") Long courseId) {
 	    List<UserDto> dtos = courseService.getAllUserByCourseId(courseId);
 	    return new ResponseEntity<>(userMapper.toResponseList(dtos), HttpStatus.OK);

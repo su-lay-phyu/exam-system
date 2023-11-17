@@ -103,19 +103,6 @@ public class UserController {
 		List<UserDto> dtos = userService.getAllUser();
 		return new ResponseEntity<>(userMapper.toResponseList(dtos), HttpStatus.OK);
 	}
-
-	// filter by course id
-	@GetMapping("/course")
-	public ResponseEntity<?> getCourseByCourseId(@CurrentUser UserPrincipal currentUser, @RequestParam("id") Long id) {
-		String email = currentUser.getEmail();
-		CourseDto foundedCourse = userService.findUserCourseById(email, id);
-		if (foundedCourse != null) {
-			return new ResponseEntity<>(courseMapper.toResponse(foundedCourse), HttpStatus.FOUND);
-		}
-		return new ResponseEntity<>(new ApiResponse(false, "Something is wrong at service layer"),
-				HttpStatus.INTERNAL_SERVER_ERROR);
-	}
-
 	@GetMapping("/search")
 	public ResponseEntity<?> getStudentByEmail(@RequestParam("input") String input) {
 		UserDto foundedUser = userService.findUserByEmailOrRollNo(input);
@@ -159,6 +146,17 @@ public class UserController {
 		List<CourseDto> dtos = userService.getAllCourseByUserEmail(email);
 		List<StudentCourseResponse> responses = courseMapper.toStudentCourseResponseList(dtos);
 		return new ResponseEntity<>(responses, HttpStatus.OK);
+	}
+	//search course by course id at login user
+	@GetMapping("/course")
+	public ResponseEntity<?> getCourseByCourseId(@CurrentUser UserPrincipal currentUser, @RequestParam("id") Long id) {
+		String email = currentUser.getEmail();
+		CourseDto foundedCourse = userService.findUserCourseById(email, id);
+		if (foundedCourse != null) {
+			return new ResponseEntity<>(courseMapper.toResponse(foundedCourse), HttpStatus.FOUND);
+		}
+		return new ResponseEntity<>(new ApiResponse(false, "Something is wrong at service layer"),
+				HttpStatus.INTERNAL_SERVER_ERROR);
 	}
 	@GetMapping("/course/{id}/exams")
 	public List<ExamResponse> getSignUpExams(@PathVariable Long id) {

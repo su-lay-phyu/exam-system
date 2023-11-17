@@ -99,7 +99,7 @@ public class UserServiceImpl implements UserService {
 			user.setPassword(encodedPassword);
 			user.setPhone(request.getPhone());
 			user.setIsPasswordChanged(false);
-			user.setDisable(false);
+			user.setActive(true);
 			List<Role> roles = new ArrayList<>();
 			Role userRole = roleRepository.findByName("USER").orElse(null);
 			roles.add(userRole);
