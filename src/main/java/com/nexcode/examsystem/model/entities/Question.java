@@ -27,13 +27,11 @@ public class Question {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name="id")
 	private Long id;
+	
 	@Column(name="question", columnDefinition = "text")
 	private String question;
 	
-	@Column(name = "is_active", columnDefinition = "boolean default true")
-	private boolean isActive;
-	
-	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
     @JoinColumn(name = "question_id")
     private List<Answer> answers;
 

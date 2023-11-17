@@ -17,4 +17,5 @@ public interface ExamService {
 	public ExamDto findExamById(Long id);
 	public boolean setExamPublished(Long id, ExamPublishedRequest request);
 	public List<QuestionDto> getAllQuestionById(Long id);
+	public boolean deleteExam(Long id);
 }

@@ -15,8 +15,6 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
-import org.hibernate.annotations.ColumnDefault;
-
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 import lombok.Getter;
@@ -32,18 +30,20 @@ public class UserExam {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name="id")
 	private Long id;
+	
 	@Column(name="obtained_result")
 	private Integer obtainedResult;
+	
 	@Column(name="submitted_time")
 	private Date submittedTime;
+	
 	@Column(name="is_pass_fail")
 	private Boolean isPassFail;
-	@Column(name = "is_active")
-	@ColumnDefault("true") 
-	private Boolean isActive;
+	
 	@ManyToOne(cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH}, fetch = FetchType.LAZY)
 	@JoinColumn(name = "user_id")
 	private User user;
+	
 	@ManyToOne(cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH}, fetch = FetchType.LAZY)
 	@JoinColumn(name = "exam_id")
 	private Exam exam;
@@ -51,4 +51,7 @@ public class UserExam {
 	@JsonManagedReference 
 	@OneToMany(mappedBy = "userExam") 
 	private List<UserAnswer> userAnswers;
+	
+	@Column(name = "is_active")
+	private Boolean isActive;
 }

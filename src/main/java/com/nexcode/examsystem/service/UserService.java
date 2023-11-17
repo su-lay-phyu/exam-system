@@ -18,5 +18,6 @@ public interface UserService {
 	public boolean generateOneTimePassword(UserDto userDto);
 	public boolean updateStudent(Long id,UserRequest request);
 	public CourseDto findUserCourseById(String email,Long id);
+	public boolean deleteStudent(Long id);
 	
 }

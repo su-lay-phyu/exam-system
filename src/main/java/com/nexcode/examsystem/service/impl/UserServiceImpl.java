@@ -269,6 +269,13 @@ public class UserServiceImpl implements UserService {
 		User foundedUser=userRepository.findbyInput(input).orElseThrow(() -> new NotFoundException("Student Not Found : Input->" + input));
 		return userMapper.toDto(foundedUser);
 	}
+	@Override
+	public boolean deleteStudent(Long id) {
+		User foundedUser=userRepository.findById(id).orElseThrow(()->new NotFoundException("User not Found"));
+		foundedUser.setActive(false);
+		userRepository.save(foundedUser);
+		return true;
+	}
 
 
 }

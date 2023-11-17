@@ -96,7 +96,6 @@ public class ExamServiceImpl implements ExamService {
 	public Question addQuestionToExam(QuestionRequest questionRequest) {
 		Question question = new Question();
 		question.setQuestion(questionRequest.getQuestion());
-		question.setActive(true);
 
 		List<AnswerRequest> answerRequests = questionRequest.getAnswers();
 		List<Answer> answers = new ArrayList<>();
@@ -116,6 +115,10 @@ public class ExamServiceImpl implements ExamService {
 	@Transactional(rollbackFor = Exception.class)
 	public boolean updateExam(Long id, ExamRequest request) {
 		Exam foundedExam = findExam(id);
+		if(foundedExam.getIsPublished()==true)
+		{
+			throw new BadRequestException("You can't be edit because the exam is already published");
+		}
 		foundedExam.setName(request.getName());
 		foundedExam.setDescription(request.getDescription());
 		foundedExam.setExamdurationMinutes(request.getExamDurationMinute());
@@ -170,5 +173,17 @@ public class ExamServiceImpl implements ExamService {
 		int numberOfQuestionsToTake = Math.min(no, allQuestions.size());
 		List<QuestionDto> questionList = allQuestions.subList(0, numberOfQuestionsToTake);
 		return questionList;
+	}
+
+	@Override
+	public boolean deleteExam(Long id) {
+		Exam foundedExam=examRepository.findById(id).orElseThrow(()->new NotFoundException("Exam not found"));
+		if(foundedExam.getIsPublished()==true)
+		{
+			throw new BadRequestException("You can't be edit because the exam is already published");
+		}
+		foundedExam.setActive(false);
+		examRepository.save(foundedExam);
+		return true;
 	}
 }

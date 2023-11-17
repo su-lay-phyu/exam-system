@@ -22,8 +22,10 @@ public class Answer {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name="id")
 	private Long id;
+	
 	@Column(name="answer")
 	private String answer;
+	
 	@Column(name="is_correct_answer", columnDefinition = "TINYINT(1)") 
 	private boolean isCorrectAnswer;
 }

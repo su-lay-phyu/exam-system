@@ -32,10 +32,13 @@ public class Exam {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name="id")
 	private Long id;
+	
 	@Column(name="name")
 	private String name;
+	
 	@Column(name="description", columnDefinition = "text")
 	private String description;
+	
 	@Column(name="exam_publish_date")
 	private Date examPublishDate;
 	
@@ -44,8 +47,10 @@ public class Exam {
 
 	@Column(name="exam_duration_minute")
 	private Integer examdurationMinutes;
+	
 	@Column(name="exam_total_mark")
 	private Integer examTotalMark;
+	
 	@Column(name="no_of_question")
 	private Integer noOfQuestion;
 	
@@ -57,7 +62,7 @@ public class Exam {
     @JoinColumn(name = "level_id") 
     private Level level;
 	
-	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
 	@JoinColumn(name = "exam_id")
 	private List<Question> questions;
 

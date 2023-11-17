@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -73,5 +74,14 @@ public class ExamController {
 		boolean isPublished =examService.setExamPublished(id,request);
 		return new ResponseEntity<>(new ApiResponse(isPublished,"Set published successfully"),HttpStatus.OK);
 	}
-	
+	@DeleteMapping("/{id}")
+	public ResponseEntity<?>deleteExam(@PathVariable Long id)
+	{
+		boolean isDeleted=examService.deleteExam(id);
+		if(isDeleted)
+		{
+			return new ResponseEntity<>(isDeleted,HttpStatus.OK);
+		}
+		throw new AppException("An error occurred while processing the delete exam");
+	}
 }

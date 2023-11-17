@@ -26,11 +26,13 @@ public class Course {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name="id")
 	private Long id;
+	
 	@Column(name="name")
 	private String name;
+	
 	@Column(name = "description", columnDefinition = "text")
 	private String description;
-
+	
 	@ManyToMany(mappedBy = "courses") 
     private List<User> users;
 	
