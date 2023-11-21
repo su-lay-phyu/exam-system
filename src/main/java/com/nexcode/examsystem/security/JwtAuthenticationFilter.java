@@ -41,7 +41,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             List<GrantedAuthority> authorities = stringArr.stream().map(r -> new SimpleGrantedAuthority(r))
                     .collect(Collectors.toList());
             UserPrincipal userPrincipal = new UserPrincipal(cid, username, email, null, authorities);
-            Authentication authentication = new UsernamePasswordAuthenticationToken(userPrincipal, "", authorities);
+            Authentication authentication = new UsernamePasswordAuthenticationToken(userPrincipal, null, authorities);
             SecurityContextHolder.getContext().setAuthentication(authentication);
         }
         filterChain.doFilter(request, response);

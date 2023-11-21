@@ -27,18 +27,18 @@ public class WebSecurityConfigure {
 	private final AuthenticationEntryPoint authenticationEntryPoint;
 	
 	private final JwtAuthenticationFilter jwtAuthenticationFilter;
-	
-	@Bean
-	public AuthenticationManager authenticationManager(HttpSecurity httpSecurity,UserDetailsService userDetailsService,PasswordEncoder passwordEncoder) throws Exception
+
+    @Bean
+    AuthenticationManager authenticationManager(HttpSecurity httpSecurity, UserDetailsService userDetailsService, PasswordEncoder passwordEncoder) throws Exception
 	{
 		 AuthenticationManagerBuilder builder = httpSecurity.getSharedObject(AuthenticationManagerBuilder.class);
 	     builder.userDetailsService(userDetailsService).passwordEncoder(passwordEncoder());
 	     return builder.build();
 	}
-	@Bean
-	public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-		http.cors();
-		http.csrf().disable();
+
+    @Bean
+    SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+		http.cors().and().csrf().disable();
 		
 		http.exceptionHandling().authenticationEntryPoint(authenticationEntryPoint);
 		http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
@@ -56,8 +56,9 @@ public class WebSecurityConfigure {
         http.addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class); 
 		return http.build();
 	}
-	@Bean
-	public PasswordEncoder passwordEncoder() {
+
+    @Bean
+    PasswordEncoder passwordEncoder() {
 		return new BCryptPasswordEncoder();
 	}
 
