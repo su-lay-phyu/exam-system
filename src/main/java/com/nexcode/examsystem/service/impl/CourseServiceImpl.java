@@ -38,13 +38,13 @@ public class CourseServiceImpl implements CourseService{
 	}
 
 	@Override
-	public boolean addCourse(CourseDto dto) {
+	public CourseDto addCourse(CourseDto dto) {
 		Course course=new Course();
 		course.setName(dto.getName());
 		course.setDescription(dto.getDescription());
 		course.setActive(true);
-		courseRepository.save(course);
-		return true;
+		Course savedCourse=courseRepository.save(course);
+		return courseMapper.toDto(savedCourse);
 	}
 	@Override
 	public List<UserDto> getAllUserByCourseId(Long id) {
@@ -72,17 +72,16 @@ public class CourseServiceImpl implements CourseService{
 	}
 
 	@Override
-	public boolean deleteCourse(Long id) {
+	public void deleteCourse(Long id) {
 		Course foundedCourse=courseRepository.findById(id).orElseThrow(()->new NotFoundException("course not found"));
 		List<Exam>exams=userExamRepository.getAllTakenExams();
 		for(Exam e :exams)
 		{
 			if(e.getCourse().getName().equalsIgnoreCase(foundedCourse.getName()))
-				throw new BadRequestException("Course cannot be delected because of there is student who taken that course's exam");
+				throw new BadRequestException("Course cannot be delete because of there is student who taken that course's exam");
 		}
 		foundedCourse.setActive(false);
 		courseRepository.save(foundedCourse);
-		return true;
 	}
 
 	

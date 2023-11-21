@@ -26,7 +26,7 @@ public class UserExamMapperImpl implements UserExamMapper{
 		dto.setId(userExam.getId());
 		dto.setObtainedResult(userExam.getObtainedResult());
 		dto.setSubmittedTime(userExam.getSubmittedTime());
-		dto.setIsPassFail(userExam.getIsPassFail());
+		dto.setPass(userExam.isPass());
 		dto.setUserAnswers(userAnswerMapper.toDtoList(userExam.getUserAnswers()));
 		dto.setExam(examMapper.toDto(userExam.getExam()));
 		return dto;
@@ -36,7 +36,7 @@ public class UserExamMapperImpl implements UserExamMapper{
 		UserExamResponse response=new UserExamResponse();
 		response.setId(dto.getId());
 		response.setObtainedResult(dto.getObtainedResult());
-		response.setIsPassFail(dto.getIsPassFail());
+		response.setIsPassFail(dto.isPass());
 		response.setExamResponse(examMapper.toResponse(dto.getExam()));
 		response.setUserAnswerResponse(userAnswerMapper.toResponseList(dto.getUserAnswers()));
 		return response;

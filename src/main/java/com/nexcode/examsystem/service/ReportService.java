@@ -2,7 +2,7 @@ package com.nexcode.examsystem.service;
 
 import java.util.List;
 
-import com.nexcode.examsystem.model.projections.UserReportProjection;
+import com.nexcode.examsystem.model.dtos.UserReportProjection;
 import com.nexcode.examsystem.model.responses.CourseExamListReportResponse;
 import com.nexcode.examsystem.model.responses.CourseExamReportPieResponse;
 import com.nexcode.examsystem.model.responses.ExamStudentReportResponse;

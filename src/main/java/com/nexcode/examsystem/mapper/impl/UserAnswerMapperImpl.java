@@ -27,7 +27,7 @@ public class UserAnswerMapperImpl implements UserAnswerMapper{
 		dto.setId(userAnswer.getId());
 		dto.setQuestion(questionMapper.toDto(userAnswer.getQuestion()));
 		dto.setSelectedAnswer(userAnswer.getSelectedAnswer());
-		dto.setSelectedAnswerCorrect(userAnswer.getIsSelectedAnswerCorrect());
+		dto.setSelectedAnswerCorrect(userAnswer.isSelectedAnswerCorrect());
 		return dto;
 	}
 

@@ -37,7 +37,7 @@ public class AuthServiceImpl implements AuthService {
 				.authenticate(new UsernamePasswordAuthenticationToken(loginRequest.getEmail(), loginRequest.getPassword()));
 		User foundedUser = userRepository.findByEmail(loginRequest.getEmail())
 				.orElseThrow(()->new BadRequestException("user not found"));
-		boolean isFirstTime=foundedUser.getIsPasswordChanged();
+		boolean isFirstTime=foundedUser.isPasswordChanged();
 		userRepository.save(foundedUser);
 		if (authentication.getAuthorities().contains(new SimpleGrantedAuthority("ROLE_ADMIN")) || authentication.getAuthorities().contains(new SimpleGrantedAuthority("ROLE_USER"))) {
 			

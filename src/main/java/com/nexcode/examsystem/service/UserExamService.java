@@ -3,7 +3,7 @@ package com.nexcode.examsystem.service;
 import java.util.List;
 
 import com.nexcode.examsystem.model.dtos.UserExamDto;
-import com.nexcode.examsystem.model.projections.UserExamHistoryProjection;
+import com.nexcode.examsystem.model.dtos.UserExamHistoryProjection;
 import com.nexcode.examsystem.model.requests.UserAnswerRequest;
 
 public interface UserExamService {

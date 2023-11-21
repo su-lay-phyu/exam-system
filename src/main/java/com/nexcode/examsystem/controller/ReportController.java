@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.nexcode.examsystem.model.projections.UserReportProjection;
+import com.nexcode.examsystem.model.dtos.UserReportProjection;
 import com.nexcode.examsystem.model.responses.CourseExamListReportResponse;
 import com.nexcode.examsystem.model.responses.CourseExamReportPieResponse;
 import com.nexcode.examsystem.model.responses.ExamStudentReportResponse;

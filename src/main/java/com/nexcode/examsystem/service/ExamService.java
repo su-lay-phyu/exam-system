@@ -11,11 +11,11 @@ public interface ExamService {
 	
 	
 	public List<ExamDto>getAllExam();
-	public boolean createExamWithQuestions(ExamRequest request);
-	public boolean updateExam(Long id,ExamRequest request);
+	public ExamDto createExamWithQuestions(ExamRequest request);
+	public void updateExam(Long id,ExamRequest request);
 	public List<QuestionDto>getRandomQuestionsForExam(ExamDto dto);
 	public ExamDto findExamById(Long id);
-	public boolean setExamPublished(Long id, ExamPublishedRequest request);
+	public void setExamPublished(Long id, ExamPublishedRequest request);
 	public List<QuestionDto> getAllQuestionById(Long id);
-	public boolean deleteExam(Long id);
+	public void deleteExam(Long id);
 }

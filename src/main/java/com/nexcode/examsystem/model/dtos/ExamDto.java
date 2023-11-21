@@ -15,10 +15,10 @@ public class ExamDto {
 	private String description;
 	private Integer examDurationMinute;
 	private Integer examTotalMark;
-	private Integer noOfQuestion;
+	private Integer numberOfQuestionsToGenerate;
 	private String publishedDate;
 	private boolean isActive;
-	private Boolean isPublished;
+	private boolean isPublished;
 	private Long courseId;
 	private Long levelId;
 	private CourseDto course;

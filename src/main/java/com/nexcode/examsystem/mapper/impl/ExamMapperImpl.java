@@ -42,7 +42,7 @@ public class ExamMapperImpl implements ExamMapper {
 		dto.setDescription(exam.getDescription());
 		dto.setExamDurationMinute(exam.getExamdurationMinutes());
 		dto.setExamTotalMark(exam.getExamTotalMark());
-		dto.setNoOfQuestion(exam.getNoOfQuestion());
+		dto.setNumberOfQuestionsToGenerate(exam.getNumberOfQuestionsToGenerate());
 		Date date = exam.getExamPublishDate();
 		if (date == null) {
 			dto.setPublishedDate(null);
@@ -75,7 +75,7 @@ public class ExamMapperImpl implements ExamMapper {
 		response.setPublishedDate(dto.getPublishedDate());
 		response.setExamTotalMark(dto.getExamTotalMark());
 		response.setExamDurationMinute(dto.getExamDurationMinute());
-		response.setNoOfQuestion(dto.getNoOfQuestion());
+		response.setNoOfQuestion(dto.getNumberOfQuestionsToGenerate());
 		response.setCategory(courseMapper.toResponse(dto.getCourse()));
 		response.setLevel(levelMapper.toResponse(dto.getLevel()));
 		//may be we don't need it 

@@ -56,7 +56,7 @@ public class AddAdminUserRunner implements CommandLineRunner {
              adminUser.setPassword(encoder.encode("admin123"));
              adminUser.setPhone("+95971452639");
              adminUser.setActive(true);
-             adminUser.setIsPasswordChanged(false);
+             adminUser.setPasswordChanged(false);
              Role admin=roleRepository.findByName(RoleName.ADMIN.name()).orElse(null);
              if(admin!=null)
              {

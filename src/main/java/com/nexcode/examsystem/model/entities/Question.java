@@ -31,7 +31,7 @@ public class Question {
 	@Column(name="question", columnDefinition = "text")
 	private String question;
 	
-	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
+	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JoinColumn(name = "question_id")
     private List<Answer> answers;
 

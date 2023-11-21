@@ -3,7 +3,6 @@ package com.nexcode.examsystem.service.impl;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.nexcode.examsystem.mapper.RoleMapper;
@@ -20,9 +19,7 @@ import lombok.RequiredArgsConstructor;
 public class RoleServiceImpl implements RoleService{
 	
 	private final RoleRepository roleRepository;
-	
-	@Autowired
-	private RoleMapper roleMapper;
+	private final RoleMapper roleMapper;
 	@Override
 	public RoleDto addRole(RoleDto roleDto) {
 		Role role=new Role();

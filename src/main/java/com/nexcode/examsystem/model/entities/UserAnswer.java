@@ -36,10 +36,10 @@ public class UserAnswer {
 	private String selectedAnswer;
 
 	@Column(name = "is_selected_answer_correct")
-	private Boolean isSelectedAnswerCorrect;
+	private boolean isSelectedAnswerCorrect;
 
 	@JsonBackReference  
-	@ManyToOne(cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH}, fetch = FetchType.LAZY)
+	@ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.REFRESH}, fetch = FetchType.LAZY)
 	@JoinColumn(name = "user_exam_id")
 	private UserExam userExam;
 

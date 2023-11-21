@@ -24,8 +24,7 @@ import com.nexcode.examsystem.model.dtos.ExamDto;
 import com.nexcode.examsystem.model.dtos.QuestionDto;
 import com.nexcode.examsystem.model.dtos.UserDto;
 import com.nexcode.examsystem.model.dtos.UserExamDto;
-import com.nexcode.examsystem.model.exception.AppException;
-import com.nexcode.examsystem.model.projections.UserExamHistoryProjection;
+import com.nexcode.examsystem.model.dtos.UserExamHistoryProjection;
 import com.nexcode.examsystem.model.requests.ChangePasswordRequest;
 import com.nexcode.examsystem.model.requests.EmailRequest;
 import com.nexcode.examsystem.model.requests.NewPasswordRequest;
@@ -69,34 +68,34 @@ public class UserController {
 		if (foundedUser == null) {
 			return new ResponseEntity<>(new ApiResponse(false, "user not found"), HttpStatus.NOT_FOUND);
 		}
-		return new ResponseEntity<>(
-				new ApiResponse(userService.generateOneTimePassword(foundedUser), "Successfully password reset."),
-				HttpStatus.OK);
+		userService.generateOneTimePassword(foundedUser);
+		return new ResponseEntity<>("Successfully password reset.",HttpStatus.OK);
 	}
 
 	@PutMapping("/change-password")
-	public ApiResponse processForgetPassword(@CurrentUser UserPrincipal currentUser,
+	public ResponseEntity<?> processForgetPassword(@CurrentUser UserPrincipal currentUser,
 			@RequestBody ChangePasswordRequest request) {
 		String requestOldPassword = request.getOldPassword();
 		String requestNewPassword = request.getNewPassword();
 		String email = currentUser.getEmail();
-		return new ApiResponse(userService.changePassword(email, requestOldPassword, requestNewPassword),
-				"Successfully changed password.");
-
+		userService.changePassword(email, requestOldPassword, requestNewPassword);
+		return new ResponseEntity<>("Successfully changed password.",HttpStatus.OK);
 	}
 
 	@PostMapping("/verified-otp")
-	public ApiResponse verifyOtp(@RequestBody VerifyOtpRequest request) {
+	public ResponseEntity<?> verifyOtp(@RequestBody VerifyOtpRequest request) {
 		String email = request.getEmail();
 		String storedOtp = request.getOtp();
-		return new ApiResponse(userService.validateOtp(email, storedOtp), "validate otp");
+		userService.validateOtp(email, storedOtp);
+		return new ResponseEntity<>("validate otp",HttpStatus.OK);
 	}
 
 	@PostMapping("/set-new-password")
-	public ApiResponse setNewForgotPassword(@RequestBody NewPasswordRequest request) {
+	public ResponseEntity<?> setNewForgotPassword(@RequestBody NewPasswordRequest request) {
 		String email = request.getEmail();
 		String password = request.getNewpassword();
-		return new ApiResponse(userService.setNewResetPassword(email, password), "Successfully updated New Password");
+		userService.setNewResetPassword(email, password);
+		return new ResponseEntity<>("Successfully updated New Password",HttpStatus.OK);
 	}
 
 	@GetMapping
@@ -118,34 +117,21 @@ public class UserController {
 		String email = request.getEmail();
 		UserDto existingUser = userService.findUserByEmailAddress(email);
 		if (existingUser != null) {
-			return new ResponseEntity<>(new ApiResponse(false, "This email is already in use. Please use another one."),HttpStatus.CONFLICT);
-		} else {
-			boolean isAdded = userService.signUpUser(request);
-			if(isAdded)
-			{
-				return new ResponseEntity<>(new ApiResponse(isAdded, "Signup successful. An email has been sent for verification."),HttpStatus.CREATED);
-			}
+			return new ResponseEntity<>("This email is already in use. Please use another one.",HttpStatus.CONFLICT);
 		}
-		throw new AppException("An error occurred while processing the signing up student");
+		userService.signUpUser(request);
+		return new ResponseEntity<>("Signup successful. An email has been sent for verification.",HttpStatus.CREATED);
 	}
 
 	@PutMapping("/{id}")
 	public ResponseEntity<?> updateStudent(@PathVariable Long id, @RequestBody UserRequest request) {
-		boolean isUpdated = userService.updateStudent(id, request);
-		if(isUpdated)
-		{
-			return new ResponseEntity<>(new ApiResponse(isUpdated, "Successfully user updated"),HttpStatus.OK);
-		}
-		throw new AppException("An error occurred while processing the update student");
+		UserDto updatedStudent = userService.updateStudent(id, request);
+		return new ResponseEntity<>(userMapper.toResponse(updatedStudent),HttpStatus.OK);
 	}
 	@DeleteMapping("/{id}")
 	public ResponseEntity<?> deleteStudent(@PathVariable Long id) {
-		boolean isDeleted = userService.deleteStudent(id);
-		if(isDeleted)
-		{
-			return new ResponseEntity<>(new ApiResponse(isDeleted, "user deleted successfully"),HttpStatus.OK);
-		}
-		throw new AppException("An error occurred while processing the update student");
+		userService.deleteStudent(id);
+		return new ResponseEntity<>("user deleted successfully",HttpStatus.OK);
 	}
 	// Student Dashboard
 	// sign up course of current user
@@ -161,11 +147,7 @@ public class UserController {
 	public ResponseEntity<?> getCourseByCourseId(@CurrentUser UserPrincipal currentUser, @RequestParam("id") Long id) {
 		String email = currentUser.getEmail();
 		CourseDto foundedCourse = userService.findUserCourseById(email, id);
-		if (foundedCourse != null) {
-			return new ResponseEntity<>(courseMapper.toResponse(foundedCourse), HttpStatus.FOUND);
-		}
-		return new ResponseEntity<>(new ApiResponse(false, "Something is wrong at service layer"),
-				HttpStatus.INTERNAL_SERVER_ERROR);
+		return new ResponseEntity<>(courseMapper.toResponse(foundedCourse), HttpStatus.FOUND);
 	}
 	@GetMapping("/course/{id}/exams")
 	public List<ExamResponse> getSignUpExams(@PathVariable Long id) {
@@ -193,31 +175,18 @@ public class UserController {
 		Long userId = currentUser.getId();
 		UserExamDto dto = userExamService.findUserExamByUserAndExam(userId, id, userAnswers);
 		UserExamResponse response = userExamMapper.toResponse(dto);
-		if (response != null) {
-			return new ResponseEntity<>(response, HttpStatus.OK);
-		}
-		return new ResponseEntity<>(new ApiResponse(false, "Something is wrong at service layer"),
-				HttpStatus.INTERNAL_SERVER_ERROR);
-
+		return new ResponseEntity<>(response, HttpStatus.OK);
 	}
 	@GetMapping("/exam/history")
 	public ResponseEntity<?> getExamHistoryForUser(@CurrentUser UserPrincipal currentUser) {
 		List<UserExamHistoryProjection> list = userExamService.getAllExamHistoryByUserId(currentUser.getEmail());
-		if (list != null) {
-			return new ResponseEntity<>(list, HttpStatus.OK);
-		}
-		return new ResponseEntity<>(new ApiResponse(false, "Something is wrong at service layer"),
-				HttpStatus.INTERNAL_SERVER_ERROR);
+		return new ResponseEntity<>(list, HttpStatus.OK);
 	}
 	// this one is when the user try to view his/her taken answer sheet
 	@GetMapping("/exam/history/{id}")
 	public ResponseEntity<?> getExamHistoryDetails(@CurrentUser UserPrincipal currentUser, @PathVariable Long id) {
 		UserExamDto dto = userExamService.getEachExamAllHistory(currentUser.getEmail(), id);
 		UserExamResponse response = userExamMapper.toResponse(dto);
-		if (response != null) {
-			return new ResponseEntity<>(response, HttpStatus.OK);
-		}
-		return new ResponseEntity<>(new ApiResponse(false, "Something is wrong at service layer"),
-				HttpStatus.INTERNAL_SERVER_ERROR);
+		return new ResponseEntity<>(response, HttpStatus.OK);
 	}
 }

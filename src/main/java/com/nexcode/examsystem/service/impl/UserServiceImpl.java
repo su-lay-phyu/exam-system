@@ -12,8 +12,6 @@ import javax.transaction.Transactional;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import com.nexcode.examsystem.component.EmailComponent;
-import com.nexcode.examsystem.component.OtpGenerator;
 import com.nexcode.examsystem.mapper.CourseMapper;
 import com.nexcode.examsystem.mapper.RoleMapper;
 import com.nexcode.examsystem.mapper.UserMapper;
@@ -31,12 +29,15 @@ import com.nexcode.examsystem.repository.ExamRepository;
 import com.nexcode.examsystem.repository.RoleRepository;
 import com.nexcode.examsystem.repository.UserRepository;
 import com.nexcode.examsystem.service.UserService;
+import com.nexcode.examsystem.util.EmailUtil;
+import com.nexcode.examsystem.util.OtpUtil;
 
 import lombok.RequiredArgsConstructor;
 import net.bytebuddy.utility.RandomString;
 
 @Service
 @RequiredArgsConstructor
+@Transactional
 public class UserServiceImpl implements UserService {
 
 	private final UserMapper userMapper;
@@ -53,9 +54,9 @@ public class UserServiceImpl implements UserService {
 
 	private final PasswordEncoder passwordEncoder;
 
-	private final EmailComponent emailSender;
+	private final EmailUtil emailSender;
 
-	private final OtpGenerator otpGenerator;
+	private final OtpUtil otpUtil;
 
 	
 	@Override
@@ -74,15 +75,14 @@ public class UserServiceImpl implements UserService {
 			dto.setId(c.getId());
 			dto.setName(c.getName());
 			dto.setDescription(c.getDescription());
-			Long percentage=examRepository.getPercentage(c.getId());
+			long percentage=examRepository.getPercentage(c.getId());
 			dto.setPercentage(percentage);
 			dtos.add(dto);
 		}
 		return dtos;
 	}
 	@Override
-	@Transactional(rollbackOn = Exception.class)
-	public boolean signUpUser(UserRequest request) {
+	public void signUpUser(UserRequest request) {
 		User user = new User();
 			Integer maxRollNo = userRepository.findMaxRollNoForStudents();
 	        String nextRollNo;
@@ -98,7 +98,7 @@ public class UserServiceImpl implements UserService {
 			String encodedPassword = passwordEncoder.encode(password);			
 			user.setPassword(encodedPassword);
 			user.setPhone(request.getPhone());
-			user.setIsPasswordChanged(false);
+			user.setPasswordChanged(false);
 			user.setActive(true);
 			List<Role> roles = new ArrayList<>();
 			Role userRole = roleRepository.findByName("USER").orElse(null);
@@ -119,7 +119,6 @@ public class UserServiceImpl implements UserService {
 			if (!sendSignUpVerifiedStudent(userInfo)) {
 				throw new AppException("This err is happened in signupUser function");
 			}
-			return true;
 	}
 	@Override
 	public UserDto findUserByEmailAddress(String email) 
@@ -127,8 +126,8 @@ public class UserServiceImpl implements UserService {
 		return userMapper.toDto(userRepository.findByEmail(email).orElse(null));
 	}
 	@Override
-	public boolean generateOneTimePassword(UserDto userDto) {
-		String otp = otpGenerator.generateOTP();
+	public void generateOneTimePassword(UserDto userDto) {
+		String otp = otpUtil.generateOTP();
 		String email = userDto.getEmail();
 		User foundedUser = userRepository.findByEmail(email)
 				.orElseThrow(() -> new BadRequestException("User Not Found : email->" + email));
@@ -137,42 +136,36 @@ public class UserServiceImpl implements UserService {
 		foundedUser.setOtpExpirationTime(otpExpirationTime);
 		userRepository.save(foundedUser);
 		sendOTPEmail(foundedUser, otp);
-		return true;
 	}
 	@Override
-	public boolean changePassword(String email, String requestOldPassword, String requestNewPassword) {
+	public void changePassword(String email, String requestOldPassword, String requestNewPassword) {
 		
 		User foundedUser = userRepository.findByEmail(email)
 				.orElseThrow(() -> new BadRequestException("User Not Found : email->" + email));
-		if(!foundedUser.getIsPasswordChanged())
+		if(!foundedUser.isPasswordChanged())
 		{
-			foundedUser.setIsPasswordChanged(true);
+			foundedUser.setPasswordChanged(true);
 		}
 		String oldDbPassword = foundedUser.getPassword();
 		if (passwordEncoder.matches(requestOldPassword, oldDbPassword)) {
 			String encodedNewPassword = passwordEncoder.encode(requestNewPassword);
 			foundedUser.setPassword(encodedNewPassword);
 			userRepository.save(foundedUser);
-			return true;
 		}
 		throw new BadRequestException("The password are incorrect.");
 	}
 
 	@Override
-	public boolean validateOtp(String email, String otp) {
-		return otpGenerator.validateOtp(email, otp);
+	public void validateOtp(String email, String otp) {
+		otpUtil.validateOtp(email, otp);
 	}
 
 	@Override
-	public boolean setNewResetPassword(String email, String password) {
+	public void setNewResetPassword(String email, String password) {
 		User foundedUser = userRepository.findByEmail(email)
 				.orElseThrow(() -> new BadRequestException("User Not Foun  d : email->" + email));
-		if (foundedUser != null) {
-			foundedUser.setPassword(passwordEncoder.encode(password));
-			userRepository.save(foundedUser);
-			return true;
-		}
-		return false;
+		foundedUser.setPassword(passwordEncoder.encode(password));
+		userRepository.save(foundedUser);
 	}
 	
 	public boolean sendSignUpVerifiedStudent(UserDto userDto) {
@@ -206,7 +199,7 @@ public class UserServiceImpl implements UserService {
 	    }
 	}
 	@Override
-	public boolean updateStudent(Long id, UserRequest request) {
+	public UserDto updateStudent(Long id, UserRequest request) {
 	    try {
 	        User foundedUser = userRepository.findById(id).orElseThrow(() -> new NotFoundException("User not found"));
 	        String oldEmail = foundedUser.getEmail();
@@ -226,9 +219,9 @@ public class UserServiceImpl implements UserService {
 	  
 	        if (!oldEmail.equals(request.getEmail())) {
 	        	 UserDto userInfo=new UserDto(savedUser.getRollNo(),savedUser.getUsername(),savedUser.getEmail(),password,roleMapper.toDtoList(savedUser.getRoles()),courseMapper.toDtoList(savedUser.getCourses()));
-	        	 return sendSignUpVerifiedStudent(userInfo);
+	        	 sendSignUpVerifiedStudent(userInfo);
 	        }
-	        return true;
+	        return userMapper.toDto(savedUser);
 	    } catch (AppException e) {
 	        throw new AppException("An error occurred in the update function");
 	    }
@@ -270,11 +263,10 @@ public class UserServiceImpl implements UserService {
 		return userMapper.toDto(foundedUser);
 	}
 	@Override
-	public boolean deleteStudent(Long id) {
+	public void deleteStudent(Long id) {
 		User foundedUser=userRepository.findById(id).orElseThrow(()->new NotFoundException("User not Found"));
 		foundedUser.setActive(false);
 		userRepository.save(foundedUser);
-		return true;
 	}
 
 

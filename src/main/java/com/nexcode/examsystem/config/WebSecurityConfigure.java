@@ -17,14 +17,10 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 
 import com.nexcode.examsystem.security.JwtAuthenticationFilter;
 
-import lombok.Getter;
 import lombok.RequiredArgsConstructor;
-import lombok.Setter;
 
 @Configuration
 @EnableWebSecurity
-@Getter
-@Setter
 @RequiredArgsConstructor
 public class WebSecurityConfigure {
 	

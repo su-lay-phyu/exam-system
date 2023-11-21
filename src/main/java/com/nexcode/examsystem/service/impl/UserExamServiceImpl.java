@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 
 import com.nexcode.examsystem.mapper.UserExamMapper;
 import com.nexcode.examsystem.model.dtos.UserExamDto;
+import com.nexcode.examsystem.model.dtos.UserExamHistoryProjection;
 import com.nexcode.examsystem.model.entities.Answer;
 import com.nexcode.examsystem.model.entities.Exam;
 import com.nexcode.examsystem.model.entities.Question;
@@ -16,7 +17,6 @@ import com.nexcode.examsystem.model.entities.UserAnswer;
 import com.nexcode.examsystem.model.entities.UserExam;
 import com.nexcode.examsystem.model.exception.BadRequestException;
 import com.nexcode.examsystem.model.exception.NotFoundException;
-import com.nexcode.examsystem.model.projections.UserExamHistoryProjection;
 import com.nexcode.examsystem.model.requests.UserAnswerRequest;
 import com.nexcode.examsystem.repository.ExamRepository;
 import com.nexcode.examsystem.repository.QuestionRepository;
@@ -46,7 +46,7 @@ public class UserExamServiceImpl implements UserExamService {
 		userExam.setUser(foundedUser);
 		userExam.setExam(foundedExam);
 		userExam.setObtainedResult(0);
-		userExam.setIsActive(true);
+		userExam.setActive(true);
 		userExamRepository.save(userExam);
 	}
 
@@ -56,12 +56,12 @@ public class UserExamServiceImpl implements UserExamService {
 		Exam foundedExam = examRepository.findById(examId).orElseThrow(() -> new BadRequestException("Exam not found"));
 		UserExam foundedUserExam = userExamRepository.findByUserExam(userId, examId);
 		foundedUserExam.setSubmittedTime(new Date());
-		int markForEachQuestion = foundedExam.getExamTotalMark() / foundedExam.getNoOfQuestion();
+		int markForEachQuestion = foundedExam.getExamTotalMark() / foundedExam.getNumberOfQuestionsToGenerate();
 		int obtainedMarks = calculateObtainedMarks(markForEachQuestion, userAnswers, foundedUserExam);
 
 		foundedUserExam.setObtainedResult(obtainedMarks);
 		int passingMark = foundedExam.getExamTotalMark() / 2;
-		foundedUserExam.setIsPassFail(obtainedMarks >= passingMark);
+		foundedUserExam.setPass(obtainedMarks >= passingMark);
 		try {
 			userExamRepository.save(foundedUserExam);
 			return userExamMapper.toDto(foundedUserExam);
@@ -87,10 +87,10 @@ public class UserExamServiceImpl implements UserExamService {
 			userAnswerRepository.save(userAnswer);
 			userAnswerList.add(userAnswer);
 			if (correctAnswer != null && correctAnswer.getAnswer().equals(a.getSelectedAnswer())) {
-				userAnswer.setIsSelectedAnswerCorrect(true);
+				userAnswer.setSelectedAnswerCorrect(true);
 				obtainedMarks += mark;
 			} else {
-				userAnswer.setIsSelectedAnswerCorrect(false);
+				userAnswer.setSelectedAnswerCorrect(false);
 			}
 
 		}

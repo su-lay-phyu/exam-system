@@ -23,7 +23,7 @@ public class UserDto {
 	private List<RoleDto>roles;
 	private String otp;
 	private Date otpRequestedTime;
-	private Boolean isActive;
+	private boolean isActive;
 	private List<Long>ids;
 	private List<CourseDto>categories;
 	public UserDto(String rollNo, String username, String email, String password, List<RoleDto> roles,

@@ -37,14 +37,14 @@ public class UserExam {
 	@Column(name="submitted_time")
 	private Date submittedTime;
 	
-	@Column(name="is_pass_fail")
-	private Boolean isPassFail;
+	@Column(name="is_pass")
+	private boolean isPass;
 	
-	@ManyToOne(cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH}, fetch = FetchType.LAZY)
+	@ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.REFRESH}, fetch = FetchType.LAZY)
 	@JoinColumn(name = "user_id")
 	private User user;
 	
-	@ManyToOne(cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH}, fetch = FetchType.LAZY)
+	@ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.REFRESH}, fetch = FetchType.LAZY)
 	@JoinColumn(name = "exam_id")
 	private Exam exam;
 	
@@ -53,5 +53,5 @@ public class UserExam {
 	private List<UserAnswer> userAnswers;
 	
 	@Column(name = "is_active")
-	private Boolean isActive;
+	private boolean isActive;
 }

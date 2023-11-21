@@ -5,12 +5,12 @@ import java.util.List;
 
 import org.springframework.stereotype.Service;
 
+import com.nexcode.examsystem.model.dtos.UserReportProjection;
 import com.nexcode.examsystem.model.entities.Course;
 import com.nexcode.examsystem.model.entities.Exam;
 import com.nexcode.examsystem.model.entities.Level;
 import com.nexcode.examsystem.model.entities.User;
 import com.nexcode.examsystem.model.entities.UserExam;
-import com.nexcode.examsystem.model.projections.UserReportProjection;
 import com.nexcode.examsystem.model.responses.CourseExamListReportResponse;
 import com.nexcode.examsystem.model.responses.CourseExamReportPieResponse;
 import com.nexcode.examsystem.model.responses.ExamStudentReportResponse;
@@ -43,13 +43,13 @@ public class ReportServiceImpl implements ReportService{
 		    List<Course> courses = getAllCourses();
 		    List<OverAllReportResponse> list = new ArrayList<>();
 		    for (Course course : courses) {
-		        Integer totalNoOfStudents = courseRepository.getTotalNoOfStudent(course.getId());
-		        Integer totalExamsInCourse = courseRepository.getTotalExamsInCourse(course.getId());
-		        
+		        int totalNoOfStudents = courseRepository.getTotalNoOfStudent(course.getId());
+		        int totalExamsInCourse = courseRepository.getTotalExamsInCourse(course.getId());
 		        int completedStudents = 0;
 		        for (User student : course.getUsers()) {
-		            Integer distinctTakenExams = userExamRepository.getDistinctTakenExamCount(student.getId(), course.getId());
-		            if (distinctTakenExams.equals(totalExamsInCourse)) {
+		            int distinctTakenExams = userExamRepository.getDistinctTakenExamCount(student.getId(), course.getId());
+		            if (distinctTakenExams==totalExamsInCourse)
+		            {
 		                completedStudents++;
 		            }
 		        }
@@ -69,19 +69,19 @@ public class ReportServiceImpl implements ReportService{
 	public List<CourseExamListReportResponse> getAllCourseExamListReport(Long id) {
 		List<Exam>examList=courseRepository.getAllPublishedExams(id);
 		List<CourseExamListReportResponse>list=new ArrayList<>();
-		Integer totalNoOfStudent = courseRepository.getTotalNoOfStudent(id);
+		int totalNoOfStudent = courseRepository.getTotalNoOfStudent(id);
 		for(Exam e : examList)
 		{
-			Integer completedStudent=0;
-			Integer inProgressStudent=0;
+			int completedStudent=0;
+			int inProgressStudent=0;
 			
 			CourseExamListReportResponse response=new CourseExamListReportResponse();
 			response.setExamId(e.getId());
 			response.setExamName(e.getName());
-			response.setExamPublishedDate(e.getExamPublishDate().toInstant().toString());//check
-			response.setLevelName(e.getLevel().getName());//
+			response.setExamPublishedDate(e.getExamPublishDate().toInstant().toString());
+			response.setLevelName(e.getLevel().getName());
 			completedStudent=examRepository.getTotalNoOfStudentsOfEachExam(e.getId());
-			System.out.println(completedStudent+"completed student count for exam "+e.getId());// this one is not right 
+			System.out.println(completedStudent+"completed student count for exam "+e.getId()); //check
 			response.setCompletedStudents(completedStudent);
 			inProgressStudent=totalNoOfStudent-completedStudent;
 			response.setInProgressStudents(inProgressStudent);
@@ -119,7 +119,7 @@ public class ReportServiceImpl implements ReportService{
 			response.setUserName(ue.getUser().getUsername());
 			response.setEmail(ue.getUser().getEmail());
 			response.setObtainedMark(ue.getObtainedResult());
-			response.setPassFail(ue.getIsPassFail());
+			response.setPassFail(ue.isPass());
 			list.add(response);
 		}
 		return list;
@@ -130,8 +130,8 @@ public class ReportServiceImpl implements ReportService{
 	}
 	@Override
 	public StudentPassFailCountResponse getCountPassFail(Long examId) {
-		Integer passCount = userExamRepository.getPassCountByExamId(examId);
-        Integer failCount = userExamRepository.getFailCountByExamId(examId);
+		int passCount = userExamRepository.getPassCountByExamId(examId);
+        int failCount = userExamRepository.getFailCountByExamId(examId);
         StudentPassFailCountResponse response=new StudentPassFailCountResponse();
         response.setPassCount(passCount);
         response.setFailCount(failCount);

@@ -12,7 +12,7 @@ public interface CourseService {
 	public CourseDto findByName(String name);
 	public List<UserDto> getAllUserByCourseId(Long id);
 	public List<ExamDto>getAllPublishedExams(Long id);
-	public boolean addCourse(CourseDto dto);
+	public CourseDto addCourse(CourseDto dto);
 	public CourseDto updateCourse(Long id,CourseDto dto);
-	public boolean deleteCourse(Long id);
+	public void deleteCourse(Long id);
 }

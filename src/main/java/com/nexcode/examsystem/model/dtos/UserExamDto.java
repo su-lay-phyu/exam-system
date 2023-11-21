@@ -14,8 +14,8 @@ public class UserExamDto {
     private Long id;
     private Integer obtainedResult;
     private Date submittedTime;
-    private Boolean isPassFail;
-    private Boolean isActive;
+    private boolean isPass;
+    private boolean isActive;
     private UserDto user;
     private ExamDto exam;
     private List<UserAnswerDto> userAnswers;

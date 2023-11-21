@@ -32,6 +32,7 @@ import lombok.RequiredArgsConstructor;
 
 @Service
 @RequiredArgsConstructor
+@Transactional
 public class ExamServiceImpl implements ExamService {
 
 	private final ExamMapper examMapper;
@@ -64,19 +65,17 @@ public class ExamServiceImpl implements ExamService {
 	}
 
 	@Override
-	@Transactional(rollbackFor = Exception.class)
-	public boolean createExamWithQuestions(ExamRequest request) {
+	public ExamDto createExamWithQuestions(ExamRequest request) {
 		List<Question> questions = new ArrayList<>();
 		for (QuestionRequest questionRequest : request.getQuestions()) {
 			Question question = addQuestionToExam(questionRequest);
 			questions.add(question);
 		}
 		Exam savedExam = createExam(request, questions);
-		if (savedExam != null) {
-			return true;
-		} else {
+		if (savedExam == null) {
 			throw new AppException("Failed to create the exam.");
 		}
+		return examMapper.toDto(savedExam);
 	}
 
 	public Exam createExam(ExamRequest request, List<Question> questions) {
@@ -87,7 +86,7 @@ public class ExamServiceImpl implements ExamService {
 		exam.setExamTotalMark(request.getExamTotalMark());
 		exam.setCourse(categoryRepository.findById(request.getCourseId()).orElse(null));
 		exam.setLevel(levelRepository.findById(request.getLevelId()).orElse(null));
-		exam.setNoOfQuestion(request.getNoOfQuestion());
+		exam.setNumberOfQuestionsToGenerate(request.getNoOfQuestion());
 		exam.setQuestions(questions);
 		Exam savedExam = examRepository.save(exam);
 		return savedExam;
@@ -112,10 +111,9 @@ public class ExamServiceImpl implements ExamService {
 	}
 
 	@Override
-	@Transactional(rollbackFor = Exception.class)
-	public boolean updateExam(Long id, ExamRequest request) {
+	public void updateExam(Long id, ExamRequest request) {
 		Exam foundedExam = findExam(id);
-		if(foundedExam.getIsPublished()==true)
+		if(foundedExam.isPublished()==true)
 		{
 			throw new BadRequestException("You can't be edit because the exam is already published");
 		}
@@ -123,7 +121,7 @@ public class ExamServiceImpl implements ExamService {
 		foundedExam.setDescription(request.getDescription());
 		foundedExam.setExamdurationMinutes(request.getExamDurationMinute());
 		foundedExam.setExamTotalMark(request.getExamTotalMark());
-		foundedExam.setNoOfQuestion(request.getNoOfQuestion());
+		foundedExam.setNumberOfQuestionsToGenerate(request.getNoOfQuestion());
 		foundedExam.setCourse(categoryRepository.findById(request.getCourseId()).orElse(null));
 		foundedExam.setLevel(levelRepository.findById(request.getLevelId()).orElse(null));
 		if (request.getQuestions() != null && !request.getQuestions().isEmpty()) {
@@ -137,27 +135,25 @@ public class ExamServiceImpl implements ExamService {
 			}
 		}
 		examRepository.save(foundedExam);
-		return true;
 	}
 
 	@Override
-	@Transactional(rollbackFor = Exception.class)
-	public boolean setExamPublished(Long id, ExamPublishedRequest request) {
+	public void setExamPublished(Long id, ExamPublishedRequest request) {
 		boolean isPublished = request.isPublished();
 		Exam foundedExam = findExam(id);
 		if (isPublished) {
-			if (!checkForEnoughQuestion(foundedExam))
-				return false;
+			if (checkForEnoughQuestion(foundedExam))
+			{
+				foundedExam.setPublished(isPublished);
+				foundedExam.setExamPublishDate(isPublished ? new Date() : null);
+				foundedExam.setActive(isPublished);
+				examRepository.save(foundedExam);
+			}
 		}
-		foundedExam.setIsPublished(isPublished);
-		foundedExam.setExamPublishDate(isPublished ? new Date() : null);
-		foundedExam.setActive(isPublished);
-		examRepository.save(foundedExam);
-		return true;
 	}
 
 	public boolean checkForEnoughQuestion(Exam exam) {
-		int requiredQuestionCount = exam.getNoOfQuestion();
+		int requiredQuestionCount = exam.getNumberOfQuestionsToGenerate();
 		int actualQuestionCount = examRepository.countQuestionsForExam(exam.getId());
 		if (actualQuestionCount < requiredQuestionCount) {
 			throw new BadRequestException("Not enough questions to publish the exam.");
@@ -167,7 +163,7 @@ public class ExamServiceImpl implements ExamService {
 
 	@Override
 	public List<QuestionDto> getRandomQuestionsForExam(ExamDto dto) {
-		int no = dto.getNoOfQuestion();
+		int no = dto.getNumberOfQuestionsToGenerate();
 		List<QuestionDto> allQuestions = dto.getQuestions();
 		Collections.shuffle(allQuestions);
 		int numberOfQuestionsToTake = Math.min(no, allQuestions.size());
@@ -176,14 +172,13 @@ public class ExamServiceImpl implements ExamService {
 	}
 
 	@Override
-	public boolean deleteExam(Long id) {
+	public void deleteExam(Long id) {
 		Exam foundedExam=examRepository.findById(id).orElseThrow(()->new NotFoundException("Exam not found"));
-		if(foundedExam.getIsPublished()==true)
+		if(foundedExam.isPublished()==true)
 		{
 			throw new BadRequestException("You can't be edit because the exam is already published");
 		}
 		foundedExam.setActive(false);
 		examRepository.save(foundedExam);
-		return true;
 	}
 }

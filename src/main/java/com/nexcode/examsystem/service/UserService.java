@@ -11,13 +11,13 @@ public interface UserService {
 	public List<CourseDto>getAllCourseByUserEmail(String email);
 	public UserDto findUserByEmailAddress(String email);
 	public UserDto findUserByEmailOrRollNo(String input);
-	public boolean signUpUser(UserRequest request) ;
-	public boolean changePassword(String email, String requestOldPassword, String requestNewPassword);
-	public boolean validateOtp(String email, String otp);
-	public boolean setNewResetPassword(String email, String password) ;
-	public boolean generateOneTimePassword(UserDto userDto);
-	public boolean updateStudent(Long id,UserRequest request);
+	public void signUpUser(UserRequest request) ;
+	public void changePassword(String email, String requestOldPassword, String requestNewPassword);
+	public void validateOtp(String email, String otp);
+	public void setNewResetPassword(String email, String password) ;
+	public void generateOneTimePassword(UserDto userDto);
+	public UserDto updateStudent(Long id,UserRequest request);
 	public CourseDto findUserCourseById(String email,Long id);
-	public boolean deleteStudent(Long id);
+	public void deleteStudent(Long id);
 	
 }

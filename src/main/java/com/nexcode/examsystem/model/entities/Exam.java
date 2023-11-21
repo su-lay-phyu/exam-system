@@ -42,8 +42,8 @@ public class Exam {
 	@Column(name="exam_publish_date")
 	private Date examPublishDate;
 	
-    @Column(name = "is_published", columnDefinition = "boolean default false")
-    private Boolean isPublished;
+    @Column(name = "is_published")
+    private boolean isPublished;
 
 	@Column(name="exam_duration_minute")
 	private Integer examdurationMinutes;
@@ -51,21 +51,21 @@ public class Exam {
 	@Column(name="exam_total_mark")
 	private Integer examTotalMark;
 	
-	@Column(name="no_of_question")
-	private Integer noOfQuestion;
+	@Column(name="no_of_question_to_generate")
+	private Integer numberOfQuestionsToGenerate;
 	
-	@ManyToOne(cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH}, fetch = FetchType.LAZY)
+	@ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.REFRESH}, fetch = FetchType.LAZY)
     @JoinColumn(name = "course_id") 
 	private Course course;
 	
-	@ManyToOne(cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.REFRESH}, fetch = FetchType.LAZY)
+	@ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.REFRESH}, fetch = FetchType.LAZY)
     @JoinColumn(name = "level_id") 
     private Level level;
 	
-	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
+	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
 	@JoinColumn(name = "exam_id")
 	private List<Question> questions;
 
-    @Column(name = "is_active", columnDefinition = "boolean default false")
+    @Column(name = "is_active")
     private boolean isActive;
 }

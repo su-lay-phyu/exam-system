@@ -17,10 +17,8 @@ import com.nexcode.examsystem.mapper.ExamMapper;
 import com.nexcode.examsystem.mapper.QuestionMapper;
 import com.nexcode.examsystem.model.dtos.ExamDto;
 import com.nexcode.examsystem.model.dtos.QuestionDto;
-import com.nexcode.examsystem.model.exception.AppException;
 import com.nexcode.examsystem.model.requests.ExamPublishedRequest;
 import com.nexcode.examsystem.model.requests.ExamRequest;
-import com.nexcode.examsystem.model.responses.ApiResponse;
 import com.nexcode.examsystem.model.responses.ExamResponse;
 import com.nexcode.examsystem.model.responses.QuestionAnswerResponse;
 import com.nexcode.examsystem.service.ExamService;
@@ -51,37 +49,26 @@ public class ExamController {
 	@PostMapping
 	public ResponseEntity<?> createExamWithQuestions(@RequestBody ExamRequest request)
 	{
-		boolean isAdded = examService.createExamWithQuestions(request);
-		if(isAdded)
-		{
-			return new ResponseEntity<>(new ApiResponse(isAdded, "Exam and questions added successfully"), HttpStatus.CREATED);
-		}
-		throw new AppException("An error occurred while processing the update exam");
+		ExamDto createdExam=examService.createExamWithQuestions(request);
+		return new ResponseEntity<>(examMapper.toResponse(createdExam), HttpStatus.CREATED);
 	}
 	@PutMapping("/{id}")
 	public ResponseEntity<?>updateExam(@PathVariable Long id,@RequestBody ExamRequest request)
 	{
-		boolean updated=examService.updateExam(id, request);
-		if(updated)
-		{
-			return new ResponseEntity<>(new ApiResponse(true, "Exam and questions updated successfully"), HttpStatus.OK);
-		}
-		throw new AppException("An error occurred while processing the update exam");
+		examService.updateExam(id, request);
+		return new ResponseEntity<>("Exam and questions updated successfully", HttpStatus.OK);
+		
 	}
 	@PutMapping("/{id}/publish")
 	public ResponseEntity<?>publishExam(@PathVariable Long id,@RequestBody ExamPublishedRequest request)
 	{
-		boolean isPublished =examService.setExamPublished(id,request);
-		return new ResponseEntity<>(new ApiResponse(isPublished,"Set published successfully"),HttpStatus.OK);
+		examService.setExamPublished(id,request);
+		return new ResponseEntity<>("Set published successfully",HttpStatus.OK);
 	}
 	@DeleteMapping("/{id}")
 	public ResponseEntity<?>deleteExam(@PathVariable Long id)
 	{
-		boolean isDeleted=examService.deleteExam(id);
-		if(isDeleted)
-		{
-			return new ResponseEntity<>(isDeleted,HttpStatus.OK);
-		}
-		throw new AppException("An error occurred while processing the delete exam");
+		examService.deleteExam(id);
+		return new ResponseEntity<>("Exam deleted successfully",HttpStatus.OK);
 	}
 }

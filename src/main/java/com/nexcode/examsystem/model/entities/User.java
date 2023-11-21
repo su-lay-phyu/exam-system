@@ -15,8 +15,6 @@ import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.Table;
 
-import org.hibernate.annotations.ColumnDefault;
-
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -53,8 +51,8 @@ public class User {
 	private String phone;
 	
 	
-	@Column(name="is_first_time_password_changed",columnDefinition = "boolean default false")
-	private Boolean isPasswordChanged;
+	@Column(name="is_first_time_password_changed")
+	private boolean isPasswordChanged;
 	
 	@Column(name="one_time_password")
 	private String otp;
@@ -62,7 +60,7 @@ public class User {
 	@Column(name = "otp_expiration_time")
 	private Date otpExpirationTime;
 	
-	@ManyToMany(cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.REFRESH}, fetch = FetchType.LAZY)
+	@ManyToMany(cascade =CascadeType.REFRESH, fetch = FetchType.LAZY)
 	@JoinTable(
 	    name = "user_roles",
 	    joinColumns = @JoinColumn(name = "user_id"),
@@ -79,6 +77,5 @@ public class User {
 	private List<Course>courses;
 	
 	@Column(name = "is_active")
-	@ColumnDefault("true") 
 	private boolean isActive;
 }

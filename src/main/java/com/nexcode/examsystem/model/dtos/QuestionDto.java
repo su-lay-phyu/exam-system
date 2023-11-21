@@ -15,5 +15,4 @@ public class QuestionDto {
     private String question;
     private Long examId;
     private List<AnswerDto>answerDtos;
-    private Boolean isActive;
 }
