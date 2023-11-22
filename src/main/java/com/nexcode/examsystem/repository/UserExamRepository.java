@@ -32,5 +32,8 @@ public interface UserExamRepository extends JpaRepository<UserExam, Long> {
     
     @Query(value="SELECT e FROM UserExam ue JOIN ue.exam e")
     List<Exam>getAllTakenExams();
+    
+    @Query(value="SELECT DISTINCT e FROM UserExam ue JOIN ue.exam e")
+    Exam getExam();
 }
  

@@ -148,11 +148,16 @@ public class UserServiceImpl implements UserService {
 		}
 		String oldDbPassword = foundedUser.getPassword();
 		if (passwordEncoder.matches(requestOldPassword, oldDbPassword)) {
+			System.out.println("this mean password are matched");
 			String encodedNewPassword = passwordEncoder.encode(requestNewPassword);
 			foundedUser.setPassword(encodedNewPassword);
 			userRepository.save(foundedUser);
 		}
-		throw new BadRequestException("The password are incorrect.");
+		else
+		{
+			throw new BadRequestException("The password is incorrect.");
+		}
+		
 	}
 
 	@Override
@@ -163,7 +168,7 @@ public class UserServiceImpl implements UserService {
 	@Override
 	public void setNewResetPassword(String email, String password) {
 		User foundedUser = userRepository.findByEmail(email)
-				.orElseThrow(() -> new BadRequestException("User Not Foun  d : email->" + email));
+				.orElseThrow(() -> new BadRequestException("User Not Found : email->" + email));
 		foundedUser.setPassword(passwordEncoder.encode(password));
 		userRepository.save(foundedUser);
 	}

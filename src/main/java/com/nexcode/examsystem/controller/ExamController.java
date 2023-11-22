@@ -62,8 +62,12 @@ public class ExamController {
 	@PutMapping("/{id}/publish")
 	public ResponseEntity<?>publishExam(@PathVariable Long id,@RequestBody ExamPublishedRequest request)
 	{
-		examService.setExamPublished(id,request);
-		return new ResponseEntity<>("Set published successfully",HttpStatus.OK);
+		boolean isPublished=examService.setExamPublished(id,request);
+		if(isPublished)
+		{
+			return new ResponseEntity<>("Set published successfully",HttpStatus.OK);
+		}
+		return new ResponseEntity<>("Set unpublished successfully",HttpStatus.OK);
 	}
 	@DeleteMapping("/{id}")
 	public ResponseEntity<?>deleteExam(@PathVariable Long id)

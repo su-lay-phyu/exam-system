@@ -25,6 +25,7 @@ import com.nexcode.examsystem.model.dtos.QuestionDto;
 import com.nexcode.examsystem.model.dtos.UserDto;
 import com.nexcode.examsystem.model.dtos.UserExamDto;
 import com.nexcode.examsystem.model.dtos.UserExamHistoryProjection;
+import com.nexcode.examsystem.model.exception.NotFoundException;
 import com.nexcode.examsystem.model.requests.ChangePasswordRequest;
 import com.nexcode.examsystem.model.requests.EmailRequest;
 import com.nexcode.examsystem.model.requests.NewPasswordRequest;
@@ -66,7 +67,7 @@ public class UserController {
 	public ResponseEntity<?> processForgetPassword(@RequestBody EmailRequest request) {
 		UserDto foundedUser = userService.findUserByEmailAddress(request.getEmail());
 		if (foundedUser == null) {
-			return new ResponseEntity<>(new ApiResponse(false, "user not found"), HttpStatus.NOT_FOUND);
+			throw new NotFoundException("Email not found");
 		}
 		userService.generateOneTimePassword(foundedUser);
 		return new ResponseEntity<>("Successfully password reset.",HttpStatus.OK);

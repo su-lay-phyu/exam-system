@@ -15,7 +15,7 @@ public interface ExamService {
 	public void updateExam(Long id,ExamRequest request);
 	public List<QuestionDto>getRandomQuestionsForExam(ExamDto dto);
 	public ExamDto findExamById(Long id);
-	public void setExamPublished(Long id, ExamPublishedRequest request);
+	public boolean setExamPublished(Long id, ExamPublishedRequest request);
 	public List<QuestionDto> getAllQuestionById(Long id);
 	public void deleteExam(Long id);
 }

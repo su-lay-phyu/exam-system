@@ -26,6 +26,7 @@ import com.nexcode.examsystem.repository.CourseRepository;
 import com.nexcode.examsystem.repository.ExamRepository;
 import com.nexcode.examsystem.repository.LevelRepository;
 import com.nexcode.examsystem.repository.QuestionRepository;
+import com.nexcode.examsystem.repository.UserExamRepository;
 import com.nexcode.examsystem.service.ExamService;
 
 import lombok.RequiredArgsConstructor;
@@ -41,6 +42,7 @@ public class ExamServiceImpl implements ExamService {
 	private final LevelRepository levelRepository;
 	private final CourseRepository categoryRepository;
 	private final QuestionRepository questionRepository;
+	private final UserExamRepository userExamRepository;
 
 	// find exam with id
 	public Exam findExam(Long id) {
@@ -138,29 +140,29 @@ public class ExamServiceImpl implements ExamService {
 	}
 
 	@Override
-	public void setExamPublished(Long id, ExamPublishedRequest request) {
+	public boolean setExamPublished(Long id, ExamPublishedRequest request) {
 		boolean isPublished = request.isPublished();
 		Exam foundedExam = findExam(id);
 		if (isPublished) {
-			if (checkForEnoughQuestion(foundedExam))
-			{
-				foundedExam.setPublished(isPublished);
-				foundedExam.setExamPublishDate(isPublished ? new Date() : null);
-				foundedExam.setActive(isPublished);
-				examRepository.save(foundedExam);
+			int requiredQuestionCount = foundedExam.getNumberOfQuestionsToGenerate();
+			int actualQuestionCount = examRepository.countQuestionsForExam(foundedExam.getId());
+			if (actualQuestionCount < requiredQuestionCount) {
+				throw new BadRequestException("Not enough questions to publish the exam.");
 			}
 		}
-	}
-
-	public boolean checkForEnoughQuestion(Exam exam) {
-		int requiredQuestionCount = exam.getNumberOfQuestionsToGenerate();
-		int actualQuestionCount = examRepository.countQuestionsForExam(exam.getId());
-		if (actualQuestionCount < requiredQuestionCount) {
-			throw new BadRequestException("Not enough questions to publish the exam.");
+		else {
+			Exam takenExam=userExamRepository.getExam();
+			if(takenExam!=null)
+			{
+				throw new BadRequestException("Can't be unpublished because already has examinees.");
+			}
 		}
-		return true;
+		foundedExam.setPublished(isPublished);
+		foundedExam.setExamPublishDate(isPublished ? new Date() : null);
+		foundedExam.setActive(isPublished);
+		examRepository.save(foundedExam);
+		return isPublished;
 	}
-
 	@Override
 	public List<QuestionDto> getRandomQuestionsForExam(ExamDto dto) {
 		int no = dto.getNumberOfQuestionsToGenerate();
