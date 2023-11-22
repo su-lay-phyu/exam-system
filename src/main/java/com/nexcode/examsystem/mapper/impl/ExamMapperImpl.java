@@ -79,7 +79,7 @@ public class ExamMapperImpl implements ExamMapper {
 		response.setCategory(courseMapper.toResponse(dto.getCourse()));
 		response.setLevel(levelMapper.toResponse(dto.getLevel()));
 		//may be we don't need it 
-		//response.setQuestions(questionMapper.toResponseList(dto.getQuestions()));
+		response.setQuestions(questionMapper.toResponseList(dto.getQuestions()));
 		return response;
 	}
 

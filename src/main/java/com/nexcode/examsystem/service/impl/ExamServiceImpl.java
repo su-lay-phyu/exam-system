@@ -67,78 +67,84 @@ public class ExamServiceImpl implements ExamService {
 	}
 
 	@Override
-	public ExamDto createExamWithQuestions(ExamRequest request) {
-		List<Question> questions = new ArrayList<>();
-		for (QuestionRequest questionRequest : request.getQuestions()) {
-			Question question = addQuestionToExam(questionRequest);
-			questions.add(question);
-		}
-		Exam savedExam = createExam(request, questions);
-		if (savedExam == null) {
-			throw new AppException("Failed to create the exam.");
-		}
-		return examMapper.toDto(savedExam);
-	}
+	public ExamDto createExam(ExamRequest request) {
+	    List<Question> questions = new ArrayList<>();
 
-	public Exam createExam(ExamRequest request, List<Question> questions) {
-		Exam exam = new Exam();
-		exam.setName(request.getName());
-		exam.setDescription(request.getDescription());
-		exam.setExamdurationMinutes(request.getExamDurationMinute());
-		exam.setExamTotalMark(request.getExamTotalMark());
-		exam.setCourse(categoryRepository.findById(request.getCourseId()).orElse(null));
-		exam.setLevel(levelRepository.findById(request.getLevelId()).orElse(null));
-		exam.setNumberOfQuestionsToGenerate(request.getNoOfQuestion());
-		exam.setQuestions(questions);
-		Exam savedExam = examRepository.save(exam);
-		return savedExam;
+	    for (QuestionRequest questionRequest : request.getQuestions()) {
+	        questions.add(addQuestionToExam(questionRequest));
+	    }
+	    Exam exam = new Exam();
+	    exam.setName(request.getName());
+	    exam.setDescription(request.getDescription());
+	    exam.setExamdurationMinutes(request.getExamDurationMinute());
+	    exam.setExamTotalMark(request.getExamTotalMark());
+	    exam.setCourse(categoryRepository.findById(request.getCourseId()).orElseThrow(() -> new NotFoundException("Course not found")));
+	    exam.setLevel(levelRepository.findById(request.getLevelId()).orElseThrow(() -> new NotFoundException("Level not found")));
+	    exam.setNumberOfQuestionsToGenerate(request.getNoOfQuestion());
+	    exam.setQuestions(questions);
+	    examRepository.save(exam);
+	    return examMapper.toDto(exam);
 	}
-
 	public Question addQuestionToExam(QuestionRequest questionRequest) {
-		Question question = new Question();
-		question.setQuestion(questionRequest.getQuestion());
+	    Question question = new Question();
+	    question.setQuestion(questionRequest.getQuestion());
 
-		List<AnswerRequest> answerRequests = questionRequest.getAnswers();
-		List<Answer> answers = new ArrayList<>();
+	    List<AnswerRequest> answerRequests = questionRequest.getAnswers();
+	    List<Answer> answers = new ArrayList<>();
 
-		for (AnswerRequest request : answerRequests) {
-			Answer answer = new Answer();
-			answer.setAnswer(request.getAnswer());
-			answer.setCorrectAnswer(request.isCorrectAnswer());
-			answers.add(answer);
-		}
-		question.setAnswers(answers);
-		questionRepository.save(question);
-		return question;
+	    for (AnswerRequest request : answerRequests) {
+	        Answer answer = new Answer();
+	        answer.setAnswer(request.getAnswer());
+	        answer.setCorrectAnswer(request.isCorrectAnswer());
+	        answers.add(answer);
+	    }
+	    question.setAnswers(answers);
+	    questionRepository.save(question);
+
+	    return question;
 	}
-
+	
 	@Override
 	public void updateExam(Long id, ExamRequest request) {
-		Exam foundedExam = findExam(id);
-		if(foundedExam.isPublished()==true)
+		try {
+			Exam foundedExam = findExam(id);
+			foundedExam.setName(request.getName());
+			foundedExam.setDescription(request.getDescription());
+			foundedExam.setExamdurationMinutes(request.getExamDurationMinute());
+			foundedExam.setExamTotalMark(request.getExamTotalMark());
+			foundedExam.setNumberOfQuestionsToGenerate(request.getNoOfQuestion());
+			foundedExam.setCourse(categoryRepository.findById(request.getCourseId()).orElseThrow(()->new NotFoundException("Cousre not found")));
+			foundedExam .setLevel(levelRepository.findById(request.getLevelId()).orElseThrow(()->new NotFoundException("Level not found")));
+			examRepository.save(foundedExam);
+		}catch(Exception e)
 		{
-			throw new BadRequestException("You can't be edit because the exam is already published");
+			throw new AppException("something is wrong with updating exam");
 		}
-		foundedExam.setName(request.getName());
-		foundedExam.setDescription(request.getDescription());
-		foundedExam.setExamdurationMinutes(request.getExamDurationMinute());
-		foundedExam.setExamTotalMark(request.getExamTotalMark());
-		foundedExam.setNumberOfQuestionsToGenerate(request.getNoOfQuestion());
-		foundedExam.setCourse(categoryRepository.findById(request.getCourseId()).orElse(null));
-		foundedExam.setLevel(levelRepository.findById(request.getLevelId()).orElse(null));
-		if (request.getQuestions() != null && !request.getQuestions().isEmpty()) {
-			for (QuestionRequest questionRequest : request.getQuestions()) {
-				try {
-					Question question = addQuestionToExam(questionRequest);
-					foundedExam.getQuestions().add(question);
-				} catch (Exception e) {
-					throw new AppException("Failed to add a question to the exam: " + e.getMessage());
-				}
-			}
-		}
-		examRepository.save(foundedExam);
 	}
-
+	@Override
+	public void updateQuestionWithExamId(Long id, List<QuestionRequest> request) {
+		 try {
+			 Exam foundedExam = findExam(id);
+			    List<Question> existingQuestions = foundedExam.getQuestions();
+			    List<Question> questionsToAdd = new ArrayList<>();
+			    for (QuestionRequest questionRequest : request) {
+			        if (!isQuestionAlreadyInExam(existingQuestions, questionRequest.getQuestion())) {
+			            Question question = addQuestionToExam(questionRequest);
+			            questionsToAdd.add(question);
+			        }
+			    }
+			    existingQuestions.addAll(questionsToAdd);
+			    foundedExam.setQuestions(existingQuestions);
+			    examRepository.save(foundedExam);
+		 }catch(Exception e)
+		{
+			throw new AppException("something is wrong with updating exam");
+		}
+	}
+	private boolean isQuestionAlreadyInExam(List<Question> questions, String questionContent) {
+	    return questions.stream()
+	            .anyMatch(q -> q.getQuestion().equals(questionContent));
+	}
 	@Override
 	public boolean setExamPublished(Long id, ExamPublishedRequest request) {
 		boolean isPublished = request.isPublished();
@@ -159,7 +165,6 @@ public class ExamServiceImpl implements ExamService {
 		}
 		foundedExam.setPublished(isPublished);
 		foundedExam.setExamPublishDate(isPublished ? new Date() : null);
-		foundedExam.setActive(isPublished);
 		examRepository.save(foundedExam);
 		return isPublished;
 	}
@@ -178,9 +183,10 @@ public class ExamServiceImpl implements ExamService {
 		Exam foundedExam=examRepository.findById(id).orElseThrow(()->new NotFoundException("Exam not found"));
 		if(foundedExam.isPublished()==true)
 		{
-			throw new BadRequestException("You can't be edit because the exam is already published");
+			throw new BadRequestException("You can't be delete exam because the exam is already published");
 		}
-		foundedExam.setActive(false);
 		examRepository.save(foundedExam);
 	}
+
+	
 }

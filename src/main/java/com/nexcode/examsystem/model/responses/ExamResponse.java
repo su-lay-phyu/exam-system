@@ -1,5 +1,7 @@
 package com.nexcode.examsystem.model.responses;
 
+import java.util.List;
+
 import lombok.Getter;
 import lombok.Setter;
 @Getter
@@ -15,5 +17,5 @@ public class ExamResponse {
 	private Integer noOfQuestion;
 	private CourseResponse category;
 	private LevelResponse level;
-	//private List<QuestionResponse>questions;
+	private List<QuestionResponse>questions;
 }

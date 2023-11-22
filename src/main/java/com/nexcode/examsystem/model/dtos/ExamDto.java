@@ -17,7 +17,6 @@ public class ExamDto {
 	private Integer examTotalMark;
 	private Integer numberOfQuestionsToGenerate;
 	private String publishedDate;
-	private boolean isActive;
 	private boolean isPublished;
 	private Long courseId;
 	private Long levelId;

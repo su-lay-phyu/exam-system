@@ -6,4 +6,5 @@ import com.nexcode.examsystem.model.entities.Question;
 
 public interface QuestionRepository extends JpaRepository<Question, Long>{
 
+	
 }

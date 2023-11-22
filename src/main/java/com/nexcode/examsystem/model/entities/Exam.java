@@ -65,7 +65,4 @@ public class Exam {
 	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
 	@JoinColumn(name = "exam_id")
 	private List<Question> questions;
-
-    @Column(name = "is_active")
-    private boolean isActive;
 }

@@ -15,7 +15,6 @@ public class UserExamDto {
     private Integer obtainedResult;
     private Date submittedTime;
     private boolean isPass;
-    private boolean isActive;
     private UserDto user;
     private ExamDto exam;
     private List<UserAnswerDto> userAnswers;

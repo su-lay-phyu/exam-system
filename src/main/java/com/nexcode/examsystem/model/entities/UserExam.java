@@ -51,7 +51,4 @@ public class UserExam {
 	@JsonManagedReference 
 	@OneToMany(mappedBy = "userExam") 
 	private List<UserAnswer> userAnswers;
-	
-	@Column(name = "is_active")
-	private boolean isActive;
 }

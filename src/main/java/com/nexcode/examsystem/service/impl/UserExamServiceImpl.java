@@ -46,7 +46,6 @@ public class UserExamServiceImpl implements UserExamService {
 		userExam.setUser(foundedUser);
 		userExam.setExam(foundedExam);
 		userExam.setObtainedResult(0);
-		userExam.setActive(true);
 		userExamRepository.save(userExam);
 	}
 

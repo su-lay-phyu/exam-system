@@ -19,6 +19,7 @@ import com.nexcode.examsystem.model.dtos.ExamDto;
 import com.nexcode.examsystem.model.dtos.QuestionDto;
 import com.nexcode.examsystem.model.requests.ExamPublishedRequest;
 import com.nexcode.examsystem.model.requests.ExamRequest;
+import com.nexcode.examsystem.model.requests.QuestionRequest;
 import com.nexcode.examsystem.model.responses.ExamResponse;
 import com.nexcode.examsystem.model.responses.QuestionAnswerResponse;
 import com.nexcode.examsystem.service.ExamService;
@@ -49,15 +50,20 @@ public class ExamController {
 	@PostMapping
 	public ResponseEntity<?> createExamWithQuestions(@RequestBody ExamRequest request)
 	{
-		ExamDto createdExam=examService.createExamWithQuestions(request);
+		ExamDto createdExam=examService.createExam(request);
 		return new ResponseEntity<>(examMapper.toResponse(createdExam), HttpStatus.CREATED);
 	}
 	@PutMapping("/{id}")
 	public ResponseEntity<?>updateExam(@PathVariable Long id,@RequestBody ExamRequest request)
 	{
 		examService.updateExam(id, request);
-		return new ResponseEntity<>("Exam and questions updated successfully", HttpStatus.OK);
-		
+		return new ResponseEntity<>("Exam updated.", HttpStatus.OK);
+	}
+	@PutMapping("/{id}/questions")
+	public ResponseEntity<?>updateExamQuestions(@PathVariable Long id,@RequestBody List<QuestionRequest> request)
+	{
+		examService.updateQuestionWithExamId(id, request);
+		return new ResponseEntity<>("Exam Questions Updated.", HttpStatus.OK);
 	}
 	@PutMapping("/{id}/publish")
 	public ResponseEntity<?>publishExam(@PathVariable Long id,@RequestBody ExamPublishedRequest request)

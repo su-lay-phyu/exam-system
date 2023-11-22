@@ -118,7 +118,7 @@ public class UserController {
 		String email = request.getEmail();
 		UserDto existingUser = userService.findUserByEmailAddress(email);
 		if (existingUser != null) {
-			return new ResponseEntity<>("This email is already in use. Please use another one.",HttpStatus.CONFLICT);
+	        return new ResponseEntity<>("This email is already in use. Please use another one.",HttpStatus.CONFLICT);
 		}
 		userService.signUpUser(request);
 		return new ResponseEntity<>("Signup successful. An email has been sent for verification.",HttpStatus.CREATED);

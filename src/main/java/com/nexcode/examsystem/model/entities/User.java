@@ -75,7 +75,4 @@ public class User {
 	    inverseJoinColumns = @JoinColumn(name = "course_id")
 	)
 	private List<Course>courses;
-	
-	@Column(name = "is_active")
-	private boolean isActive;
 }

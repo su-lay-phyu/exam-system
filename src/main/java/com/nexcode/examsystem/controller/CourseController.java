@@ -72,10 +72,6 @@ public class CourseController {
 	@PutMapping("/{id}")
 	public ResponseEntity<?>updateCourse(@PathVariable Long id,@RequestBody CourseRequest request)
 	{
-		CourseDto existingCourse=courseService.findByName(request.getName());
-		if (existingCourse != null) {
-		    return new ResponseEntity<>( "Course already exists", HttpStatus.CONFLICT);
-		} 
 		CourseDto dto=courseMapper.toDto(request);
 		CourseDto updatedDto=courseService.updateCourse(id, dto);
 		return new ResponseEntity<>(courseMapper.toResponse(updatedDto), HttpStatus.OK);

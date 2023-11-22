@@ -99,7 +99,6 @@ public class UserServiceImpl implements UserService {
 			user.setPassword(encodedPassword);
 			user.setPhone(request.getPhone());
 			user.setPasswordChanged(false);
-			user.setActive(true);
 			List<Role> roles = new ArrayList<>();
 			Role userRole = roleRepository.findByName("USER").orElse(null);
 			roles.add(userRole);
@@ -219,9 +218,7 @@ public class UserServiceImpl implements UserService {
 	                .map(c -> courseRepository.findById(c).orElseThrow(() -> new NotFoundException("Course not found")))
 	                .collect(Collectors.toList());
 	        foundedUser.setCourses(courses);
-	        
 	        User savedUser = userRepository.save(foundedUser);
-	  
 	        if (!oldEmail.equals(request.getEmail())) {
 	        	 UserDto userInfo=new UserDto(savedUser.getRollNo(),savedUser.getUsername(),savedUser.getEmail(),password,roleMapper.toDtoList(savedUser.getRoles()),courseMapper.toDtoList(savedUser.getCourses()));
 	        	 sendSignUpVerifiedStudent(userInfo);
@@ -270,7 +267,6 @@ public class UserServiceImpl implements UserService {
 	@Override
 	public void deleteStudent(Long id) {
 		User foundedUser=userRepository.findById(id).orElseThrow(()->new NotFoundException("User not Found"));
-		foundedUser.setActive(false);
 		userRepository.save(foundedUser);
 	}
 
