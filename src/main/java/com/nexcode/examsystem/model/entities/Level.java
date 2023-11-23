@@ -7,16 +7,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.RequiredArgsConstructor;
-import lombok.Setter;
-
 @Entity
-@Getter
-@Setter
-@RequiredArgsConstructor
-@AllArgsConstructor
 @Table(name="levels")
 public class Level {
 	
@@ -27,5 +18,25 @@ public class Level {
 	
 	@Column(name="name")
 	private String name;
+
+	public Level() {
+		
+	}
+
+	public Long getId() {
+		return id;
+	}
+
+	public void setId(Long id) {
+		this.id = id;
+	}
+
+	public String getName() {
+		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
+	}
 
 }

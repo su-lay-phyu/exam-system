@@ -13,20 +13,16 @@ import com.nexcode.examsystem.model.dtos.UserDto;
 import com.nexcode.examsystem.model.entities.User;
 import com.nexcode.examsystem.model.responses.UserResponse;
 
-import lombok.Getter;
-import lombok.RequiredArgsConstructor;
-import lombok.Setter;
-
 @Component
-@Getter
-@Setter
-@RequiredArgsConstructor
 public class UserMapperImpl implements UserMapper{
-	
 
 	private final RoleMapper roleMapper;
-	
 	private final CourseMapper courseMapper;
+	
+	public UserMapperImpl(RoleMapper roleMapper, CourseMapper courseMapper) {
+		this.roleMapper = roleMapper;
+		this.courseMapper = courseMapper;
+	}
 
 	@Override
 	public UserDto toDto(User user) {

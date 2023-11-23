@@ -1,16 +1,33 @@
 package com.nexcode.examsystem.model.responses;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.RequiredArgsConstructor;
-import lombok.Setter;
-
-@Getter
-@Setter
-@AllArgsConstructor
-@RequiredArgsConstructor
 public class JwtResponse {
 	private String token;
 	private String expiredAt;
 	private boolean isFirstPasswordChangeCompleted;
+	public String getToken() {
+		return token;
+	}
+	public void setToken(String token) {
+		this.token = token;
+	}
+	public String getExpiredAt() {
+		return expiredAt;
+	}
+	public void setExpiredAt(String expiredAt) {
+		this.expiredAt = expiredAt;
+	}
+	public boolean isFirstPasswordChangeCompleted() {
+		return isFirstPasswordChangeCompleted;
+	}
+	public void setFirstPasswordChangeCompleted(boolean isFirstPasswordChangeCompleted) {
+		this.isFirstPasswordChangeCompleted = isFirstPasswordChangeCompleted;
+	}
+	public JwtResponse(String token, String expiredAt, boolean isFirstPasswordChangeCompleted) {
+		super();
+		this.token = token;
+		this.expiredAt = expiredAt;
+		this.isFirstPasswordChangeCompleted = isFirstPasswordChangeCompleted;
+	}
+	
+	
 }

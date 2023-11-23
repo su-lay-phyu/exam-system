@@ -11,16 +11,16 @@ import com.nexcode.examsystem.model.dtos.UserAnswerDto;
 import com.nexcode.examsystem.model.entities.UserAnswer;
 import com.nexcode.examsystem.model.responses.UserAnswerResponse;
 
-import lombok.Getter;
-import lombok.RequiredArgsConstructor;
-import lombok.Setter;
-@Getter
-@Setter
-@RequiredArgsConstructor
 @Component
 public class UserAnswerMapperImpl implements UserAnswerMapper{
 
 	private final QuestionMapper questionMapper;
+	
+	
+	public UserAnswerMapperImpl(QuestionMapper questionMapper) {
+		this.questionMapper = questionMapper;
+	}
+
 	@Override
 	public UserAnswerDto toDto(UserAnswer userAnswer) {
 		UserAnswerDto dto=new UserAnswerDto();

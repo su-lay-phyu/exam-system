@@ -12,19 +12,24 @@ import com.nexcode.examsystem.model.requests.LoginRequest;
 import com.nexcode.examsystem.model.responses.JwtResponse;
 import com.nexcode.examsystem.service.AuthService;
 
-import lombok.RequiredArgsConstructor;
-
-@RequiredArgsConstructor
 @RestController
 @CrossOrigin
 @RequestMapping("/api/auth")
 public class AuthController {
 
 	private final AuthService authService;
+	
+	public AuthController(AuthService authService) {
+		this.authService = authService;
+	}
 
 	@PostMapping("/login")
 	public ResponseEntity<?> login(@RequestBody LoginRequest loginRequest) {
 		JwtResponse jwtResponse = authService.authenticate(loginRequest);
 		return new ResponseEntity<>(jwtResponse,HttpStatus.OK);
 	}
+
+
+
+	
 }

@@ -12,6 +12,7 @@ import com.nexcode.examsystem.model.entities.User;
 
 public class UserPrincipal implements UserDetails{
 
+	private static final long serialVersionUID = 1L;
 	private Long id;
 	private String username;
 	private String email;

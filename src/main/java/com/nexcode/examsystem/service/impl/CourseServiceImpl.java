@@ -18,10 +18,7 @@ import com.nexcode.examsystem.model.exception.NotFoundException;
 import com.nexcode.examsystem.repository.CourseRepository;
 import com.nexcode.examsystem.repository.UserExamRepository;
 import com.nexcode.examsystem.service.CourseService;
-
-import lombok.RequiredArgsConstructor;
 @Service
-@RequiredArgsConstructor
 public class CourseServiceImpl implements CourseService{
 	
 	private final CourseRepository courseRepository;
@@ -32,6 +29,15 @@ public class CourseServiceImpl implements CourseService{
 	private final ExamMapper examMapper;
 
 	
+	public CourseServiceImpl(CourseRepository courseRepository, UserExamRepository userExamRepository,
+			UserMapper userMapper, CourseMapper courseMapper, ExamMapper examMapper) {
+		this.courseRepository = courseRepository;
+		this.userExamRepository = userExamRepository;
+		this.userMapper = userMapper;
+		this.courseMapper = courseMapper;
+		this.examMapper = examMapper;
+	}
+
 	@Override
 	public List<CourseDto> getAllCourses() {
 		return courseMapper.toDtoList(courseRepository.findAll());

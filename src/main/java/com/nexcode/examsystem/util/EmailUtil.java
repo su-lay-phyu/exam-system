@@ -7,18 +7,14 @@ import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Component;
 
-import lombok.Getter;
-import lombok.RequiredArgsConstructor;
-import lombok.Setter;
-
 @Component
-@Getter
-@Setter
-@RequiredArgsConstructor
 public class EmailUtil{
 
 	public final JavaMailSender javaMailSender;
 	
+	public EmailUtil(JavaMailSender javaMailSender) {
+		this.javaMailSender = javaMailSender;
+	}
 	public void sendEmail(String to, String subject, String content) throws MessagingException 
 	{
 		

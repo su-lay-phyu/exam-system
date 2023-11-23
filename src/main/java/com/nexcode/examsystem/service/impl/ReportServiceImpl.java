@@ -22,10 +22,7 @@ import com.nexcode.examsystem.repository.LevelRepository;
 import com.nexcode.examsystem.repository.UserExamRepository;
 import com.nexcode.examsystem.repository.UserRepository;
 import com.nexcode.examsystem.service.ReportService;
-
-import lombok.RequiredArgsConstructor;
 @Service
-@RequiredArgsConstructor
 public class ReportServiceImpl implements ReportService{
 	
 	private final CourseRepository courseRepository;
@@ -34,6 +31,15 @@ public class ReportServiceImpl implements ReportService{
 	private final ExamRepository examRepository;
 	private final LevelRepository levelRepository;
 	
+	
+	public ReportServiceImpl(CourseRepository courseRepository, UserExamRepository userExamRepository,
+			UserRepository userRepository, ExamRepository examRepository, LevelRepository levelRepository) {
+		this.courseRepository = courseRepository;
+		this.userExamRepository = userExamRepository;
+		this.userRepository = userRepository;
+		this.examRepository = examRepository;
+		this.levelRepository = levelRepository;
+	}
 	public List<Course>getAllCourses()
 	{
 		return courseRepository.findAll();

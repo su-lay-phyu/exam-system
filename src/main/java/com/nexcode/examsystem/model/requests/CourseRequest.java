@@ -1,14 +1,27 @@
 package com.nexcode.examsystem.model.requests;
 
-import lombok.Getter;
-import lombok.RequiredArgsConstructor;
-import lombok.Setter;
-
-@Getter
-@Setter
-@RequiredArgsConstructor
 public class CourseRequest {
 	
 	private String name;
 	private String description;
+	
+	public CourseRequest() {
+	}
+
+	public String getName() {
+		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
+	}
+
+	public String getDescription() {
+		return description;
+	}
+
+	public void setDescription(String description) {
+		this.description = description;
+	}
+	
 }

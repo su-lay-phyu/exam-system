@@ -1,17 +1,31 @@
 package com.nexcode.examsystem.model.dtos;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-
-@Getter
-@Setter
-@NoArgsConstructor
-@AllArgsConstructor
 public class AnswerDto {
 	
 	private Long id;
 	private String answer;
-	private boolean isCorrectAnswer;	
+	private boolean isCorrectAnswer;
+	
+	public AnswerDto() {
+	}
+	
+	public Long getId() {
+		return id;
+	}
+	public void setId(Long id) {
+		this.id = id;
+	}
+	public String getAnswer() {
+		return answer;
+	}
+	public void setAnswer(String answer) {
+		this.answer = answer;
+	}
+	public boolean isCorrectAnswer() {
+		return isCorrectAnswer;
+	}
+	public void setCorrectAnswer(boolean isCorrectAnswer) {
+		this.isCorrectAnswer = isCorrectAnswer;
+	}
+	
 }

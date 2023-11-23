@@ -15,17 +15,7 @@ import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.Table;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-
 @Entity
-@Getter
-@Setter
-@NoArgsConstructor
-@AllArgsConstructor
-
 @Table(name="users")
 
 public class User {
@@ -75,4 +65,96 @@ public class User {
 	    inverseJoinColumns = @JoinColumn(name = "course_id")
 	)
 	private List<Course>courses;
+
+	public User() {
+		
+	}
+
+	public Long getId() {
+		return id;
+	}
+
+	public void setId(Long id) {
+		this.id = id;
+	}
+
+	public String getRollNo() {
+		return rollNo;
+	}
+
+	public void setRollNo(String rollNo) {
+		this.rollNo = rollNo;
+	}
+
+	public String getUsername() {
+		return username;
+	}
+
+	public void setUsername(String username) {
+		this.username = username;
+	}
+
+	public String getEmail() {
+		return email;
+	}
+
+	public void setEmail(String email) {
+		this.email = email;
+	}
+
+	public String getPassword() {
+		return password;
+	}
+
+	public void setPassword(String password) {
+		this.password = password;
+	}
+
+	public String getPhone() {
+		return phone;
+	}
+
+	public void setPhone(String phone) {
+		this.phone = phone;
+	}
+
+	public boolean isPasswordChanged() {
+		return isPasswordChanged;
+	}
+
+	public void setPasswordChanged(boolean isPasswordChanged) {
+		this.isPasswordChanged = isPasswordChanged;
+	}
+
+	public String getOtp() {
+		return otp;
+	}
+
+	public void setOtp(String otp) {
+		this.otp = otp;
+	}
+
+	public Date getOtpExpirationTime() {
+		return otpExpirationTime;
+	}
+
+	public void setOtpExpirationTime(Date otpExpirationTime) {
+		this.otpExpirationTime = otpExpirationTime;
+	}
+
+	public List<Role> getRoles() {
+		return roles;
+	}
+
+	public void setRoles(List<Role> roles) {
+		this.roles = roles;
+	}
+
+	public List<Course> getCourses() {
+		return courses;
+	}
+
+	public void setCourses(List<Course> courses) {
+		this.courses = courses;
+	}
 }

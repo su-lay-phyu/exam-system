@@ -16,17 +16,21 @@ import com.nexcode.examsystem.repository.LevelRepository;
 import com.nexcode.examsystem.repository.RoleRepository;
 import com.nexcode.examsystem.repository.UserRepository;
 
-import lombok.RequiredArgsConstructor;
-
 @Component
-@RequiredArgsConstructor
 public class AddAdminUserRunner implements CommandLineRunner {
 
-	
-    private final UserRepository userRepository;
+	private final UserRepository userRepository;
     private final RoleRepository roleRepository;
     private final LevelRepository levelRepository;
     private final PasswordEncoder encoder;
+    
+    public AddAdminUserRunner(UserRepository userRepository, RoleRepository roleRepository,
+			LevelRepository levelRepository, PasswordEncoder encoder) {
+		this.userRepository = userRepository;
+		this.roleRepository = roleRepository;
+		this.levelRepository = levelRepository;
+		this.encoder = encoder;
+	}
     
     @Override
     public void run(String... args) throws Exception {

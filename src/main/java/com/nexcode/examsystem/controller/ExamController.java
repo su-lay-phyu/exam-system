@@ -23,17 +23,19 @@ import com.nexcode.examsystem.model.requests.QuestionRequest;
 import com.nexcode.examsystem.model.responses.ExamResponse;
 import com.nexcode.examsystem.model.responses.QuestionAnswerResponse;
 import com.nexcode.examsystem.service.ExamService;
-
-import lombok.RequiredArgsConstructor;
 @RestController
-@RequiredArgsConstructor
 @RequestMapping("/api/exam")
 public class ExamController {
 	
 	private final ExamService examService;
-	
 	private final ExamMapper examMapper;
 	private final QuestionMapper questionMapper;
+	
+	public ExamController(ExamService examService, ExamMapper examMapper, QuestionMapper questionMapper) {
+		this.examService = examService;
+		this.examMapper = examMapper;
+		this.questionMapper = questionMapper;
+	}
 	@GetMapping
 	public List<ExamResponse> getAllExam()
 	{

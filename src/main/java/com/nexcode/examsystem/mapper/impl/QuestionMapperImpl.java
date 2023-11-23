@@ -12,17 +12,15 @@ import com.nexcode.examsystem.model.entities.Question;
 import com.nexcode.examsystem.model.responses.QuestionAnswerResponse;
 import com.nexcode.examsystem.model.responses.QuestionResponse;
 
-import lombok.Getter;
-import lombok.RequiredArgsConstructor;
-import lombok.Setter;
-
-@Getter
-@Setter
-@RequiredArgsConstructor
 @Component
 public class QuestionMapperImpl implements QuestionMapper{
 
 	private final AnswerMapper answerMapper;
+	
+	public QuestionMapperImpl(AnswerMapper answerMapper) {
+		this.answerMapper = answerMapper;
+	}
+
 	@Override
 	public QuestionDto toDto(Question q) {
 		QuestionDto dto=new QuestionDto();

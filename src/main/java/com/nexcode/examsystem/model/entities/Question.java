@@ -13,14 +13,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
-import lombok.Getter;
-import lombok.RequiredArgsConstructor;
-import lombok.Setter;
-
 @Entity
-@Getter
-@Setter
-@RequiredArgsConstructor
 @Table(name="questions")
 public class Question {
 	@Id
@@ -35,4 +28,33 @@ public class Question {
     @JoinColumn(name = "question_id")
     private List<Answer> answers;
 
+	public Question() {
+		super();
+	}
+
+	public Long getId() {
+		return id;
+	}
+
+	public void setId(Long id) {
+		this.id = id;
+	}
+
+	public String getQuestion() {
+		return question;
+	}
+
+	public void setQuestion(String question) {
+		this.question = question;
+	}
+
+	public List<Answer> getAnswers() {
+		return answers;
+	}
+
+	public void setAnswers(List<Answer> answers) {
+		this.answers = answers;
+	}
+
+	
 }

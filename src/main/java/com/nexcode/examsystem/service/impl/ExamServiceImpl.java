@@ -29,10 +29,7 @@ import com.nexcode.examsystem.repository.QuestionRepository;
 import com.nexcode.examsystem.repository.UserExamRepository;
 import com.nexcode.examsystem.service.ExamService;
 
-import lombok.RequiredArgsConstructor;
-
 @Service
-@RequiredArgsConstructor
 @Transactional
 public class ExamServiceImpl implements ExamService {
 
@@ -43,6 +40,19 @@ public class ExamServiceImpl implements ExamService {
 	private final CourseRepository categoryRepository;
 	private final QuestionRepository questionRepository;
 	private final UserExamRepository userExamRepository;
+
+	
+	public ExamServiceImpl(ExamMapper examMapper, QuestionMapper questionMapper, ExamRepository examRepository,
+			LevelRepository levelRepository, CourseRepository categoryRepository, QuestionRepository questionRepository,
+			UserExamRepository userExamRepository) {
+		this.examMapper = examMapper;
+		this.questionMapper = questionMapper;
+		this.examRepository = examRepository;
+		this.levelRepository = levelRepository;
+		this.categoryRepository = categoryRepository;
+		this.questionRepository = questionRepository;
+		this.userExamRepository = userExamRepository;
+	}
 
 	// find exam with id
 	public Exam findExam(Long id) {

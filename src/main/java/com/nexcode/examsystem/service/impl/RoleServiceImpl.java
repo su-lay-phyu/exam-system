@@ -12,14 +12,18 @@ import com.nexcode.examsystem.model.exception.BadRequestException;
 import com.nexcode.examsystem.repository.RoleRepository;
 import com.nexcode.examsystem.service.RoleService;
 
-import lombok.RequiredArgsConstructor;
-
 @Service
-@RequiredArgsConstructor
 public class RoleServiceImpl implements RoleService{
 	
 	private final RoleRepository roleRepository;
 	private final RoleMapper roleMapper;
+	
+	
+	public RoleServiceImpl(RoleRepository roleRepository, RoleMapper roleMapper) {
+		this.roleRepository = roleRepository;
+		this.roleMapper = roleMapper;
+	}
+
 	@Override
 	public RoleDto addRole(RoleDto roleDto) {
 		Role role=new Role();

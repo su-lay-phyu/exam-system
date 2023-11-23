@@ -32,11 +32,9 @@ import com.nexcode.examsystem.service.UserService;
 import com.nexcode.examsystem.util.EmailUtil;
 import com.nexcode.examsystem.util.OtpUtil;
 
-import lombok.RequiredArgsConstructor;
 import net.bytebuddy.utility.RandomString;
 
 @Service
-@RequiredArgsConstructor
 @Transactional
 public class UserServiceImpl implements UserService {
 
@@ -59,6 +57,20 @@ public class UserServiceImpl implements UserService {
 	private final OtpUtil otpUtil;
 
 	
+	public UserServiceImpl(UserMapper userMapper, RoleMapper roleMapper, CourseMapper courseMapper,
+			UserRepository userRepository, RoleRepository roleRepository, CourseRepository courseRepository,
+			ExamRepository examRepository, PasswordEncoder passwordEncoder, EmailUtil emailSender, OtpUtil otpUtil) {
+		this.userMapper = userMapper;
+		this.roleMapper = roleMapper;
+		this.courseMapper = courseMapper;
+		this.userRepository = userRepository;
+		this.roleRepository = roleRepository;
+		this.courseRepository = courseRepository;
+		this.examRepository = examRepository;
+		this.passwordEncoder = passwordEncoder;
+		this.emailSender = emailSender;
+		this.otpUtil = otpUtil;
+	}
 	@Override
 	public List<UserDto> getAllUser() {
 		return userMapper.toDtoList(userRepository.findAllUserWithCategories());

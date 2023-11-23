@@ -7,17 +7,9 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
-import lombok.Getter;
-import lombok.RequiredArgsConstructor;
-import lombok.Setter;
-
 @Entity
-@Getter
-@Setter
-@RequiredArgsConstructor
 @Table(name="answers")
 public class Answer {
-	
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name="id")
@@ -28,4 +20,34 @@ public class Answer {
 	
 	@Column(name="is_correct_answer") 
 	private boolean isCorrectAnswer;
+
+	public Answer() {
+		
+	}
+
+	public Long getId() {
+		return id;
+	}
+
+	public void setId(Long id) {
+		this.id = id;
+	}
+
+	public String getAnswer() {
+		return answer;
+	}
+
+	public void setAnswer(String answer) {
+		this.answer = answer;
+	}
+
+	public boolean isCorrectAnswer() {
+		return isCorrectAnswer;
+	}
+
+	public void setCorrectAnswer(boolean isCorrectAnswer) {
+		this.isCorrectAnswer = isCorrectAnswer;
+	}
+	
+	
 }

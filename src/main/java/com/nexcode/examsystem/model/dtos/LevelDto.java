@@ -1,14 +1,24 @@
 package com.nexcode.examsystem.model.dtos;
 
-import lombok.Getter;
-import lombok.RequiredArgsConstructor;
-import lombok.Setter;
-
-@Getter
-@Setter
-@RequiredArgsConstructor
 public class LevelDto {
 	
 	private Long id;
 	private String name;
+	
+	public LevelDto() {
+		
+	}
+	public Long getId() {
+		return id;
+	}
+	public void setId(Long id) {
+		this.id = id;
+	}
+	public String getName() {
+		return name;
+	}
+	public void setName(String name) {
+		this.name = name;
+	}
+	
 }

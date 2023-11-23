@@ -11,8 +11,6 @@ import com.nexcode.examsystem.model.entities.Level;
 import com.nexcode.examsystem.model.responses.LevelResponse;
 @Component
 public class LevelMapperImpl implements LevelMapper{
-	
-	
 
 	@Override
 	public LevelDto toDto(Level level) {

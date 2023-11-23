@@ -1,13 +1,17 @@
 package com.nexcode.examsystem.model.requests;
 
-import lombok.Getter;
-import lombok.RequiredArgsConstructor;
-import lombok.Setter;
-
-@RequiredArgsConstructor
-@Getter
-@Setter
 public class EmailRequest {
 	private String email;
 
+	public EmailRequest() {
+	}
+
+	public String getEmail() {
+		return email;
+	}
+
+	public void setEmail(String email) {
+		this.email = email;
+	}
+	
 }

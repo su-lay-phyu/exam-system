@@ -1,14 +1,27 @@
 package com.nexcode.examsystem.model.requests;
 
-import lombok.Getter;
-import lombok.RequiredArgsConstructor;
-import lombok.Setter;
-
-@Getter
-@Setter
-@RequiredArgsConstructor
 public class UserAnswerRequest {
 	
 	private Long questionId;
 	private String selectedAnswer;
+	
+	public UserAnswerRequest() {
+	}
+
+	public Long getQuestionId() {
+		return questionId;
+	}
+
+	public void setQuestionId(Long questionId) {
+		this.questionId = questionId;
+	}
+
+	public String getSelectedAnswer() {
+		return selectedAnswer;
+	}
+
+	public void setSelectedAnswer(String selectedAnswer) {
+		this.selectedAnswer = selectedAnswer;
+	}
+	
 }

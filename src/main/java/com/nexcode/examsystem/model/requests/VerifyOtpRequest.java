@@ -1,13 +1,27 @@
 package com.nexcode.examsystem.model.requests;
 
-import lombok.Getter;
-import lombok.RequiredArgsConstructor;
-import lombok.Setter;
-
-@RequiredArgsConstructor
-@Getter
-@Setter
-public class VerifyOtpRequest { 
+public class VerifyOtpRequest {
 	private String email;
 	private String otp;
+
+	public VerifyOtpRequest() {
+
+	}
+
+	public String getEmail() {
+		return email;
+	}
+
+	public void setEmail(String email) {
+		this.email = email;
+	}
+
+	public String getOtp() {
+		return otp;
+	}
+
+	public void setOtp(String otp) {
+		this.otp = otp;
+	}
+
 }

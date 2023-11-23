@@ -17,18 +17,20 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 
 import com.nexcode.examsystem.security.JwtAuthenticationFilter;
 
-import lombok.RequiredArgsConstructor;
-
 @Configuration
 @EnableWebSecurity
-@RequiredArgsConstructor
 public class WebSecurityConfigure {
 	
 	private final AuthenticationEntryPoint authenticationEntryPoint;
-	
 	private final JwtAuthenticationFilter jwtAuthenticationFilter;
+	
+    public WebSecurityConfigure(AuthenticationEntryPoint authenticationEntryPoint,
+			JwtAuthenticationFilter jwtAuthenticationFilter) {
+		this.authenticationEntryPoint = authenticationEntryPoint;
+		this.jwtAuthenticationFilter = jwtAuthenticationFilter;
+	}
 
-    @Bean
+	@Bean
     AuthenticationManager authenticationManager(HttpSecurity httpSecurity, UserDetailsService userDetailsService, PasswordEncoder passwordEncoder) throws Exception
 	{
 		 AuthenticationManagerBuilder builder = httpSecurity.getSharedObject(AuthenticationManagerBuilder.class);

@@ -5,7 +5,6 @@ import java.util.Random;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.nexcode.examsystem.model.entities.User;
@@ -15,11 +14,11 @@ import com.nexcode.examsystem.repository.UserRepository;
 
 @Component
 public class OtpUtil {
+	private final UserRepository userRepository;
 	
-	@Autowired
-	private UserRepository userRepository;
-	
-	
+	public OtpUtil(UserRepository userRepository) {
+		this.userRepository = userRepository;
+	}
 	public boolean validateOtp(String email,String otp)
 	{
 		User foundedUser = userRepository.findByEmail(email).orElseThrow(()->new BadRequestException("User Not Found : email->"+email));

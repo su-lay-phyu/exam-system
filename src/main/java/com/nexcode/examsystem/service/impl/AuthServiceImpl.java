@@ -17,18 +17,21 @@ import com.nexcode.examsystem.repository.UserRepository;
 import com.nexcode.examsystem.security.JwtService;
 import com.nexcode.examsystem.service.AuthService;
 
-import lombok.RequiredArgsConstructor;
-
 @Service
-@RequiredArgsConstructor
 public class AuthServiceImpl implements AuthService {
 
 	private final AuthenticationManager authenticationManager;
-
 	private final JwtService jwtService;
-	
 	private final UserRepository userRepository;
 
+	
+	public AuthServiceImpl(AuthenticationManager authenticationManager, JwtService jwtService,
+			UserRepository userRepository) {
+		super();
+		this.authenticationManager = authenticationManager;
+		this.jwtService = jwtService;
+		this.userRepository = userRepository;
+	}
 	@Override
 	public JwtResponse authenticate(LoginRequest loginRequest) {
 		

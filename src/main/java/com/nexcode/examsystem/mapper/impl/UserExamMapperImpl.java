@@ -9,17 +9,16 @@ import com.nexcode.examsystem.model.dtos.UserExamDto;
 import com.nexcode.examsystem.model.entities.UserExam;
 import com.nexcode.examsystem.model.responses.UserExamResponse;
 
-import lombok.Getter;
-import lombok.RequiredArgsConstructor;
-import lombok.Setter;
-@Getter
-@Setter
-@RequiredArgsConstructor
 @Component
 public class UserExamMapperImpl implements UserExamMapper{
 
 	private final UserAnswerMapper userAnswerMapper;
 	private final ExamMapper examMapper;
+	
+	public UserExamMapperImpl(UserAnswerMapper userAnswerMapper, ExamMapper examMapper) {
+		this.userAnswerMapper = userAnswerMapper;
+		this.examMapper = examMapper;
+	}
 	@Override
 	public UserExamDto toDto(UserExam userExam) {
 		UserExamDto dto=new UserExamDto();

@@ -16,14 +16,7 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 import com.fasterxml.jackson.annotation.JsonManagedReference;
-
-import lombok.Getter;
-import lombok.RequiredArgsConstructor;
-import lombok.Setter;
 @Entity
-@Getter
-@Setter
-@RequiredArgsConstructor
 @Table(name="user_exams")
 public class UserExam {
 	@Id
@@ -51,4 +44,65 @@ public class UserExam {
 	@JsonManagedReference 
 	@OneToMany(mappedBy = "userExam") 
 	private List<UserAnswer> userAnswers;
+
+	public UserExam() {
+	}
+
+	public Long getId() {
+		return id;
+	}
+
+	public void setId(Long id) {
+		this.id = id;
+	}
+
+	public Integer getObtainedResult() {
+		return obtainedResult;
+	}
+
+	public void setObtainedResult(Integer obtainedResult) {
+		this.obtainedResult = obtainedResult;
+	}
+
+	public Date getSubmittedTime() {
+		return submittedTime;
+	}
+
+	public void setSubmittedTime(Date submittedTime) {
+		this.submittedTime = submittedTime;
+	}
+
+	public boolean isPass() {
+		return isPass;
+	}
+
+	public void setPass(boolean isPass) {
+		this.isPass = isPass;
+	}
+
+	public User getUser() {
+		return user;
+	}
+
+	public void setUser(User user) {
+		this.user = user;
+	}
+
+	public Exam getExam() {
+		return exam;
+	}
+
+	public void setExam(Exam exam) {
+		this.exam = exam;
+	}
+
+	public List<UserAnswer> getUserAnswers() {
+		return userAnswers;
+	}
+
+	public void setUserAnswers(List<UserAnswer> userAnswers) {
+		this.userAnswers = userAnswers;
+	}
+	
+	
 }

@@ -15,13 +15,14 @@ import com.nexcode.examsystem.model.responses.OverAllReportResponse;
 import com.nexcode.examsystem.model.responses.StudentPassFailCountResponse;
 import com.nexcode.examsystem.service.ReportService;
 
-import lombok.RequiredArgsConstructor;
-
 @RestController
-@RequiredArgsConstructor
 @RequestMapping("/api/report")
 public class ReportController {
 	private final ReportService reportService;
+	
+	public ReportController(ReportService reportService) {
+		this.reportService = reportService;
+	}
 	//overall report
 	@GetMapping
 	public List<OverAllReportResponse>getOverAllReport()

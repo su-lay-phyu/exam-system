@@ -15,21 +15,19 @@ import com.nexcode.examsystem.model.dtos.ExamDto;
 import com.nexcode.examsystem.model.entities.Exam;
 import com.nexcode.examsystem.model.responses.ExamResponse;
 
-import lombok.Getter;
-import lombok.RequiredArgsConstructor;
-import lombok.Setter;
-
 @Component
-@Getter
-@Setter
-@RequiredArgsConstructor
 public class ExamMapperImpl implements ExamMapper {
 
 	private final LevelMapper levelMapper;
-
 	private final CourseMapper courseMapper;
-
 	private final QuestionMapper questionMapper;
+
+	
+	public ExamMapperImpl(LevelMapper levelMapper, CourseMapper courseMapper, QuestionMapper questionMapper) {
+		this.levelMapper = levelMapper;
+		this.courseMapper = courseMapper;
+		this.questionMapper = questionMapper;
+	}
 
 	@Override
 	public ExamDto toDto(Exam exam) {

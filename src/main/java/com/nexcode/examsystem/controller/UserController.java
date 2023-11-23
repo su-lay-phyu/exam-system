@@ -32,7 +32,6 @@ import com.nexcode.examsystem.model.requests.NewPasswordRequest;
 import com.nexcode.examsystem.model.requests.UserAnswerRequest;
 import com.nexcode.examsystem.model.requests.UserRequest;
 import com.nexcode.examsystem.model.requests.VerifyOtpRequest;
-import com.nexcode.examsystem.model.responses.ApiResponse;
 import com.nexcode.examsystem.model.responses.ExamResponse;
 import com.nexcode.examsystem.model.responses.QuestionResponse;
 import com.nexcode.examsystem.model.responses.StudentCourseResponse;
@@ -44,11 +43,8 @@ import com.nexcode.examsystem.service.ExamService;
 import com.nexcode.examsystem.service.UserExamService;
 import com.nexcode.examsystem.service.UserService;
 
-import lombok.RequiredArgsConstructor;
-
 @RestController
 @RequestMapping("/api/user")
-@RequiredArgsConstructor
 public class UserController {
 
 	private final CourseService courseService;
@@ -61,6 +57,22 @@ public class UserController {
 	private final QuestionMapper questionMapper;
 	private final UserExamMapper userExamMapper;
 	private final ExamMapper examMapper;
+
+	
+	
+	public UserController(CourseService courseService, UserService userService, ExamService examService,
+			UserExamService userExamService, UserMapper userMapper, CourseMapper courseMapper,
+			QuestionMapper questionMapper, UserExamMapper userExamMapper, ExamMapper examMapper) {
+		this.courseService = courseService;
+		this.userService = userService;
+		this.examService = examService;
+		this.userExamService = userExamService;
+		this.userMapper = userMapper;
+		this.courseMapper = courseMapper;
+		this.questionMapper = questionMapper;
+		this.userExamMapper = userExamMapper;
+		this.examMapper = examMapper;
+	}
 
 	// password process
 	@PostMapping("/forgot-password")

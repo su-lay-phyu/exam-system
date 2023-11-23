@@ -25,10 +25,7 @@ import com.nexcode.examsystem.repository.UserExamRepository;
 import com.nexcode.examsystem.repository.UserRepository;
 import com.nexcode.examsystem.service.UserExamService;
 
-import lombok.RequiredArgsConstructor;
-
 @Service
-@RequiredArgsConstructor
 public class UserExamServiceImpl implements UserExamService {
 
 	private final UserExamMapper userExamMapper;
@@ -37,6 +34,18 @@ public class UserExamServiceImpl implements UserExamService {
 	private final UserExamRepository userExamRepository;
 	private final UserAnswerRepository userAnswerRepository;
 	private final QuestionRepository questionRepository;
+
+	
+	public UserExamServiceImpl(UserExamMapper userExamMapper, UserRepository userRepository,
+			ExamRepository examRepository, UserExamRepository userExamRepository,
+			UserAnswerRepository userAnswerRepository, QuestionRepository questionRepository) {
+		this.userExamMapper = userExamMapper;
+		this.userRepository = userRepository;
+		this.examRepository = examRepository;
+		this.userExamRepository = userExamRepository;
+		this.userAnswerRepository = userAnswerRepository;
+		this.questionRepository = questionRepository;
+	}
 
 	@Override
 	public void createUserExam(Long userId, Long examId) {

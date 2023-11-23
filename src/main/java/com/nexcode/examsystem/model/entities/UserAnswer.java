@@ -13,14 +13,7 @@ import javax.persistence.Table;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 
-import lombok.Getter;
-import lombok.RequiredArgsConstructor;
-import lombok.Setter;
-
 @Entity
-@Getter
-@Setter
-@RequiredArgsConstructor
 @Table(name = "user_answers")
 public class UserAnswer {
 	@Id
@@ -43,4 +36,48 @@ public class UserAnswer {
 	@JoinColumn(name = "user_exam_id")
 	private UserExam userExam;
 
+	public UserAnswer() {
+		
+	}
+
+	public Long getId() {
+		return id;
+	}
+
+	public void setId(Long id) {
+		this.id = id;
+	}
+
+	public Question getQuestion() {
+		return question;
+	}
+
+	public void setQuestion(Question question) {
+		this.question = question;
+	}
+
+	public String getSelectedAnswer() {
+		return selectedAnswer;
+	}
+
+	public void setSelectedAnswer(String selectedAnswer) {
+		this.selectedAnswer = selectedAnswer;
+	}
+
+	public boolean isSelectedAnswerCorrect() {
+		return isSelectedAnswerCorrect;
+	}
+
+	public void setSelectedAnswerCorrect(boolean isSelectedAnswerCorrect) {
+		this.isSelectedAnswerCorrect = isSelectedAnswerCorrect;
+	}
+
+	public UserExam getUserExam() {
+		return userExam;
+	}
+
+	public void setUserExam(UserExam userExam) {
+		this.userExam = userExam;
+	}
+	
 }
