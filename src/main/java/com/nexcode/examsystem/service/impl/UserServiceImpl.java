@@ -219,22 +219,22 @@ public class UserServiceImpl implements UserService {
 	    try {
 	        User foundedUser = userRepository.findById(id).orElseThrow(() -> new NotFoundException("User not found"));
 	        String oldEmail = foundedUser.getEmail();
-	        String password = RandomString.make(8);
-			String encodedPassword = passwordEncoder.encode(password);	
 	        foundedUser.setUsername(request.getUsername());
 	        foundedUser.setEmail(request.getEmail());
-	        foundedUser.setPhone(request.getPhone());
-	        foundedUser.setPassword(encodedPassword);		
+	        foundedUser.setPhone(request.getPhone());	
 	        List<Long> ids = request.getCourses();
 	        List<Course> courses = ids.stream()
 	                .map(c -> courseRepository.findById(c).orElseThrow(() -> new NotFoundException("Course not found")))
 	                .collect(Collectors.toList());
 	        foundedUser.setCourses(courses);
-	        User savedUser = userRepository.save(foundedUser);
 	        if (!oldEmail.equals(request.getEmail())) {
-	        	 UserDto userInfo=new UserDto(savedUser.getRollNo(),savedUser.getUsername(),savedUser.getEmail(),password,roleMapper.toDtoList(savedUser.getRoles()),courseMapper.toDtoList(savedUser.getCourses()));
+	        	String newPassword= RandomString.make(8);
+	        	String encodedPassword = passwordEncoder.encode(newPassword);	
+	        	foundedUser.setPassword(encodedPassword);	
+	        	UserDto userInfo=new UserDto(foundedUser.getRollNo(),foundedUser.getUsername(),foundedUser.getEmail(),newPassword,roleMapper.toDtoList(foundedUser.getRoles()),courseMapper.toDtoList(foundedUser.getCourses()));
 	        	 sendSignUpVerifiedStudent(userInfo);
 	        }
+	        User savedUser = userRepository.save(foundedUser);
 	        return userMapper.toDto(savedUser);
 	    } catch (AppException e) {
 	        throw new AppException("An error occurred in the update function");
