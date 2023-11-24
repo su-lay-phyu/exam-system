@@ -11,6 +11,7 @@ public interface UserService {
 	public List<CourseDto>getAllCourseByUserEmail(String email);
 	public UserDto findUserByEmailAddress(String email);
 	public UserDto findUserByEmailOrRollNo(String input);
+	public UserDto findUserById(Long id);
 	public void signUpUser(UserRequest request) ;
 	public void changePassword(String email, String requestOldPassword, String requestNewPassword);
 	public void validateOtp(String email, String otp);

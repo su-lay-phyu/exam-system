@@ -90,6 +90,12 @@ public class CourseServiceImpl implements CourseService{
 		courseRepository.save(foundedCourse);
 	}
 
+	@Override
+	public CourseDto findCourseById(Long id) {
+		Course foundedCourse=courseRepository.findById(id).orElseThrow(()->new NotFoundException("course not found"));
+		return courseMapper.toDto(foundedCourse);
+	}
+
 	
 
 }

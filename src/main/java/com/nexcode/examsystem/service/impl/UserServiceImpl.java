@@ -111,15 +111,27 @@ public class UserServiceImpl implements UserService {
 			user.setPassword(encodedPassword);
 			user.setPhone(request.getPhone());
 			user.setPasswordChanged(false);
+			
 			List<Role> roles = new ArrayList<>();
-			Role userRole = roleRepository.findByName("USER").orElse(null);
+			Role userRole = roleRepository.findByName("USER").orElseThrow(() -> new NotFoundException("Role with name 'USER' not found"));
 			roles.add(userRole);
 			user.setRoles(roles);
+			
+			System.out.println("Role"+userRole.getName());
+			System.out.println("I am try to called courses");
 			List<Long>ids=request.getCourses();
+			for(Long id:ids)
+			{
+				System.out.println("id is "+id);
+			}
 			List<Course>courses=ids.stream()
 					.map(id->courseRepository.findById(id)
-						.orElseThrow(()->new BadRequestException("Category can't found")))
+						.orElseThrow(()->new NotFoundException("Category can't found")))
 						.collect(Collectors.toList());
+			for(Course c:courses)
+			{
+				System.out.println(c.getName());
+			}
 			user.setCourses(courses);
 			User savedUser=userRepository.save(user);
 			UserDto userInfo=new UserDto(savedUser.getRollNo(),
@@ -130,6 +142,42 @@ public class UserServiceImpl implements UserService {
 			if (!sendSignUpVerifiedStudent(userInfo)) {
 				throw new AppException("This err is happened in signupUser function");
 			}
+	}
+	@Override
+	public UserDto findUserById(Long id) {
+		User foundedUser = userRepository.findById(id).orElseThrow(() -> new NotFoundException("User not found"));
+		 return userMapper.toDto(foundedUser);
+	}
+	@Override
+	public UserDto updateStudent(Long id, UserRequest request) {
+	    try {
+	        User foundedUser = userRepository.findById(id).orElseThrow(() -> new NotFoundException("User not found"));
+	        String oldEmail = foundedUser.getEmail();
+	        foundedUser.setUsername(request.getUsername());
+	        foundedUser.setEmail(request.getEmail());
+	        foundedUser.setPhone(request.getPhone());	
+	        List<Long> ids = request.getCourses();
+	        List<Course> courses = ids.stream()
+	                .map(c -> courseRepository.findById(c).orElseThrow(() -> new NotFoundException("Course not found")))
+	                .collect(Collectors.toList());
+	        for(Course c:courses)
+			{
+				System.out.println(c.getName());
+			}
+	        foundedUser.setCourses(courses);
+	        if (!oldEmail.equals(request.getEmail())) {
+	        	String newPassword= RandomString.make(8);
+	        	String encodedPassword = passwordEncoder.encode(newPassword);	
+	        	foundedUser.setPassword(encodedPassword);	
+	        	foundedUser.setPasswordChanged(false);
+	        	UserDto userInfo=new UserDto(foundedUser.getRollNo(),foundedUser.getUsername(),foundedUser.getEmail(),newPassword,roleMapper.toDtoList(foundedUser.getRoles()),courseMapper.toDtoList(foundedUser.getCourses()));
+	        	 sendSignUpVerifiedStudent(userInfo);
+	        }
+	        User savedUser = userRepository.save(foundedUser);
+	        return userMapper.toDto(savedUser);
+	    } catch (AppException e) {
+	        throw new AppException("An error occurred in the update function");
+	    }
 	}
 	@Override
 	public UserDto findUserByEmailAddress(String email) 
@@ -214,32 +262,7 @@ public class UserServiceImpl implements UserService {
 	        throw new AppException("Email sending failed.");
 	    }
 	}
-	@Override
-	public UserDto updateStudent(Long id, UserRequest request) {
-	    try {
-	        User foundedUser = userRepository.findById(id).orElseThrow(() -> new NotFoundException("User not found"));
-	        String oldEmail = foundedUser.getEmail();
-	        foundedUser.setUsername(request.getUsername());
-	        foundedUser.setEmail(request.getEmail());
-	        foundedUser.setPhone(request.getPhone());	
-	        List<Long> ids = request.getCourses();
-	        List<Course> courses = ids.stream()
-	                .map(c -> courseRepository.findById(c).orElseThrow(() -> new NotFoundException("Course not found")))
-	                .collect(Collectors.toList());
-	        foundedUser.setCourses(courses);
-	        if (!oldEmail.equals(request.getEmail())) {
-	        	String newPassword= RandomString.make(8);
-	        	String encodedPassword = passwordEncoder.encode(newPassword);	
-	        	foundedUser.setPassword(encodedPassword);	
-	        	UserDto userInfo=new UserDto(foundedUser.getRollNo(),foundedUser.getUsername(),foundedUser.getEmail(),newPassword,roleMapper.toDtoList(foundedUser.getRoles()),courseMapper.toDtoList(foundedUser.getCourses()));
-	        	 sendSignUpVerifiedStudent(userInfo);
-	        }
-	        User savedUser = userRepository.save(foundedUser);
-	        return userMapper.toDto(savedUser);
-	    } catch (AppException e) {
-	        throw new AppException("An error occurred in the update function");
-	    }
-	}
+	
 
 	public boolean sendOTPEmail(User user, String Otp) {
 		String to = user.getEmail();

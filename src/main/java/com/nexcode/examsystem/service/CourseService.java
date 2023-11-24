@@ -15,4 +15,5 @@ public interface CourseService {
 	public CourseDto addCourse(CourseDto dto);
 	public CourseDto updateCourse(Long id,CourseDto dto);
 	public void deleteCourse(Long id);
+	public CourseDto findCourseById(Long id);
 }

@@ -69,7 +69,12 @@ public class CourseController {
 	    courseService.addCourse(dto);
 	    return new ResponseEntity<>("Course added Successfully", HttpStatus.CREATED);
 	}
-	
+	@GetMapping("/{id}")
+	public ResponseEntity<?>getCourseById(@PathVariable Long id)
+	{
+		CourseDto updatedDto=courseService.findCourseById(id);
+		return new ResponseEntity<>(courseMapper.toResponse(updatedDto), HttpStatus.OK);
+	}
 	@PutMapping("/{id}")
 	public ResponseEntity<?>updateCourse(@PathVariable Long id,@RequestBody CourseRequest request)
 	{

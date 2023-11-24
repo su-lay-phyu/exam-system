@@ -135,7 +135,11 @@ public class UserController {
 		userService.signUpUser(request);
 		return new ResponseEntity<>("Signup successful. An email has been sent for verification.",HttpStatus.CREATED);
 	}
-
+	@GetMapping("/{id}")
+	public ResponseEntity<?> getStudentById(@PathVariable Long id) {
+		UserDto foundedUser=userService.findUserById(id);
+		return new ResponseEntity<>(userMapper.toResponse(foundedUser),HttpStatus.CREATED);
+	}
 	@PutMapping("/{id}")
 	public ResponseEntity<?> updateStudent(@PathVariable Long id, @RequestBody UserRequest request) {
 		UserDto updatedStudent = userService.updateStudent(id, request);
