@@ -64,7 +64,7 @@ public class UserMapperImpl implements UserMapper{
 		userResponse.setUsername(userDto.getUsername());
 		userResponse.setEmail(userDto.getEmail());
 		userResponse.setPhone(userDto.getPhone());
-		userResponse.setCategories(courseMapper.toResponseList(userDto.getCategories()));
+		userResponse.setCourses(courseMapper.toResponseList(userDto.getCategories()));
 		return userResponse;
 	}
 

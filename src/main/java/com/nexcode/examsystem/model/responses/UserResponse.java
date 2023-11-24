@@ -8,7 +8,7 @@ public class UserResponse {
 	private String username;
 	private String email;
 	private String phone;
-	private List<CourseResponse>categories;
+	private List<CourseResponse>courses;
 	public Long getId() {
 		return id;
 	}
@@ -39,10 +39,11 @@ public class UserResponse {
 	public void setPhone(String phone) {
 		this.phone = phone;
 	}
-	public List<CourseResponse> getCategories() {
-		return categories;
+	public List<CourseResponse> getCourses() {
+		return courses;
 	}
-	public void setCategories(List<CourseResponse> categories) {
-		this.categories = categories;
+	public void setCourses(List<CourseResponse> courses) {
+		this.courses = courses;
 	}
+	
 }
