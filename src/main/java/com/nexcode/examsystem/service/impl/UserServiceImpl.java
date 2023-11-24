@@ -246,7 +246,7 @@ public class UserServiceImpl implements UserService {
 	                .append("<li>Temporary Password: ").append(userDto.getPassword()).append("</li>")
 	                .append("<li>Courses:");
 
-	        for (CourseDto category : userDto.getCategories()) 
+	        for (CourseDto category : userDto.getCourses()) 
 	        {
 	            content.append("<br>").append(" - ").append(category.getName());
 	        }

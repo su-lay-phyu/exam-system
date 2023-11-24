@@ -15,26 +15,22 @@ public class UserDto {
 	private String otp;
 	private Date otpRequestedTime;
 	private List<Long>ids;
-	private List<CourseDto>categories;
+	private List<CourseDto>courses;
 	public UserDto() {
 		
 	}
-	public UserDto(String rollNo, String username, String email, String password, List<RoleDto> roles,
-			List<CourseDto> categories) {
-		
+	
+	public UserDto(String rollNo, String username, String email, String phone, List<RoleDto> roles,
+			List<CourseDto> courses) {
+		super();
 		this.rollNo = rollNo;
 		this.username = username;
 		this.email = email;
-		this.password = password;
+		this.phone = phone;
 		this.roles = roles;
-		this.categories = categories;
+		this.courses = courses;
 	}
-	public UserDto(String rollNo, String username, String email) {
-		
-		this.rollNo = rollNo;
-		this.username = username;
-		this.email = email;
-	}
+
 	public Long getId() {
 		return id;
 	}
@@ -95,12 +91,11 @@ public class UserDto {
 	public void setIds(List<Long> ids) {
 		this.ids = ids;
 	}
-	public List<CourseDto> getCategories() {
-		return categories;
+	public List<CourseDto> getCourses() {
+		return courses;
 	}
-	public void setCategories(List<CourseDto> categories) {
-		this.categories = categories;
+	public void setCourses(List<CourseDto> courses) {
+		this.courses = courses;
 	}
-	
 	
 }

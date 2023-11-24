@@ -39,7 +39,7 @@ public class UserMapperImpl implements UserMapper{
 		userDto.setPassword(user.getPassword());
 		userDto.setPhone(user.getPhone());
 		userDto.setRoles(roleMapper.toDtoList(user.getRoles()));
-		userDto.setCategories(courseMapper.toDtoList(user.getCourses()));
+		userDto.setCourses(courseMapper.toDtoList(user.getCourses()));
 		return userDto;
 	}
 
@@ -64,7 +64,7 @@ public class UserMapperImpl implements UserMapper{
 		userResponse.setUsername(userDto.getUsername());
 		userResponse.setEmail(userDto.getEmail());
 		userResponse.setPhone(userDto.getPhone());
-		userResponse.setCourses(courseMapper.toResponseList(userDto.getCategories()));
+		userResponse.setCourses(courseMapper.toResponseList(userDto.getCourses()));
 		return userResponse;
 	}
 
