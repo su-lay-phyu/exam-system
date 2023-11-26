@@ -52,20 +52,20 @@ public class ExamController {
 	@PostMapping
 	public ResponseEntity<?> createExamWithQuestions(@RequestBody ExamRequest request)
 	{
-		ExamDto createdExam=examService.createExam(request);
-		return new ResponseEntity<>(examMapper.toResponse(createdExam), HttpStatus.CREATED);
+		examService.createExam(request);
+		return new ResponseEntity<>("exam created successfully", HttpStatus.CREATED);
 	}
 	@PutMapping("/{id}")
 	public ResponseEntity<?>updateExam(@PathVariable Long id,@RequestBody ExamRequest request)
 	{
 		examService.updateExam(id, request);
-		return new ResponseEntity<>("Exam updated.", HttpStatus.OK);
+		return new ResponseEntity<>("exam updated successfully", HttpStatus.OK);
 	}
 	@PutMapping("/{id}/questions")
 	public ResponseEntity<?>updateExamQuestions(@PathVariable Long id,@RequestBody List<QuestionRequest> request)
 	{
 		examService.updateQuestionWithExamId(id, request);
-		return new ResponseEntity<>("Exam Questions Updated.", HttpStatus.OK);
+		return new ResponseEntity<>("exam questions updated.", HttpStatus.OK);
 	}
 	@PutMapping("/{id}/publish")
 	public ResponseEntity<?>publishExam(@PathVariable Long id,@RequestBody ExamPublishedRequest request)
@@ -81,6 +81,6 @@ public class ExamController {
 	public ResponseEntity<?>deleteExam(@PathVariable Long id)
 	{
 		examService.deleteExam(id);
-		return new ResponseEntity<>("Exam deleted successfully",HttpStatus.OK);
+		return new ResponseEntity<>("exam deleted successfully",HttpStatus.OK);
 	}
 }

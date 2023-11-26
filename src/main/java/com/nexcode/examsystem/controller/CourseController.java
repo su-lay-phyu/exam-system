@@ -1,5 +1,6 @@
 package com.nexcode.examsystem.controller;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.http.HttpStatus;
@@ -56,7 +57,9 @@ public class CourseController {
 	    {
 	    	throw new NotFoundException("Course Not Found");
 	    }
-	    return new ResponseEntity<>(courseMapper.toResponse(foundedCourse), HttpStatus.OK);
+	    List<CourseResponse>responses=new ArrayList<>();
+	    responses.add(courseMapper.toResponse(foundedCourse));
+	    return new ResponseEntity<>(responses, HttpStatus.OK);
 	}
 	@PostMapping
 	public ResponseEntity<?>createNewCourse(@RequestBody CourseRequest request)
@@ -79,8 +82,8 @@ public class CourseController {
 	public ResponseEntity<?>updateCourse(@PathVariable Long id,@RequestBody CourseRequest request)
 	{
 		CourseDto dto=courseMapper.toDto(request);
-		CourseDto updatedDto=courseService.updateCourse(id, dto);
-		return new ResponseEntity<>(courseMapper.toResponse(updatedDto), HttpStatus.OK);
+		courseService.updateCourse(id, dto);
+		return new ResponseEntity<>("course updated successfully", HttpStatus.OK);
 	}
 	@DeleteMapping("/{id}")
 	public ResponseEntity<?>deleteCourse(@PathVariable Long id)

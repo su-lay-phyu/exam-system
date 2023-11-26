@@ -142,8 +142,8 @@ public class UserController {
 	}
 	@PutMapping("/{id}")
 	public ResponseEntity<?> updateStudent(@PathVariable Long id, @RequestBody UserRequest request) {
-		UserDto updatedStudent = userService.updateStudent(id, request);
-		return new ResponseEntity<>(userMapper.toResponse(updatedStudent),HttpStatus.OK);
+		userService.updateStudent(id, request);
+		return new ResponseEntity<>("user updated successfully",HttpStatus.OK);
 	}
 	@DeleteMapping("/{id}")
 	public ResponseEntity<?> deleteStudent(@PathVariable Long id) {
