@@ -5,7 +5,7 @@ public interface UserReportProjection {
     String getCourseName();
     String getLevelName();
     Integer getObtainedResult();
-    Boolean isPass();
+    Boolean getIsPass();
 }
 
 

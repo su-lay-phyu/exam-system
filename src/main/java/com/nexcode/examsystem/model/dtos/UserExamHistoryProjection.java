@@ -10,5 +10,5 @@ public interface UserExamHistoryProjection {
 	public String getCourseName();
 	public String getLevelName();
 	public Integer getObtainedResult();
-	public Boolean isPass();
+	Boolean getIsPass();
 }

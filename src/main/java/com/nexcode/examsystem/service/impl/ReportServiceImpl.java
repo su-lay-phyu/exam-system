@@ -125,7 +125,7 @@ public class ReportServiceImpl implements ReportService{
 			response.setUserName(ue.getUser().getUsername());
 			response.setEmail(ue.getUser().getEmail());
 			response.setObtainedMark(ue.getObtainedResult());
-			response.setPassFail(ue.isPass());
+			response.setPassFail(ue.getIsPass());
 			list.add(response);
 		}
 		return list;

@@ -31,7 +31,7 @@ public class UserExam {
 	private Date submittedTime;
 	
 	@Column(name="is_pass")
-	private boolean isPass;
+	private Boolean isPass;
 	
 	@ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.REFRESH}, fetch = FetchType.LAZY)
 	@JoinColumn(name = "user_id")
@@ -72,11 +72,11 @@ public class UserExam {
 		this.submittedTime = submittedTime;
 	}
 
-	public boolean isPass() {
+	public Boolean getIsPass() {
 		return isPass;
 	}
 
-	public void setPass(boolean isPass) {
+	public void setIsPass(Boolean isPass) {
 		this.isPass = isPass;
 	}
 

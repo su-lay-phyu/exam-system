@@ -69,7 +69,7 @@ public class UserExamServiceImpl implements UserExamService {
 
 		foundedUserExam.setObtainedResult(obtainedMarks);
 		int passingMark = foundedExam.getExamTotalMark() / 2;
-		foundedUserExam.setPass(obtainedMarks >= passingMark);
+		foundedUserExam.setIsPass(obtainedMarks >= passingMark);
 		try {
 			userExamRepository.save(foundedUserExam);
 			return userExamMapper.toDto(foundedUserExam);
