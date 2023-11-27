@@ -20,14 +20,12 @@ public class UserDto {
 		
 	}
 	
-	public UserDto(String rollNo, String username, String email, String phone, List<RoleDto> roles,
-			List<CourseDto> courses) {
+	public UserDto(String rollNo, String username, String email, String password, List<CourseDto> courses) {
 		super();
 		this.rollNo = rollNo;
 		this.username = username;
 		this.email = email;
-		this.phone = phone;
-		this.roles = roles;
+		this.password = password;
 		this.courses = courses;
 	}
 

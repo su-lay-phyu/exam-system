@@ -1,7 +1,5 @@
 package com.nexcode.examsystem.model.responses;
 
-import java.util.List;
-
 public class ExamResponse {
 	
 	private Long id;
@@ -13,7 +11,6 @@ public class ExamResponse {
 	private Integer noOfQuestion;
 	private CourseResponse category;
 	private LevelResponse level;
-	private List<QuestionResponse>questions;
 	public Long getId() {
 		return id;
 	}
@@ -68,12 +65,4 @@ public class ExamResponse {
 	public void setLevel(LevelResponse level) {
 		this.level = level;
 	}
-	public List<QuestionResponse> getQuestions() {
-		return questions;
-	}
-	public void setQuestions(List<QuestionResponse> questions) {
-		this.questions = questions;
-	}
-	
-	
 }

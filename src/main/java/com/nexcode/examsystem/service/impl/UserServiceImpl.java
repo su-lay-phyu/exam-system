@@ -13,7 +13,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.nexcode.examsystem.mapper.CourseMapper;
-import com.nexcode.examsystem.mapper.RoleMapper;
 import com.nexcode.examsystem.mapper.UserMapper;
 import com.nexcode.examsystem.model.dtos.CourseDto;
 import com.nexcode.examsystem.model.dtos.UserDto;
@@ -39,7 +38,6 @@ import net.bytebuddy.utility.RandomString;
 public class UserServiceImpl implements UserService {
 
 	private final UserMapper userMapper;
-	private final RoleMapper roleMapper;
 	private final CourseMapper courseMapper;
 	
 	
@@ -57,11 +55,12 @@ public class UserServiceImpl implements UserService {
 	private final OtpUtil otpUtil;
 
 	
-	public UserServiceImpl(UserMapper userMapper, RoleMapper roleMapper, CourseMapper courseMapper,
-			UserRepository userRepository, RoleRepository roleRepository, CourseRepository courseRepository,
-			ExamRepository examRepository, PasswordEncoder passwordEncoder, EmailUtil emailSender, OtpUtil otpUtil) {
+	
+	public UserServiceImpl(UserMapper userMapper, CourseMapper courseMapper, UserRepository userRepository,
+			RoleRepository roleRepository, CourseRepository courseRepository, ExamRepository examRepository,
+			PasswordEncoder passwordEncoder, EmailUtil emailSender, OtpUtil otpUtil) {
+		super();
 		this.userMapper = userMapper;
-		this.roleMapper = roleMapper;
 		this.courseMapper = courseMapper;
 		this.userRepository = userRepository;
 		this.roleRepository = roleRepository;
@@ -117,28 +116,15 @@ public class UserServiceImpl implements UserService {
 			roles.add(userRole);
 			user.setRoles(roles);
 			
-			System.out.println("Role"+userRole.getName());
-			System.out.println("I am try to called courses");
 			List<Long>ids=request.getCourses();
-			for(Long id:ids)
-			{
-				System.out.println("id is "+id);
-			}
+			
 			List<Course>courses=ids.stream()
 					.map(id->courseRepository.findById(id)
-						.orElseThrow(()->new NotFoundException("Category can't found")))
+						.orElseThrow(()->new NotFoundException("Course can't found")))
 						.collect(Collectors.toList());
-			for(Course c:courses)
-			{
-				System.out.println(c.getName());
-			}
 			user.setCourses(courses);
 			User savedUser=userRepository.save(user);
-			UserDto userInfo=new UserDto(savedUser.getRollNo(),
-					savedUser.getUsername(),
-					savedUser.getEmail(),
-					password,roleMapper.toDtoList(savedUser.getRoles()),
-					courseMapper.toDtoList(savedUser.getCourses()));
+			UserDto userInfo=new UserDto(savedUser.getRollNo(),savedUser.getUsername(),savedUser.getEmail(),password,courseMapper.toDtoList(savedUser.getCourses()));
 			if (!sendSignUpVerifiedStudent(userInfo)) {
 				throw new AppException("This err is happened in signupUser function");
 			}
@@ -156,26 +142,18 @@ public class UserServiceImpl implements UserService {
         foundedUser.setEmail(request.getEmail());
         foundedUser.setPhone(request.getPhone());	
         List<Long>ids=request.getCourses();
-		for(Long cid:ids)
-		{
-			System.out.println("id is "+cid);
-		}
 		List<Course>courses=ids.stream()
-				.map(cid->courseRepository.findById(id)
-					.orElseThrow(()->new NotFoundException("Category can't found")))
+				.map(courseId->courseRepository.findById(courseId)
+					.orElseThrow(()->new NotFoundException("Course can't found")))
 					.collect(Collectors.toList());
-		for(Course c:courses)
-		{
-			System.out.println(c.getName());
-		}
 		foundedUser.setCourses(courses);
         if (!oldEmail.equals(request.getEmail())) {
         	String newPassword= RandomString.make(8);
         	String encodedPassword = passwordEncoder.encode(newPassword);	
         	foundedUser.setPassword(encodedPassword);	
         	foundedUser.setPasswordChanged(false);
-        	UserDto userInfo=new UserDto(foundedUser.getRollNo(),foundedUser.getUsername(),foundedUser.getEmail(),newPassword,roleMapper.toDtoList(foundedUser.getRoles()),courseMapper.toDtoList(foundedUser.getCourses()));
-        	 sendSignUpVerifiedStudent(userInfo);
+        	UserDto userInfo=new UserDto(foundedUser.getRollNo(),foundedUser.getUsername(),foundedUser.getEmail(),newPassword,courseMapper.toDtoList(foundedUser.getCourses()));
+        	sendSignUpVerifiedStudent(userInfo);
         }
         User savedUser = userRepository.save(foundedUser);
         return userMapper.toDto(savedUser);
