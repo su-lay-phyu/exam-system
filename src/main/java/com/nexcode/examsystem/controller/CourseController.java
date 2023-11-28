@@ -21,6 +21,7 @@ import com.nexcode.examsystem.model.dtos.CourseDto;
 import com.nexcode.examsystem.model.dtos.UserDto;
 import com.nexcode.examsystem.model.exception.NotFoundException;
 import com.nexcode.examsystem.model.requests.CourseRequest;
+import com.nexcode.examsystem.model.responses.ApiResponse;
 import com.nexcode.examsystem.model.responses.CourseResponse;
 import com.nexcode.examsystem.service.CourseService;
 
@@ -70,7 +71,7 @@ public class CourseController {
 		}
 		CourseDto dto = courseMapper.toDto(request);
 	    courseService.addCourse(dto);
-	    return new ResponseEntity<>("Course added Successfully", HttpStatus.CREATED);
+	    return new ResponseEntity<>(new ApiResponse(true,"Course added Successfully"), HttpStatus.CREATED);
 	}
 	@GetMapping("/{id}")
 	public ResponseEntity<?>getCourseById(@PathVariable Long id)
@@ -83,13 +84,14 @@ public class CourseController {
 	{
 		CourseDto dto=courseMapper.toDto(request);
 		courseService.updateCourse(id, dto);
-		return new ResponseEntity<>("course updated successfully", HttpStatus.OK);
+		
+		return new ResponseEntity<>(new ApiResponse(true,"course updated successfully"), HttpStatus.OK);
 	}
 	@DeleteMapping("/{id}")
 	public ResponseEntity<?>deleteCourse(@PathVariable Long id)
 	{
 		courseService.deleteCourse(id);
-		return new ResponseEntity<>("Course deleted Successfully", HttpStatus.CREATED);
+		return new ResponseEntity<>(new ApiResponse(true,"Course deleted Successfully"), HttpStatus.OK);
 
 	}
 }

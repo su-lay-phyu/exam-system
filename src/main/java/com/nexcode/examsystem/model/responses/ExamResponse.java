@@ -6,11 +6,16 @@ public class ExamResponse {
 	private String name;
 	private String description;
 	private Integer examDurationMinute;
+	private boolean isPublished;
 	private String publishedDate;
 	private Integer examTotalMark;
 	private Integer noOfQuestion;
 	private CourseResponse category;
 	private LevelResponse level;
+	
+	public ExamResponse() {
+		super();
+	}
 	public Long getId() {
 		return id;
 	}
@@ -34,6 +39,12 @@ public class ExamResponse {
 	}
 	public void setExamDurationMinute(Integer examDurationMinute) {
 		this.examDurationMinute = examDurationMinute;
+	}
+	public boolean isPublished() {
+		return isPublished;
+	}
+	public void setPublished(boolean isPublished) {
+		this.isPublished = isPublished;
 	}
 	public String getPublishedDate() {
 		return publishedDate;

@@ -167,10 +167,9 @@ public class ExamServiceImpl implements ExamService {
 			}
 		}
 		else {
-			Exam takenExam=userExamRepository.getExam();
-			if(takenExam!=null)
-			{
-				throw new BadRequestException("Can't be unpublished because already has examinees.");
+			Exam takenExam = userExamRepository.getExam(id);
+			if (takenExam != null) {
+			    throw new BadRequestException("Can't be unpublished because already has examinees.");
 			}
 		}
 		foundedExam.setPublished(isPublished);

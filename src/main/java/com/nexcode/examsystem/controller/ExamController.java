@@ -20,6 +20,7 @@ import com.nexcode.examsystem.model.dtos.QuestionDto;
 import com.nexcode.examsystem.model.requests.ExamPublishedRequest;
 import com.nexcode.examsystem.model.requests.ExamRequest;
 import com.nexcode.examsystem.model.requests.QuestionRequest;
+import com.nexcode.examsystem.model.responses.ApiResponse;
 import com.nexcode.examsystem.model.responses.ExamResponse;
 import com.nexcode.examsystem.model.responses.QuestionAnswerResponse;
 import com.nexcode.examsystem.service.ExamService;
@@ -58,34 +59,35 @@ public class ExamController {
 	public ResponseEntity<?> createExamWithQuestions(@RequestBody ExamRequest request)
 	{
 		examService.createExam(request);
-		return new ResponseEntity<>("exam created successfully", HttpStatus.CREATED);
+		return new ResponseEntity<>(new ApiResponse(true,"exam created successfully"), HttpStatus.CREATED);
 	}
 	@PutMapping("/{id}")
 	public ResponseEntity<?>updateExam(@PathVariable Long id,@RequestBody ExamRequest request)
 	{
 		examService.updateExam(id, request);
-		return new ResponseEntity<>("exam updated successfully", HttpStatus.OK);
+		return new ResponseEntity<>(new ApiResponse(true,"exam updated successfully"), HttpStatus.OK);
 	}
 	@PutMapping("/{id}/questions")
 	public ResponseEntity<?>updateExamQuestions(@PathVariable Long id,@RequestBody List<QuestionRequest> request)
 	{
 		examService.updateQuestionWithExamId(id, request);
-		return new ResponseEntity<>("exam questions updated.", HttpStatus.OK);
+		return new ResponseEntity<>(new ApiResponse(true,"exam questions updated."), HttpStatus.OK);
 	}
 	@PutMapping("/{id}/publish")
 	public ResponseEntity<?>publishExam(@PathVariable Long id,@RequestBody ExamPublishedRequest request)
 	{
 		boolean isPublished=examService.setExamPublished(id,request);
+		System.out.println("isPublished "+isPublished);
 		if(isPublished)
 		{
-			return new ResponseEntity<>("Set published successfully",HttpStatus.OK);
+			return new ResponseEntity<>(new ApiResponse(true,"Set published successfully"), HttpStatus.OK);
 		}
-		return new ResponseEntity<>("Set unpublished successfully",HttpStatus.OK);
+		return new ResponseEntity<>(new ApiResponse(true,"Set unpublished successfully"), HttpStatus.OK);
 	}
 	@DeleteMapping("/{id}")
 	public ResponseEntity<?>deleteExam(@PathVariable Long id)
 	{
 		examService.deleteExam(id);
-		return new ResponseEntity<>("exam deleted successfully",HttpStatus.OK);
+		return new ResponseEntity<>(new ApiResponse(true,"exam deleted successfully"), HttpStatus.OK);
 	}
 }

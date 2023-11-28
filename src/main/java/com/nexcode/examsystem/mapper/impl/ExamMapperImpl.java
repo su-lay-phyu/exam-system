@@ -39,6 +39,7 @@ public class ExamMapperImpl implements ExamMapper {
 		dto.setName(exam.getName());
 		dto.setDescription(exam.getDescription());
 		dto.setExamDurationMinute(exam.getExamdurationMinutes());
+		dto.setPublished(exam.isPublished());
 		dto.setExamTotalMark(exam.getExamTotalMark());
 		dto.setNumberOfQuestionsToGenerate(exam.getNumberOfQuestionsToGenerate());
 		Date date = exam.getExamPublishDate();
@@ -66,18 +67,18 @@ public class ExamMapperImpl implements ExamMapper {
 
 	@Override
 	public ExamResponse toResponse(ExamDto dto) {
+		System.out.println("dto "+dto.isPublished());
 		ExamResponse response = new ExamResponse();
 		response.setId(dto.getId());
 		response.setName(dto.getName());
 		response.setDescription(dto.getDescription());
 		response.setPublishedDate(dto.getPublishedDate());
+		response.setPublished(dto.isPublished());
 		response.setExamTotalMark(dto.getExamTotalMark());
 		response.setExamDurationMinute(dto.getExamDurationMinute());
 		response.setNoOfQuestion(dto.getNumberOfQuestionsToGenerate());
 		response.setCategory(courseMapper.toResponse(dto.getCourse()));
 		response.setLevel(levelMapper.toResponse(dto.getLevel()));
-		//may be we don't need it 
-		//response.setQuestions(questionMapper.toResponseList(dto.getQuestions()));
 		return response;
 	}
 
