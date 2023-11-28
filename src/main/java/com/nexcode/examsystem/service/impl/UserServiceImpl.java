@@ -281,7 +281,7 @@ public class UserServiceImpl implements UserService {
 	@Override
 	public void deleteStudent(Long id) {
 		User foundedUser=userRepository.findById(id).orElseThrow(()->new NotFoundException("User not Found"));
-		userRepository.save(foundedUser);
+		userRepository.delete(foundedUser);
 	}
 
 

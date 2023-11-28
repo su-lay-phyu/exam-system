@@ -42,8 +42,13 @@ public class ExamController {
 		List<ExamDto>dtos=examService.getAllExam();
 		return examMapper.toResponseList(dtos);
 	}
-	//this one will called at Admin side
 	@GetMapping("/{id}")
+	public ResponseEntity<?> getExamById(@PathVariable Long id)
+	{
+		ExamDto dto=examService.findExamById(id);
+		return new ResponseEntity<>(examMapper.toResponse(dto),HttpStatus.OK);
+	}
+	@GetMapping("/{id}/questions")
 	public List<QuestionAnswerResponse> getAllQuestionsWithAnswerById(@PathVariable Long id)
 	{
 		List<QuestionDto>dtos=examService.getAllQuestionById(id);

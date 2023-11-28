@@ -11,8 +11,6 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
-
 @Entity
 @Table(name = "user_answers")
 public class UserAnswer {
@@ -31,10 +29,10 @@ public class UserAnswer {
 	@Column(name = "is_selected_answer_correct")
 	private boolean isSelectedAnswerCorrect;
 
-	@JsonBackReference  
-	@ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.REFRESH}, fetch = FetchType.LAZY)
-	@JoinColumn(name = "user_exam_id")
-	private UserExam userExam;
+	//@JsonBackReference  
+	@ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_exam_id")
+    private UserExam userExam;
 
 	public UserAnswer() {
 		

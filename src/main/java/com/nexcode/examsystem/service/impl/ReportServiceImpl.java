@@ -46,12 +46,15 @@ public class ReportServiceImpl implements ReportService{
 	}
 		@Override
 		public List<OverAllReportResponse> getOverAllReports() {
+			int totalNoOfStudents=0;
+			int totalExamsInCourse=0;
 		    List<Course> courses = getAllCourses();
 		    List<OverAllReportResponse> list = new ArrayList<>();
 		    for (Course course : courses) {
-		        int totalNoOfStudents = courseRepository.getTotalNoOfStudent(course.getId());
-		        int totalExamsInCourse = courseRepository.getTotalExamsInCourse(course.getId());
+		        totalNoOfStudents = courseRepository.getTotalNoOfStudent(course.getId());
+		        totalExamsInCourse = courseRepository.getTotalExamsInCourse(course.getId());
 		        int completedStudents = 0;
+		        System.out.println("completedStudents "+completedStudents);
 		        for (User student : course.getUsers()) {
 		            int distinctTakenExams = userExamRepository.getDistinctTakenExamCount(student.getId(), course.getId());
 		            if (distinctTakenExams==totalExamsInCourse)
@@ -59,9 +62,7 @@ public class ReportServiceImpl implements ReportService{
 		                completedStudents++;
 		            }
 		        }
-
 		        int inProgressStudents = totalNoOfStudents - completedStudents;
-
 		        OverAllReportResponse response = new OverAllReportResponse();
 		        response.setCourseName(course.getName());
 		        response.setTotalNoOfStudents(totalNoOfStudents);

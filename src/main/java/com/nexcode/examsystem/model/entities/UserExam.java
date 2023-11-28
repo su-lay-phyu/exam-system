@@ -33,17 +33,21 @@ public class UserExam {
 	@Column(name="is_pass")
 	private Boolean isPass;
 	
-	@ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.REFRESH}, fetch = FetchType.LAZY)
-	@JoinColumn(name = "user_id")
-	private User user;
+	 @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+	 @JoinColumn(name = "user_id")
+	 private User user;
 	
 	@ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.REFRESH}, fetch = FetchType.LAZY)
 	@JoinColumn(name = "exam_id")
 	private Exam exam;
 	
+//	@JsonManagedReference 
+//	@OneToMany(mappedBy = "userExam") 
+//	private List<UserAnswer> userAnswers;
+	
 	@JsonManagedReference 
-	@OneToMany(mappedBy = "userExam") 
-	private List<UserAnswer> userAnswers;
+    @OneToMany(mappedBy = "userExam", cascade = CascadeType.ALL) 
+    private List<UserAnswer> userAnswers;
 
 	public UserExam() {
 	}

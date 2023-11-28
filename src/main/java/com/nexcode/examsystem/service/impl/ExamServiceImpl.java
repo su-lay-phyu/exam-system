@@ -195,7 +195,7 @@ public class ExamServiceImpl implements ExamService {
 		{
 			throw new BadRequestException("You can't be delete exam because the exam is already published");
 		}
-		examRepository.save(foundedExam);
+		examRepository.delete(foundedExam);
 	}
 
 	

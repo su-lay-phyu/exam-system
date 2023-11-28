@@ -13,7 +13,10 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
+
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 @Entity
 @Table(name="users")
@@ -65,6 +68,18 @@ public class User {
 	    inverseJoinColumns = @JoinColumn(name = "course_id")
 	)
 	private List<Course>courses;
+
+	@JsonManagedReference 
+	@OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true) 
+	private List<UserExam> userExams;
+
+	public List<UserExam> getUserExams() {
+		return userExams;
+	}
+
+	public void setUserExams(List<UserExam> userExams) {
+		this.userExams = userExams;
+	}
 
 	public User() {
 		
