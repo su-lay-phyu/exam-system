@@ -86,8 +86,9 @@ public class UserServiceImpl implements UserService {
 			dto.setId(c.getId());
 			dto.setName(c.getName());
 			dto.setDescription(c.getDescription());
-			long percentage=examRepository.getPercentage(c.getId());
-			dto.setPercentage(percentage);
+			
+			Long percentage=examRepository.getPercentageForUserAndCourse(foundedUser.getId(),c.getId());
+			 dto.setPercentage(percentage != null ? percentage : 0);
 			dtos.add(dto);
 		}
 		return dtos;

@@ -35,8 +35,15 @@ public interface UserExamRepository extends JpaRepository<UserExam, Long> {
     @Query(value = "SELECT DISTINCT e FROM UserExam ue JOIN ue.exam e WHERE e.id = :examId")
     Exam getExam(Long examId);
 
-    @Query(value = "SELECT COUNT(DISTINCT u) FROM User u JOIN u.courses c WHERE c.id = :courseId")
+    
+//    SELECT COUNT(ue.exam_id) 
+//    FROM user_exams ue INNER JOIN exams e 
+//    ON ue.exam_id = e.id 
+//    WHERE e.course_id = 1;
+    @Query(value = "SELECT COUNT(ue.exam.id) FROM UserExam ue JOIN ue.exam e WHERE e.course.id = :courseId")
     int countStudentsForCourse(Long courseId);
+    
+    
 
 
 }

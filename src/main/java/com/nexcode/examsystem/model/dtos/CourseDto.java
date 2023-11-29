@@ -7,7 +7,7 @@ public class CourseDto {
 	private String name;
 	private String description;
 	private List<UserDto>userDtos;
-	private long percentage;
+	private Long percentage;
 	public CourseDto() {
 	}
 	public Long getId() {
@@ -34,10 +34,10 @@ public class CourseDto {
 	public void setUserDtos(List<UserDto> userDtos) {
 		this.userDtos = userDtos;
 	}
-	public long getPercentage() {
+	public Long getPercentage() {
 		return percentage;
 	}
-	public void setPercentage(long percentage) {
+	public void setPercentage(Long percentage) {
 		this.percentage = percentage;
 	}
 	
