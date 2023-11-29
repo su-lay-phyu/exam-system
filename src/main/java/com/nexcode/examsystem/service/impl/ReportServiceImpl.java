@@ -64,6 +64,7 @@ public class ReportServiceImpl implements ReportService{
 		        }
 		        int inProgressStudents = totalNoOfStudents - completedStudents;
 		        OverAllReportResponse response = new OverAllReportResponse();
+		        response.setCourseId(course.getId());
 		        response.setCourseName(course.getName());
 		        response.setTotalNoOfStudents(totalNoOfStudents);
 		        response.setCompleteStudents(completedStudents);

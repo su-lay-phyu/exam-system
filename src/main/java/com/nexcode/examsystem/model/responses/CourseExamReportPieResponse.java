@@ -2,6 +2,7 @@ package com.nexcode.examsystem.model.responses;
 
 public class CourseExamReportPieResponse {
 	
+	
 	private String levelName;
 	private Integer noOfExams;
 	public String getLevelName() {

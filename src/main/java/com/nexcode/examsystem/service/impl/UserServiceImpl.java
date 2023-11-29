@@ -78,7 +78,7 @@ public class UserServiceImpl implements UserService {
 	public List<CourseDto> getAllCourseByUserEmail(String email) 
 	{
 		User foundedUser=userRepository.findByEmail(email).orElseThrow(()->new NotFoundException("User not found"));
-		List<Course>courses=userRepository.findAllCourseWithUserEmail(foundedUser.getId());
+		List<Course>courses=userRepository.findAllCourseByUserId(foundedUser.getId());
 		List<CourseDto>dtos=new ArrayList<>();
 		for(Course c:courses)
 		{

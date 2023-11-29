@@ -34,5 +34,5 @@ public interface CourseRepository extends JpaRepository<Course,Long>{
 		
 	@Query(value="SELECT COUNT(*) FROM Course c JOIN c.users u WHERE c.id = :courseId")
 	int getTotalNoOfStudent(Long courseId);
-	
+
 }

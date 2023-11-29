@@ -22,7 +22,7 @@ public interface UserRepository extends JpaRepository<User, Long>{
 	List<User> findAllUserWithCategories();
 	
     @Query(value="SELECT u.courses FROM User u WHERE u.id=:userId")
-	List<Course>findAllCourseWithUserEmail(Long userId);
+	List<Course>findAllCourseByUserId(Long userId);
     
     @Query(value="SELECT ue.exam.name as examName, ue.exam.course.name as courseName, ue.exam.level.name as levelName, ue.obtainedResult as obtainedResult, ue.isPass as isPass FROM UserExam ue LEFT JOIN ue.exam LEFT JOIN ue.exam.course LEFT JOIN ue.exam.level WHERE ue.user.id = :userId")
     List<UserReportProjection> findUserTakenExams(Long userId);

@@ -16,6 +16,7 @@ import com.nexcode.examsystem.model.entities.User;
 import com.nexcode.examsystem.model.exception.BadRequestException;
 import com.nexcode.examsystem.model.exception.NotFoundException;
 import com.nexcode.examsystem.repository.CourseRepository;
+import com.nexcode.examsystem.repository.ExamRepository;
 import com.nexcode.examsystem.repository.UserExamRepository;
 import com.nexcode.examsystem.service.CourseService;
 @Service
@@ -23,16 +24,21 @@ public class CourseServiceImpl implements CourseService{
 	
 	private final CourseRepository courseRepository;
 	private final UserExamRepository userExamRepository;
+	private final ExamRepository examRepository;
 	
 	private final UserMapper userMapper;
 	private final CourseMapper courseMapper;
 	private final ExamMapper examMapper;
 
 	
+	
+
 	public CourseServiceImpl(CourseRepository courseRepository, UserExamRepository userExamRepository,
-			UserMapper userMapper, CourseMapper courseMapper, ExamMapper examMapper) {
+			ExamRepository examRepository, UserMapper userMapper, CourseMapper courseMapper, ExamMapper examMapper) {
+		super();
 		this.courseRepository = courseRepository;
 		this.userExamRepository = userExamRepository;
+		this.examRepository = examRepository;
 		this.userMapper = userMapper;
 		this.courseMapper = courseMapper;
 		this.examMapper = examMapper;
@@ -76,7 +82,6 @@ public class CourseServiceImpl implements CourseService{
 	public CourseDto findByName(String name) {
 		return courseMapper.toDto(courseRepository.findByName(name).orElse(null));
 	}
-
 	@Override
 	public void deleteCourse(Long id) {
 		Course foundedCourse=courseRepository.findById(id).orElseThrow(()->new NotFoundException("course not found"));
@@ -89,7 +94,37 @@ public class CourseServiceImpl implements CourseService{
 		foundedCourse.setActive(false);
 		courseRepository.save(foundedCourse);
 	}
-
+//	@Override
+//	public void deleteCourse(Long id) {
+//		
+//		Course foundedCourse=courseRepository.findById(id).orElseThrow(()->new NotFoundException("course not found"));
+//		
+//		List<Exam>exams=userExamRepository.getAllTakenExams();
+//		
+//		for(Exam e :exams)
+//		{
+//			if(e.getCourse().getName().equalsIgnoreCase(foundedCourse.getName()))
+//				throw new BadRequestException("Course cannot be delete because of there is student who taken that course's exam");
+//		}
+//		int examCount =examRepository.countExamsForCourse(id);
+//		int studentCount=courseRepository.getTotalNoOfStudent(id);
+//		System.out.println("Exam Count "+examCount);
+//		System.out.println("Student Count "+studentCount);
+//		int expectedExamCount=examCount*studentCount;
+//		System.out.println("expected Count "+expectedExamCount);
+//		int takenExamCount=userExamRepository.countStudentsForCourse(id);
+//		System.out.println("taken exam count "+takenExamCount);
+//		if(expectedExamCount==takenExamCount && takenExamCount==0)
+//		{
+//			foundedCourse.setActive(false);
+//			// in here i need to remove user course with that 
+//			for (User user : foundedCourse.getUsers()) {
+//                user.getCourses().remove(foundedCourse);
+//            }
+//		}
+//		courseRepository.save(foundedCourse);
+//		
+//	}
 	@Override
 	public CourseDto findCourseById(Long id) {
 		Course foundedCourse=courseRepository.findById(id).orElseThrow(()->new NotFoundException("course not found"));

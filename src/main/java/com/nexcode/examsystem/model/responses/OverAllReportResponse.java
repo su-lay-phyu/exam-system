@@ -1,10 +1,18 @@
 package com.nexcode.examsystem.model.responses;
 
 public class OverAllReportResponse {
+	private Long courseId;
 	private String courseName;
 	private Integer totalNoOfStudents;
 	private Integer inProgressStudents;
 	private Integer completeStudents;
+	
+	public Long getCourseId() {
+		return courseId;
+	}
+	public void setCourseId(Long courseId) {
+		this.courseId = courseId;
+	}
 	public String getCourseName() {
 		return courseName;
 	}
