@@ -12,8 +12,11 @@ import com.nexcode.examsystem.mapper.ExamMapper;
 import com.nexcode.examsystem.mapper.LevelMapper;
 import com.nexcode.examsystem.mapper.QuestionMapper;
 import com.nexcode.examsystem.model.dtos.ExamDto;
+import com.nexcode.examsystem.model.dtos.QuestionDto;
 import com.nexcode.examsystem.model.entities.Exam;
 import com.nexcode.examsystem.model.responses.ExamResponse;
+import com.nexcode.examsystem.model.responses.QuestionResponse;
+import com.nexcode.examsystem.model.responses.TakeExamResponse;
 
 @Component
 public class ExamMapperImpl implements ExamMapper {
@@ -85,6 +88,16 @@ public class ExamMapperImpl implements ExamMapper {
 	@Override
 	public List<ExamResponse> toResponseList(List<ExamDto> dtos) {
 		return dtos.stream().map(e -> toResponse(e)).collect(Collectors.toList());
+	}
+
+	@Override
+	public TakeExamResponse toTakeExamResponse(ExamDto dto, List<QuestionDto> questions) {
+		TakeExamResponse response=new TakeExamResponse();
+		ExamResponse examResponse=toResponse(dto);
+		List<QuestionResponse> questionResponses=questionMapper.toResponseList(questions);
+		response.setExam(examResponse);
+		response.setQuestions(questionResponses);
+		return response;
 	}
 
 }

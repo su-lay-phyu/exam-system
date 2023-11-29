@@ -33,8 +33,8 @@ import com.nexcode.examsystem.model.requests.UserAnswerRequest;
 import com.nexcode.examsystem.model.requests.UserRequest;
 import com.nexcode.examsystem.model.requests.VerifyOtpRequest;
 import com.nexcode.examsystem.model.responses.ExamResponse;
-import com.nexcode.examsystem.model.responses.QuestionResponse;
 import com.nexcode.examsystem.model.responses.StudentCourseResponse;
+import com.nexcode.examsystem.model.responses.TakeExamResponse;
 import com.nexcode.examsystem.model.responses.UserExamResponse;
 import com.nexcode.examsystem.security.CurrentUser;
 import com.nexcode.examsystem.security.UserPrincipal;
@@ -164,6 +164,10 @@ public class UserController {
 	public ResponseEntity<?> getCourseByCourseId(@CurrentUser UserPrincipal currentUser, @RequestParam("id") Long id) {
 		String email = currentUser.getEmail();
 		CourseDto foundedCourse = userService.findUserCourseById(email, id);
+		if(foundedCourse==null)
+		{
+			throw new NotFoundException("Course Not Found");
+		}
 		return new ResponseEntity<>(courseMapper.toResponse(foundedCourse), HttpStatus.FOUND);
 	}
 	@GetMapping("/course/{id}/exams")
@@ -173,7 +177,7 @@ public class UserController {
 
 	}
 	@GetMapping("/exam/{id}/start")
-	public List<QuestionResponse> startExam(@CurrentUser UserPrincipal currentUser, @PathVariable Long id) {
+	public ResponseEntity<?> startExam(@CurrentUser UserPrincipal currentUser, @PathVariable Long id) {
 		List<QuestionDto> dtos = null;
 		String email = currentUser.getEmail();
 		ExamDto foundedExam = examService.findExamById(id);
@@ -183,7 +187,8 @@ public class UserController {
 			// create user exam for that user
 			userExamService.createUserExam(currentUser.getId(), foundedExam.getId());
 		}
-		return questionMapper.toResponseList(dtos);
+		TakeExamResponse response=examMapper.toTakeExamResponse(foundedExam,dtos);
+		return new ResponseEntity<>(response, HttpStatus.OK);
 	}
 
 	@PostMapping("/exam/{id}/submit")
