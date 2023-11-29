@@ -209,7 +209,9 @@ public class UserServiceImpl implements UserService {
 		User foundedUser = userRepository.findByEmail(email)
 				.orElseThrow(() -> new BadRequestException("User Not Found : email->" + email));
 		foundedUser.setPassword(passwordEncoder.encode(password));
+		foundedUser.setPasswordChanged(true);
 		userRepository.save(foundedUser);
+		clearOTP(email);
 	}
 	
 	public boolean sendSignUpVerifiedStudent(UserDto userDto) {

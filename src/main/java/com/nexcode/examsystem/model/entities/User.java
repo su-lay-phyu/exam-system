@@ -70,7 +70,7 @@ public class User {
 	private List<Course>courses;
 
 	@JsonManagedReference 
-	@OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true) 
+	@OneToMany(mappedBy = "user", cascade = CascadeType.ALL) 
 	private List<UserExam> userExams;
 
 	public List<UserExam> getUserExams() {

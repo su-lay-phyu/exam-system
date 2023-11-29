@@ -81,9 +81,10 @@ public class CourseServiceImpl implements CourseService{
 		return userMapper.toDtoList(users);
 	}
 	@Override
-	public List<ExamDto>getAllPublishedExams(Long id)
+	public List<ExamDto> getAllUnTakenExams(String email, Long id)
 	{
-		List<Exam>exams=courseRepository.getAllPublishedExams(id);
+		User foundedUser=userRepository.findByEmail(email).orElseThrow(()->new NotFoundException("User not Found"));
+		List<Exam>exams=courseRepository.getAllUntakenPublishedExams(id,foundedUser.getId());
 		return examMapper.toDtoList(exams);
 	}
 	@Override
@@ -107,7 +108,6 @@ public class CourseServiceImpl implements CourseService{
 		int studentCount=courseRepository.getTotalNoOfStudent(id);
 		int expectedExamCount=examCount*studentCount;
 		int takenExamCount=userExamRepository.countStudentsForCourse(id);
-		System.out.println("real exam count "+takenExamCount);
 		if(expectedExamCount==takenExamCount || takenExamCount==0)
 		{
 			

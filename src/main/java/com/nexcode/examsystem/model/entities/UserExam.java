@@ -37,14 +37,10 @@ public class UserExam {
 	 @JoinColumn(name = "user_id")
 	 private User user;
 	
-	@ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.REFRESH}, fetch = FetchType.LAZY)
+	@ManyToOne(cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH}, fetch = FetchType.LAZY)
 	@JoinColumn(name = "exam_id")
 	private Exam exam;
-	
-//	@JsonManagedReference 
-//	@OneToMany(mappedBy = "userExam") 
-//	private List<UserAnswer> userAnswers;
-	
+
 	@JsonManagedReference 
     @OneToMany(mappedBy = "userExam", cascade = CascadeType.ALL) 
     private List<UserAnswer> userAnswers;

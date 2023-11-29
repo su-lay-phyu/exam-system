@@ -16,7 +16,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.nexcode.examsystem.mapper.CourseMapper;
 import com.nexcode.examsystem.mapper.ExamMapper;
-import com.nexcode.examsystem.mapper.QuestionMapper;
 import com.nexcode.examsystem.mapper.UserExamMapper;
 import com.nexcode.examsystem.mapper.UserMapper;
 import com.nexcode.examsystem.model.dtos.CourseDto;
@@ -54,22 +53,21 @@ public class UserController {
 
 	private final UserMapper userMapper;
 	private final CourseMapper courseMapper;
-	private final QuestionMapper questionMapper;
 	private final UserExamMapper userExamMapper;
 	private final ExamMapper examMapper;
 
 	
-	
+
 	public UserController(CourseService courseService, UserService userService, ExamService examService,
 			UserExamService userExamService, UserMapper userMapper, CourseMapper courseMapper,
-			QuestionMapper questionMapper, UserExamMapper userExamMapper, ExamMapper examMapper) {
+			UserExamMapper userExamMapper, ExamMapper examMapper) {
+		super();
 		this.courseService = courseService;
 		this.userService = userService;
 		this.examService = examService;
 		this.userExamService = userExamService;
 		this.userMapper = userMapper;
 		this.courseMapper = courseMapper;
-		this.questionMapper = questionMapper;
 		this.userExamMapper = userExamMapper;
 		this.examMapper = examMapper;
 	}
@@ -171,8 +169,9 @@ public class UserController {
 		return new ResponseEntity<>(courseMapper.toResponse(foundedCourse), HttpStatus.FOUND);
 	}
 	@GetMapping("/course/{id}/exams")
-	public List<ExamResponse> getSignUpExams(@PathVariable Long id) {
-		List<ExamDto> dtos = courseService.getAllPublishedExams(id);
+	public List<ExamResponse> getUnTakenExams(@CurrentUser UserPrincipal currentUser,@PathVariable Long id) {
+		String email=currentUser.getEmail();
+		List<ExamDto> dtos = courseService.getAllUnTakenExams(email,id);
 		return examMapper.toResponseList(dtos);
 
 	}

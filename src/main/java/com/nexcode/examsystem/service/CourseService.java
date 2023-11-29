@@ -11,9 +11,9 @@ public interface CourseService {
 	public List<CourseDto>getAllCourses();
 	public CourseDto findByName(String name);
 	public List<UserDto> getAllUserByCourseId(Long id);
-	public List<ExamDto>getAllPublishedExams(Long id);
 	public CourseDto addCourse(CourseDto dto);
 	public CourseDto updateCourse(Long id,CourseDto dto);
 	public void deleteCourse(Long id);
 	public CourseDto findCourseById(Long id);
+	public List<ExamDto> getAllUnTakenExams(String email, Long id);
 }
