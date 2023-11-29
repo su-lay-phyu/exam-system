@@ -9,7 +9,7 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.stereotype.Service;
 
 import com.nexcode.examsystem.model.entities.User;
-import com.nexcode.examsystem.model.exception.BadRequestException;
+import com.nexcode.examsystem.model.exception.NotFoundException;
 import com.nexcode.examsystem.model.exception.UnauthorizedException;
 import com.nexcode.examsystem.model.requests.LoginRequest;
 import com.nexcode.examsystem.model.responses.JwtResponse;
@@ -39,13 +39,14 @@ public class AuthServiceImpl implements AuthService {
 		Authentication authentication = authenticationManager
 				.authenticate(new UsernamePasswordAuthenticationToken(loginRequest.getEmail(), loginRequest.getPassword()));
 		User foundedUser = userRepository.findByEmail(loginRequest.getEmail())
-				.orElseThrow(()->new BadRequestException("User not found"));
+				.orElseThrow(()->new NotFoundException("User not found"));
 		boolean isFirstTime=foundedUser.isPasswordChanged();
+		String username=foundedUser.getUsername();
 		userRepository.save(foundedUser);
 		if (authentication.getAuthorities().contains(new SimpleGrantedAuthority("ROLE_ADMIN")) || authentication.getAuthorities().contains(new SimpleGrantedAuthority("ROLE_USER"))) {
 			
 			String jwt = jwtService.createJwtToken(authentication);
-			return new JwtResponse(jwt, expiredAt.toInstant().toString(),isFirstTime);
+			return new JwtResponse(username,jwt, expiredAt.toInstant().toString(),isFirstTime);
 		}
 		throw new UnauthorizedException("Email or Password is wrong!");	
 	}

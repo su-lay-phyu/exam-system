@@ -1,9 +1,16 @@
 package com.nexcode.examsystem.model.responses;
 
 public class JwtResponse {
+	private String username;
 	private String token;
 	private String expiredAt;
 	private boolean isFirstPasswordChangeCompleted;
+	public String getUsername() {
+		return username;
+	}
+	public void setUsername(String username) {
+		this.username = username;
+	}
 	public String getToken() {
 		return token;
 	}
@@ -22,12 +29,11 @@ public class JwtResponse {
 	public void setFirstPasswordChangeCompleted(boolean isFirstPasswordChangeCompleted) {
 		this.isFirstPasswordChangeCompleted = isFirstPasswordChangeCompleted;
 	}
-	public JwtResponse(String token, String expiredAt, boolean isFirstPasswordChangeCompleted) {
-		super();
+	public JwtResponse(String username, String token, String expiredAt, boolean isFirstPasswordChangeCompleted) {
+		this.username = username;
 		this.token = token;
 		this.expiredAt = expiredAt;
 		this.isFirstPasswordChangeCompleted = isFirstPasswordChangeCompleted;
 	}
-	
 	
 }
