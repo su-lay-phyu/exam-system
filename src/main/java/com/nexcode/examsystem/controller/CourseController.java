@@ -67,7 +67,7 @@ public class CourseController {
 	{
 		CourseDto existingCourse=courseService.findByName(request.getName());
 		if (existingCourse != null) {
-			return new ResponseEntity<>( "Course already exists", HttpStatus.CONFLICT);
+			return new ResponseEntity<>("Course already exists", HttpStatus.CONFLICT);
 		}
 		CourseDto dto = courseMapper.toDto(request);
 	    courseService.addCourse(dto);

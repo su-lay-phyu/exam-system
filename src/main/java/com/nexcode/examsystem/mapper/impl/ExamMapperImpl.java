@@ -70,7 +70,6 @@ public class ExamMapperImpl implements ExamMapper {
 
 	@Override
 	public ExamResponse toResponse(ExamDto dto) {
-		System.out.println("dto "+dto.isPublished());
 		ExamResponse response = new ExamResponse();
 		response.setId(dto.getId());
 		response.setName(dto.getName());

@@ -12,44 +12,40 @@ import org.springframework.stereotype.Component;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;
-import io.jsonwebtoken.JwtParser;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.MalformedJwtException;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.SignatureException;
 import io.jsonwebtoken.UnsupportedJwtException;
+import lombok.extern.slf4j.Slf4j;
 
 @Component
+@Slf4j
 public class JwtService {
 
 	@Value("${app.jwtSecret}")
 	private String secretKey;
-
-	public Claims resolveClaims(HttpServletRequest request) {
-
-		String jwt = getJwt(request);
-
-		JwtParser jwtParser = Jwts.parser().setSigningKey(secretKey);
+	
+	public boolean validate(String jwt) {
 		try {
-			if (jwt != null) {
-
-				Claims claims = jwtParser.parseClaimsJws(jwt).getBody();
-				return claims;
-
-			}
+			Jwts.parser().setSigningKey(secretKey).parseClaimsJws(jwt);
+			return true;
 		} catch (SignatureException e) {
-			System.out.println("Invalid JWT signature -> "+e.getMessage());
+			log.error("Invalid JWT signature -> Message: {} ", e.getMessage());
 		} catch (MalformedJwtException e) {
-			System.out.println("Invalid JWT token -> Message: {}"+e.getMessage());
+			log.error("Invalid JWT token -> Message: {}", e.getMessage());
 		} catch (ExpiredJwtException e) {
-			System.out.println("Expired JWT token -> Message: {}"+e.getMessage());
+			log.error("Expired JWT token -> Message: {}", e.getMessage());
 		} catch (UnsupportedJwtException e) {
-			System.out.println("Unsupported JWT token -> Message: {}"+e.getMessage());
+			log.error("Unsupported JWT token -> Message: {}", e.getMessage());
 		} catch (IllegalArgumentException e) {
-			System.out.println("JWT claims string is empty -> Message: {}"+e.getMessage());
+			log.error("JWT claims string is empty -> Message: {}", e.getMessage());
 		}
 
-		return null;
+		return false;
+	}
+	public Claims getClaims(String token) {
+		return Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token).getBody();
 	}
 	public String createJwtToken(Authentication authentication) {
 		UserPrincipal userPrincipal = (UserPrincipal) authentication.getPrincipal();

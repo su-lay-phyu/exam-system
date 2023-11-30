@@ -19,8 +19,10 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import io.jsonwebtoken.Claims;
+import lombok.extern.slf4j.Slf4j;
 
 @Component
+@Slf4j
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
     private final JwtService jwtService;
@@ -30,13 +32,23 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 		this.jwtService = jwtService;
 	}
 
-
+    private String getJwt(HttpServletRequest request) {
+		String authHeader = request.getHeader("Authorization");
+		if (authHeader != null && authHeader.startsWith("Bearer ")) {
+			return authHeader.replace("Bearer ", "");
+		}
+		return null;
+	}
+    
 	@Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
             throws ServletException, IOException {
-        Claims claims = jwtService.resolveClaims(request);
-        if (claims != null) {
-            Long cid = Long.parseLong(claims.getId());
+		String jwt=getJwt(request);
+		if(jwt!=null && jwtService.validate(jwt)) 
+		{
+			
+			Claims claims = jwtService.getClaims(jwt);
+			Long cid = Long.parseLong(claims.getId());
             String email = claims.getSubject();
             String username = claims.get("username", String.class);
             String roles = claims.get("roles", String.class);
@@ -47,7 +59,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             UserPrincipal userPrincipal = new UserPrincipal(cid, username, email, null, authorities);
             Authentication authentication = new UsernamePasswordAuthenticationToken(userPrincipal, null, authorities);
             SecurityContextHolder.getContext().setAuthentication(authentication);
-        }
-        filterChain.doFilter(request, response);
+		}
+		filterChain.doFilter(request, response);
     }
 }
